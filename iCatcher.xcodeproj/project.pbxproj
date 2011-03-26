@@ -1,0 +1,323 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		01514F0A133E2C0700BC7179 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01514F09133E2C0700BC7179 /* Cocoa.framework */; };
+		01514F0C133E2C0700BC7179 /* MacRuby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01514F0B133E2C0700BC7179 /* MacRuby.framework */; };
+		01514F13133E2C0700BC7179 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 01514F11133E2C0700BC7179 /* InfoPlist.strings */; };
+		01514F16133E2C0700BC7179 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 01514F15133E2C0700BC7179 /* main.m */; };
+		01514F1A133E2C0700BC7179 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01514F18133E2C0700BC7179 /* MainMenu.xib */; };
+		01514F1D133E2C0700BC7179 /* rb_main.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F1C133E2C0700BC7179 /* rb_main.rb */; };
+		01514F1F133E2C0700BC7179 /* AppDelegate.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F1E133E2C0700BC7179 /* AppDelegate.rb */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		01514F05133E2C0700BC7179 /* iCatcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iCatcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		01514F09133E2C0700BC7179 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		01514F0B133E2C0700BC7179 /* MacRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MacRuby.framework; path = System/Library/Frameworks/MacRuby.framework; sourceTree = SDKROOT; };
+		01514F10133E2C0700BC7179 /* iCatcher-Info.plist */ = {isa = PBXFileReference; path = "iCatcher-Info.plist"; sourceTree = "<group>"; };
+		01514F12133E2C0700BC7179 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		01514F14133E2C0700BC7179 /* iCatcher-Prefix.pch */ = {isa = PBXFileReference; path = "iCatcher-Prefix.pch"; sourceTree = "<group>"; };
+		01514F15133E2C0700BC7179 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		01514F19133E2C0700BC7179 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		01514F1C133E2C0700BC7179 /* rb_main.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = rb_main.rb; sourceTree = "<group>"; };
+		01514F1E133E2C0700BC7179 /* AppDelegate.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = AppDelegate.rb; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		01514F02133E2C0700BC7179 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01514F0A133E2C0700BC7179 /* Cocoa.framework in Frameworks */,
+				01514F0C133E2C0700BC7179 /* MacRuby.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		01514EFA133E2C0600BC7179 = {
+			isa = PBXGroup;
+			children = (
+				01514F0E133E2C0700BC7179 /* iCatcher */,
+				01514F08133E2C0700BC7179 /* Frameworks */,
+				01514F06133E2C0700BC7179 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		01514F06133E2C0700BC7179 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				01514F05133E2C0700BC7179 /* iCatcher.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		01514F08133E2C0700BC7179 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				01514F09133E2C0700BC7179 /* Cocoa.framework */,
+				01514F0B133E2C0700BC7179 /* MacRuby.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		01514F0E133E2C0700BC7179 /* iCatcher */ = {
+			isa = PBXGroup;
+			children = (
+				01514F1E133E2C0700BC7179 /* AppDelegate.rb */,
+				01514F17133E2C0700BC7179 /* Resources */,
+				01514F1B133E2C0700BC7179 /* Other Sources */,
+				01514F0F133E2C0700BC7179 /* Supporting Files */,
+			);
+			path = iCatcher;
+			sourceTree = "<group>";
+		};
+		01514F0F133E2C0700BC7179 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				01514F10133E2C0700BC7179 /* iCatcher-Info.plist */,
+				01514F11133E2C0700BC7179 /* InfoPlist.strings */,
+				01514F14133E2C0700BC7179 /* iCatcher-Prefix.pch */,
+				01514F15133E2C0700BC7179 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		01514F17133E2C0700BC7179 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				01514F18133E2C0700BC7179 /* MainMenu.xib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		01514F1B133E2C0700BC7179 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				01514F1C133E2C0700BC7179 /* rb_main.rb */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXLegacyTarget section */
+		01514F0D133E2C0700BC7179 /* Deployment */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "--compile --embed";
+			buildConfigurationList = 01514F25133E2C0700BC7179 /* Build configuration list for PBXLegacyTarget "Deployment" */;
+			buildPhases = (
+			);
+			buildToolPath = /usr/local/bin/macruby_deploy;
+			dependencies = (
+			);
+			name = Deployment;
+			passBuildSettingsInEnvironment = 1;
+			productName = Deployment;
+		};
+/* End PBXLegacyTarget section */
+
+/* Begin PBXNativeTarget section */
+		01514F04133E2C0700BC7179 /* iCatcher */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 01514F22133E2C0700BC7179 /* Build configuration list for PBXNativeTarget "iCatcher" */;
+			buildPhases = (
+				01514F01133E2C0700BC7179 /* Sources */,
+				01514F02133E2C0700BC7179 /* Frameworks */,
+				01514F03133E2C0700BC7179 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = iCatcher;
+			productName = iCatcher;
+			productReference = 01514F05133E2C0700BC7179 /* iCatcher.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		01514EFC133E2C0600BC7179 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = "Berg London Ltd";
+			};
+			buildConfigurationList = 01514EFF133E2C0600BC7179 /* Build configuration list for PBXProject "iCatcher" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 01514EFA133E2C0600BC7179;
+			productRefGroup = 01514F06133E2C0700BC7179 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				01514F04133E2C0700BC7179 /* iCatcher */,
+				01514F0D133E2C0700BC7179 /* Deployment */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		01514F03133E2C0700BC7179 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01514F13133E2C0700BC7179 /* InfoPlist.strings in Resources */,
+				01514F1A133E2C0700BC7179 /* MainMenu.xib in Resources */,
+				01514F1D133E2C0700BC7179 /* rb_main.rb in Resources */,
+				01514F1F133E2C0700BC7179 /* AppDelegate.rb in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		01514F01133E2C0700BC7179 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01514F16133E2C0700BC7179 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		01514F11133E2C0700BC7179 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				01514F12133E2C0700BC7179 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		01514F18133E2C0700BC7179 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				01514F19133E2C0700BC7179 /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		01514F20133E2C0700BC7179 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		01514F21133E2C0700BC7179 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		01514F23133E2C0700BC7179 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_GC = required;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "iCatcher/iCatcher-Prefix.pch";
+				INFOPLIST_FILE = "iCatcher/iCatcher-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		01514F24133E2C0700BC7179 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_OBJC_GC = required;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "iCatcher/iCatcher-Prefix.pch";
+				INFOPLIST_FILE = "iCatcher/iCatcher-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		01514F26133E2C0700BC7179 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		01514F27133E2C0700BC7179 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		01514EFF133E2C0600BC7179 /* Build configuration list for PBXProject "iCatcher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01514F20133E2C0700BC7179 /* Debug */,
+				01514F21133E2C0700BC7179 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		01514F22133E2C0700BC7179 /* Build configuration list for PBXNativeTarget "iCatcher" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01514F23133E2C0700BC7179 /* Debug */,
+				01514F24133E2C0700BC7179 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		01514F25133E2C0700BC7179 /* Build configuration list for PBXLegacyTarget "Deployment" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01514F26133E2C0700BC7179 /* Debug */,
+				01514F27133E2C0700BC7179 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 01514EFC133E2C0600BC7179 /* Project object */;
+}
