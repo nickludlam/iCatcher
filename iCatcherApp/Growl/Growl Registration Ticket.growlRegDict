@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+   Growl Registration Ticket.growlRegDict
+   iCatcher
+
+   Created by Nick Ludlam on 25/07/2010.
+   Copyright 2010 Nick Ludlam. All rights reserved.
+-->
+<plist version="1.0">
+    <dict>
+		<key>iCatcher</key>
+		<integer>1</integer>
+		<key>AllNotifications</key>
+		<array>
+			<string>Started</string>
+			<string>NewFiles</string>
+		</array>
+		<key>DefaultNotifications</key>
+		<array>
+			<string>Started</string>
+			<string>NewFiles</string>
+		</array>
+    </dict>
+</plist>

@@ -1,0 +1,19 @@
+# xcode noise
+iCatcher/build/*
+*.pbxuser
+*.perspective
+*.perspectivev3
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*~.nib
+*.xcodeproj/project.xcworkspace
+*.xcodeproj/xcuserdata
+
+
+# old skool
+.svn
+
+# osx noise
+.DS_Store
+profile
