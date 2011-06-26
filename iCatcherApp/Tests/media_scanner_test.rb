@@ -21,7 +21,9 @@ class MediaScannerTest < Test::Unit::TestCase
   
   def test_fail
 		files = []
-		MediaScanner.listMedia(File.dirname(__FILE__) + '/../test_data/audio', 'audio', 0) do |s|
+    dir = File.dirname(__FILE__) + '/test_data/radio'
+    puts "Dir is #{dir}"
+		MediaScanner.listMedia(dir, 'radio', 0) do |s|
 		  files << s
 	  end
     
@@ -29,7 +31,7 @@ class MediaScannerTest < Test::Unit::TestCase
   end
   
   def test_anything
-    collection = MediaScanner.createAudioCollection(File.dirname(__FILE__) + '/../test_data/audio')
+    collection = MediaScanner.createAudioCollection(File.dirname(__FILE__) + '/test_data/radio')
     assert true, 'Assertion was false.'
   end
   

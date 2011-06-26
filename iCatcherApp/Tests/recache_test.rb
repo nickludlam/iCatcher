@@ -21,25 +21,25 @@ class RecacheTest < Test::Unit::TestCase
   def teardown
   end
 	
-	def test_fetch_cache
-		tw = TaskWrapper.instance
-		tw.updateGetIplayerCaches()
-	end
+	#def test_fetch_cache
+  #		tw = TaskWrapper.instance
+  #		tw.updateGetIplayerCaches()
+	#end
   
-  def test_recache
-		cr = CacheReader.instance
-		
-		File.unlink(File.join($downloaderConfigDirectory, "tv.cache"))
-		
-		exception_raised = false
-		
-		begin
-			cr.testCache
-		rescue CacheNotFoundException
-		  exception_raised = true
-		end
-		
-		assert exception_raised, "A non-present cache should raise an exception"
-	end
+  #  def test_recache
+	#	cr = CacheReader.instance
+	#	
+	#	File.unlink(File.join($downloaderConfigDirectory, "tv.cache"))
+	#	
+	#	exception_raised = false
+	#	
+	#	begin
+  #			cr.testCache
+	#	rescue CacheNotFoundException
+	#	  exception_raised = true
+	#	end
+	#	
+	#	assert exception_raised, "A non-present cache should raise an exception"
+	#end
 	
 end

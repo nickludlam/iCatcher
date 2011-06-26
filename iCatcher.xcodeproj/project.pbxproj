@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		01514F0A133E2C0700BC7179 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01514F09133E2C0700BC7179 /* Cocoa.framework */; };
-		01514F0C133E2C0700BC7179 /* MacRuby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01514F0B133E2C0700BC7179 /* MacRuby.framework */; };
 		01514F4F133E64BE00BC7179 /* ActiveStatusItem.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F4A133E64BE00BC7179 /* ActiveStatusItem.rb */; };
 		01514F50133E64BE00BC7179 /* ApplicationController.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F4B133E64BE00BC7179 /* ApplicationController.rb */; };
 		01514F51133E64BE00BC7179 /* CacheReader.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F4C133E64BE00BC7179 /* CacheReader.rb */; };
@@ -65,8 +64,6 @@
 		01514FBA133E657B00BC7179 /* icatcher_menubar_icon_black.png in Resources */ = {isa = PBXBuildFile; fileRef = 01514FB6133E657B00BC7179 /* icatcher_menubar_icon_black.png */; };
 		01514FBB133E657B00BC7179 /* icatcher_menubar_icon_white.png in Resources */ = {isa = PBXBuildFile; fileRef = 01514FB7133E657B00BC7179 /* icatcher_menubar_icon_white.png */; };
 		01514FBD133E658600BC7179 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01514FBC133E658600BC7179 /* MainMenu.xib */; };
-		01514FC9133E665100BC7179 /* feed.erb in Resources */ = {isa = PBXBuildFile; fileRef = 01514FC7133E665100BC7179 /* feed.erb */; };
-		01514FCA133E665100BC7179 /* index.erb in Resources */ = {isa = PBXBuildFile; fileRef = 01514FC8133E665100BC7179 /* index.erb */; };
 		01514FD9133E668C00BC7179 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 01514FD6133E668C00BC7179 /* dsa_pub.pem */; };
 		01514FDD133E669700BC7179 /* Growl Registration Ticket.growlRegDict in Resources */ = {isa = PBXBuildFile; fileRef = 01514FDC133E669700BC7179 /* Growl Registration Ticket.growlRegDict */; };
 		01514FDF133E67B000BC7179 /* Growl.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 01514F65133E64EF00BC7179 /* Growl.framework */; };
@@ -76,6 +73,14 @@
 		01514FE9133E682700BC7179 /* flvstreamer in Resources */ = {isa = PBXBuildFile; fileRef = 01514FE4133E682700BC7179 /* flvstreamer */; };
 		01514FEA133E682700BC7179 /* get_iplayer in Resources */ = {isa = PBXBuildFile; fileRef = 01514FE5133E682700BC7179 /* get_iplayer */; };
 		01514FEB133E682700BC7179 /* TagLib.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 01514FE6133E682700BC7179 /* TagLib.bundle */; };
+		01514FFB133E869B00BC7179 /* MacRuby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01514FFA133E869B00BC7179 /* MacRuby.framework */; };
+		01514FFD133FEFC900BC7179 /* AppDelegate.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514FFC133FEFC900BC7179 /* AppDelegate.rb */; };
+		01604F39136759170057D856 /* Rakefile.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01604F38136759170057D856 /* Rakefile.xib */; };
+		0171209413B7DFE90070E05B /* AppleScripter.rb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209313B7DFE90070E05B /* AppleScripter.rb */; };
+		0171209813B7E0F40070E05B /* feed.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209613B7E0F40070E05B /* feed.erb */; };
+		0171209913B7E0F40070E05B /* index.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209713B7E0F40070E05B /* index.erb */; };
+		0171209B13B7E45B0070E05B /* feed_test.rb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209A13B7E45B0070E05B /* feed_test.rb */; };
+		0171209D13B7EAEE0070E05B /* all_feeds.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209C13B7EAEE0070E05B /* all_feeds.erb */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -95,7 +100,6 @@
 /* Begin PBXFileReference section */
 		01514F05133E2C0700BC7179 /* iCatcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iCatcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01514F09133E2C0700BC7179 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
-		01514F0B133E2C0700BC7179 /* MacRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MacRuby.framework; path = System/Library/Frameworks/MacRuby.framework; sourceTree = SDKROOT; };
 		01514F4A133E64BE00BC7179 /* ActiveStatusItem.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = ActiveStatusItem.rb; path = iCatcherApp/Classes/ActiveStatusItem.rb; sourceTree = SOURCE_ROOT; };
 		01514F4B133E64BE00BC7179 /* ApplicationController.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = ApplicationController.rb; path = iCatcherApp/Classes/ApplicationController.rb; sourceTree = SOURCE_ROOT; };
 		01514F4C133E64BE00BC7179 /* CacheReader.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = CacheReader.rb; path = iCatcherApp/Classes/CacheReader.rb; sourceTree = SOURCE_ROOT; };
@@ -154,8 +158,6 @@
 		01514FB7133E657B00BC7179 /* icatcher_menubar_icon_white.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icatcher_menubar_icon_white.png; path = iCatcherApp/Resources/Images/icatcher_menubar_icon_white.png; sourceTree = SOURCE_ROOT; };
 		01514FBC133E658600BC7179 /* MainMenu.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MainMenu.xib; path = iCatcherApp/Resources/MainMenu.xib; sourceTree = SOURCE_ROOT; };
 		01514FC1133E658F00BC7179 /* iCatcher-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "iCatcher-Info.plist"; path = "iCatcherApp/Resources/iCatcher-Info.plist"; sourceTree = SOURCE_ROOT; };
-		01514FC7133E665100BC7179 /* feed.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed.erb; sourceTree = "<group>"; };
-		01514FC8133E665100BC7179 /* index.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = index.erb; sourceTree = "<group>"; };
 		01514FCC133E667F00BC7179 /* media_scanner_test.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = media_scanner_test.rb; sourceTree = "<group>"; };
 		01514FCD133E667F00BC7179 /* pvr_search_test.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = pvr_search_test.rb; sourceTree = "<group>"; };
 		01514FCE133E667F00BC7179 /* recache_test.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = recache_test.rb; sourceTree = "<group>"; };
@@ -169,6 +171,15 @@
 		01514FE4133E682700BC7179 /* flvstreamer */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = flvstreamer; sourceTree = "<group>"; };
 		01514FE5133E682700BC7179 /* get_iplayer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = get_iplayer; sourceTree = "<group>"; };
 		01514FE6133E682700BC7179 /* TagLib.bundle */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; path = TagLib.bundle; sourceTree = "<group>"; };
+		01514FF8133E869000BC7179 /* MacRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MacRuby.framework; path = Library/Frameworks/MacRuby.framework; sourceTree = SDKROOT; };
+		01514FFA133E869B00BC7179 /* MacRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MacRuby.framework; path = Library/Frameworks/MacRuby.framework; sourceTree = SDKROOT; };
+		01514FFC133FEFC900BC7179 /* AppDelegate.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = AppDelegate.rb; sourceTree = SOURCE_ROOT; };
+		01604F38136759170057D856 /* Rakefile.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = Rakefile.xib; path = iCatcherApp/Resources/Rakefile.xib; sourceTree = SOURCE_ROOT; };
+		0171209313B7DFE90070E05B /* AppleScripter.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = AppleScripter.rb; path = iCatcherApp/Classes/AppleScripter.rb; sourceTree = SOURCE_ROOT; };
+		0171209613B7E0F40070E05B /* feed.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed.erb; sourceTree = "<group>"; };
+		0171209713B7E0F40070E05B /* index.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = index.erb; sourceTree = "<group>"; };
+		0171209A13B7E45B0070E05B /* feed_test.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = feed_test.rb; sourceTree = "<group>"; };
+		0171209C13B7EAEE0070E05B /* all_feeds.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = all_feeds.erb; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,9 +188,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				01514F0A133E2C0700BC7179 /* Cocoa.framework in Frameworks */,
-				01514F0C133E2C0700BC7179 /* MacRuby.framework in Frameworks */,
 				01514F67133E64EF00BC7179 /* Growl.framework in Frameworks */,
 				01514F68133E64EF00BC7179 /* Sparkle.framework in Frameworks */,
+				01514FFB133E869B00BC7179 /* MacRuby.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -189,6 +200,7 @@
 		01514EFA133E2C0600BC7179 = {
 			isa = PBXGroup;
 			children = (
+				01514FF8133E869000BC7179 /* MacRuby.framework */,
 				01514F0E133E2C0700BC7179 /* iCatcher */,
 				01514FCB133E667F00BC7179 /* Tests */,
 				01514F08133E2C0700BC7179 /* Frameworks */,
@@ -207,10 +219,10 @@
 		01514F08133E2C0700BC7179 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				01514FFA133E869B00BC7179 /* MacRuby.framework */,
 				01514F65133E64EF00BC7179 /* Growl.framework */,
 				01514F66133E64EF00BC7179 /* Sparkle.framework */,
 				01514F09133E2C0700BC7179 /* Cocoa.framework */,
-				01514F0B133E2C0700BC7179 /* MacRuby.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -236,13 +248,14 @@
 		01514F17133E2C0700BC7179 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				0171209513B7E0F40070E05B /* SinatraTemplates */,
 				01514FE1133E682700BC7179 /* StaticBinaries */,
 				01514FD4133E668C00BC7179 /* Sparkle */,
 				01514FDB133E669700BC7179 /* Growl */,
 				01514F69133E653700BC7179 /* Images */,
-				01514FC6133E665100BC7179 /* SinatraTemplates */,
 				01514FC1133E658F00BC7179 /* iCatcher-Info.plist */,
 				01514FBC133E658600BC7179 /* MainMenu.xib */,
+				01604F38136759170057D856 /* Rakefile.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -260,6 +273,7 @@
 		01514F2A133E2C3500BC7179 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				01514FFC133FEFC900BC7179 /* AppDelegate.rb */,
 				01514F4B133E64BE00BC7179 /* ApplicationController.rb */,
 				01514F4A133E64BE00BC7179 /* ActiveStatusItem.rb */,
 				01514F4C133E64BE00BC7179 /* CacheReader.rb */,
@@ -271,6 +285,7 @@
 				01514F57133E64CB00BC7179 /* PVRSearch.rb */,
 				01514F58133E64CB00BC7179 /* SinatraApp.rb */,
 				01514F59133E64CB00BC7179 /* TaskWrapper.rb */,
+				0171209313B7DFE90070E05B /* AppleScripter.rb */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -338,22 +353,13 @@
 			name = ColouredMenuBarAnimation;
 			sourceTree = "<group>";
 		};
-		01514FC6133E665100BC7179 /* SinatraTemplates */ = {
-			isa = PBXGroup;
-			children = (
-				01514FC7133E665100BC7179 /* feed.erb */,
-				01514FC8133E665100BC7179 /* index.erb */,
-			);
-			name = SinatraTemplates;
-			path = iCatcherApp/SinatraTemplates;
-			sourceTree = SOURCE_ROOT;
-		};
 		01514FCB133E667F00BC7179 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
 				01514FCC133E667F00BC7179 /* media_scanner_test.rb */,
 				01514FCD133E667F00BC7179 /* pvr_search_test.rb */,
 				01514FCE133E667F00BC7179 /* recache_test.rb */,
+				0171209A13B7E45B0070E05B /* feed_test.rb */,
 				01514FCF133E667F00BC7179 /* run_suite.rb */,
 			);
 			name = Tests;
@@ -391,6 +397,17 @@
 			);
 			name = StaticBinaries;
 			path = iCatcherApp/StaticBinaries;
+			sourceTree = SOURCE_ROOT;
+		};
+		0171209513B7E0F40070E05B /* SinatraTemplates */ = {
+			isa = PBXGroup;
+			children = (
+				0171209613B7E0F40070E05B /* feed.erb */,
+				0171209713B7E0F40070E05B /* index.erb */,
+				0171209C13B7EAEE0070E05B /* all_feeds.erb */,
+			);
+			name = SinatraTemplates;
+			path = iCatcherApp/SinatraTemplates;
 			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
@@ -514,8 +531,6 @@
 				01514FBA133E657B00BC7179 /* icatcher_menubar_icon_black.png in Resources */,
 				01514FBB133E657B00BC7179 /* icatcher_menubar_icon_white.png in Resources */,
 				01514FBD133E658600BC7179 /* MainMenu.xib in Resources */,
-				01514FC9133E665100BC7179 /* feed.erb in Resources */,
-				01514FCA133E665100BC7179 /* index.erb in Resources */,
 				01514FD9133E668C00BC7179 /* dsa_pub.pem in Resources */,
 				01514FDD133E669700BC7179 /* Growl Registration Ticket.growlRegDict in Resources */,
 				01514FE7133E682700BC7179 /* AtomicParsley in Resources */,
@@ -523,6 +538,13 @@
 				01514FE9133E682700BC7179 /* flvstreamer in Resources */,
 				01514FEA133E682700BC7179 /* get_iplayer in Resources */,
 				01514FEB133E682700BC7179 /* TagLib.bundle in Resources */,
+				01514FFD133FEFC900BC7179 /* AppDelegate.rb in Resources */,
+				01604F39136759170057D856 /* Rakefile.xib in Resources */,
+				0171209413B7DFE90070E05B /* AppleScripter.rb in Resources */,
+				0171209813B7E0F40070E05B /* feed.erb in Resources */,
+				0171209913B7E0F40070E05B /* index.erb in Resources */,
+				0171209B13B7E45B0070E05B /* feed_test.rb in Resources */,
+				0171209D13B7EAEE0070E05B /* all_feeds.erb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -576,6 +598,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -587,6 +610,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iCatcherApp/Classes/iCatcher-Prefix.pch";
 				INFOPLIST_FILE = "iCatcherApp/Resources/iCatcher-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -596,6 +620,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -607,6 +632,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "iCatcherApp/Classes/iCatcher-Prefix.pch";
 				INFOPLIST_FILE = "iCatcherApp/Resources/iCatcher-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -615,12 +641,14 @@
 		01514F26133E2C0700BC7179 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 			};
 			name = Debug;
 		};
 		01514F27133E2C0700BC7179 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 			};
 			name = Release;
 		};

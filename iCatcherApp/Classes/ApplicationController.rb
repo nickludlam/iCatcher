@@ -8,6 +8,21 @@
 framework 'Cocoa'
 framework 'Sparkle'
 
+# Require all our dependencies here for convenience
+require 'rubygems'
+require 'control_tower'
+#require 'rack'
+require 'rack/handler/control_tower'
+require 'sinatra'
+require 'htmlentities'
+require 'json'
+
+# Ruby stdlib
+require 'erb'
+require 'time'
+require 'singleton'
+
+
 # Append our bundled gems to the search path
 bundled_gem_path = NSBundle.mainBundle.resourcePath + "/gems/"
 Dir.glob("#{bundled_gem_path}/*").each do |dir|
@@ -16,52 +31,45 @@ Dir.glob("#{bundled_gem_path}/*").each do |dir|
 end
 
 # Our bundled gems
-require 'rubygems'
-require 'control_tower'
-require 'rack/handler/control_tower'
-require 'sinatra'
-require 'erb'
-require 'htmlentities'
-require 'json'
 
-# Ruby stdlib
-require 'erb'
-require 'time'
 
 # Some globals for configuration
 $homeDirectory = NSHomeDirectory()
-$downloadDirectory = "#{$homeDirectory}/Music/iCatcherDownloads"
-$musicDirectory = "#{$homeDirectory}/Music"
-$downloaderConfigDirectory = "#{$homeDirectory}/.get_iplayer"
+$musicDirectory = "#{$homeDirectory}/Music/"
+$downloadDirectory = "#{$homeDirectory}/Music/iCatcherDownloads/"
+$downloaderConfigDirectory = "#{$homeDirectory}/.icatcher/"
 $downloaderSearchDirectory = "#{$downloaderConfigDirectory}/pvr/"
+
+$sinatraViewsPath = NSBundle.mainBundle.resourcePath
 
 # Web config
 $webserverPort = 8010
 $webserverURL = "http://localhost:#{$webserverPort}/"
-$sinatraViewsPath = NSBundle.mainBundle.resourcePath + '/SinatraTemplates/views'
 
 # Periodicity
 $downloadTimerInterval = 6 * 60
 
 
+MODE_IDLE = 
+
 class ApplicationController
 
+  VALID_MODES = [ :idle, :updating_cache, :downloading ]
+  VALID_MODES_DESCRIPTION = { :idle => "Idle", :updating_cache => "Updating data", :downloading => "Downloading" }
+  
   attr_writer :taskInspectorWindow
 	attr_writer :taskInspectorTextView
   attr_writer :preferencesWindow
   
   def awakeFromNib
+    #
 		@defaults = NSUserDefaults.standardUserDefaults
-
+    setupStatusBar()
     checkAndCreateRequiredDirectories()
 		startServer()
-    setupStatusBar()
+    setMode(:idle)
   end
-  
-  def applicationDidFinishLaunching(a_notification)
-    # Insert code here to initialize your application
-  end
-  
+    
   def setupStatusBar
     @status_bar = NSStatusBar.systemStatusBar()
     @status_item = @status_bar.statusItemWithLength(NSVariableStatusItemLength)
@@ -118,23 +126,30 @@ class ApplicationController
     NSApplication.sharedApplication.activateIgnoringOtherApps true
     @taskInspectorWindow.fadeInAndMakeKeyAndOrderFront(true)
   end
+  
+  def setMode(mode)
+    
+      #raise unless VALID_MODES.index?(mode)
+    @activityPhaseMenu.title = ("Status: %s" % VALID_MODES_DESCRIPTION[mode])
+  end
 	
 	def startTaskMode(mode)
-		Logger.debug("Starting task mode #{mode}")
+		@taskMode = mode
+
+		Logger.debug("Starting task mode #{@taskMode}")
 		@status_item.view.startAnimation()
 
 		# By default, turn off all the menu items which could interfere
 		disableTaskWrapperMenuItems()
 
-		if mode == "updateCache"
-			@forceCacheUpdateMenuItem.enabled = true
-			@forceCacheUpdateMenuItem.title = "Cancel update"
-		elsif mode == "updateCacheAndDownloadPid"
-			
-		end
+    if mode == "idle"
+      
+    elsif mode == "updateCache"
 		
-		@taskMode = mode
-
+    elsif mode == "updateCacheAndDownloadURL"
+		
+    end
+    
 		# Clear the task inspector contents
 		@taskInspectorTextView.textStorage.mutableString.setString("")
 
@@ -146,9 +161,7 @@ class ApplicationController
 		Logger.debug("endTaskMode #{@taskMode}")
 
 		if @taskMode == "updateCache"
-			@forceCacheUpdateMenuItem.title = "Force cache update"
-			
-		elsif @taskMode == "updateCacheAndDownloadPid"
+		elsif @taskMode == "updateCacheAndDownloadURL"
 			findAndDownloadPid(@pidToDownload)
 		end
 		
@@ -182,7 +195,7 @@ class ApplicationController
 	###########################################################
 	
   def validateMenuItem(menuItem)
-    Logger.debug("Validating...")
+    Logger.debug("Validating #{menuItem.title}")
     true
   end
 
@@ -193,6 +206,7 @@ class ApplicationController
     #formatter.dateFormat = "HH:mm"
     #@timeLeftMenuItem.title = "Dummy title"
     #@timeLeftMenuItem.title = "Next run: #{formatter.stringFromDate(fireDate)}"
+    
     
     @status_item.view.showHighlightImage = true
     @status_item.view.setNeedsDisplay(true)
@@ -205,20 +219,22 @@ class ApplicationController
   end
   
   
+  
   # ActiveStatusItem delegate methods
   ###########################################################
   
   def urlAndTitleDropped(url, title)
+    @urlToDownload = url
 		Logger.debug("URL is #{url}")
 		
 		if url =~ /^http:\/\/www\.bbc\.co\.uk\/iplayer\/episode\//
 			components = url.split("/")
 			pid = components[5]
 			findAndDownloadPid(pid)
-        elsif url =~ /^http:\/\/www\.bbc\.co\.uk\/programmes\//
-            components = url.split("/")
-            pid = components[4]
-            findAndDownloadPid(pid)
+    elsif url =~ /^http:\/\/www\.bbc\.co\.uk\/programmes\//
+      components = url.split("/")
+      pid = components[4]
+      findAndDownloadPid(pid)
 		end
 		
     showTaskInspectorWindow()
@@ -303,15 +319,18 @@ class ApplicationController
       if index
         @tw = TaskWrapper.instance
         @tw.delegate = self
-        startTaskMode("downloadPid")
+        startTaskMode("downloadPID")
         @tw.downloadFromIndex(index, type, $musicDirectory)
       else
-        Logger.debug("Problem locating index for PID #{pid}")
+        @tw = TaskWrapper.instance
+        @tw.delegate = self
+        startTaskMode("downloadURL")
+        @tw.downloadFromURL(@urlToDownload, $musicDirectory)
+        Logger.debug("Attepmting direct URL download")
       end
-      
 		rescue RuntimeError => e
 			Logger.debug("Got an exception #{e}")
-			startTaskMode("updateCacheAndDownloadPid")
+			startTaskMode("updateCacheAndDownloadURL")
 			forceCacheUpdate()
 		end
 	end

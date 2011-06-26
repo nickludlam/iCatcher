@@ -19,6 +19,29 @@ class TaskWrapper
 	  return @task != nil
 	end
 	
+  def downloadFromURL(url, directory = $downloadDirectory)
+    Logger.debug("Starting downloader with URL #{url}")
+    
+		@task = NSTask.alloc.init
+		downloaderPath = NSBundle.mainBundle.pathForResource('get_iplayer', ofType:nil)
+    @task.setLaunchPath(downloaderPath)
+    
+    args = []
+    args << "--hash" # Print progress
+    args << "--url"
+    args << url
+		args << "--force"
+		args << "--modes=flashaachigh,flashaacstd"
+    args << "--debug" if @debug
+    
+    bundled_executable_path = NSBundle.mainBundle.resourcePath
+    environmentDictionary = { "PATH" => "#{bundled_executable_path}:/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME" => $homeDirectory,
+      "IPLAYER_OUTDIR" => $downloadDirectory }
+    
+    invokeGetIplayerWithArgs(args, andEnvironment:environmentDictionary)
+  end
+  
 	def runPvrSearch(pvrSearchFilename)
     Logger.debug("Starting downloader against #{pvrSearchFilename}")
     
@@ -47,7 +70,6 @@ class TaskWrapper
 	
 	def downloadFromIndex(index, type = "radio", directory = $downloadDirectory)
     Logger.debug("Too busy to update the cache") && return if busy?
-
     Logger.debug("Starting download of index #{index}")
     
 		@task = NSTask.alloc.init
@@ -55,6 +77,11 @@ class TaskWrapper
     @task.setLaunchPath(downloaderPath)
 
     args = []
+    
+    # Custom profile dir to not interfere with the regular get_iplayer 
+    args << "--profile-dir"
+    args << $downloaderConfigDirectory
+    
     if type == "radio"
       args << "--type"
       args << "radio"
@@ -66,6 +93,7 @@ class TaskWrapper
       args << "--modes"
       args << "flashvhigh,flashhigh"
     end
+    
     #args << "--thumb" # We want thumbnails of images down as well
     args << "--thumbsize=640" # Big thumbs!
     args << "--hash" # Print progress
@@ -156,7 +184,8 @@ class TaskWrapper
   end
 
   def taskTerminated(notification = nil)
-    Logger.debug("Task finished")    
+    Logger.debug("Task finished with notification #{notification}")    
+    Logger.debug("Exit code is #{@task.terminationStatus}")    
     nc = NSNotificationCenter.defaultCenter
     nc.removeObserver(self)
     @task = nil

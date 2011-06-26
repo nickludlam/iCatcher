@@ -10,9 +10,6 @@
 # do that here too.
 framework 'Cocoa'
 
-# Require all our dependencies here for convenience
-require 'singleton'
-
 # Add in our custom TagLib bundle
 require "TagLib.bundle"
 raise unless TagLib # Bail unless it's loaded properly

@@ -7,64 +7,71 @@
 class CacheReader
   include Singleton
 
-	attr_accessor :last_cache_update
+  attr_accessor :last_cache_update
 	
-	def initialize
-    @max_cache_age = 60 * 60 * 2
+  def initialize
+    @max_cache_age = 60 * 60 * 6
   	
-		@radio_cache_by_pid = {}
-  	@tv_cache_by_pid = {}
+    @radio_cache_by_pid = {}
+    @tv_cache_by_pid = {}
 		
-		@parsed_radio_cache_mtime = nil
-		@parsed_tv_cache_mtime = nil
+    @parsed_radio_cache_mtime = nil
+    @parsed_tv_cache_mtime = nil
 		
-  	@cache_format = %w/index type name pid available episode seriesnum episodenum versions duration desc channel categories thumbnail timeadded guidance web/
-	end
+    @cache_format = %w/index type name pid available episode seriesnum episodenum versions duration desc channel categories thumbnail timeadded guidance web/
+  end
 
-	def populateCachesIfRequired
-   	if @radio_cache_by_pid.empty? || (@parsed_radio_cache_mtime && @parsed_radio_cache_mtime < File.mtime(cachePathForType("radio")))
+  def populateCachesIfRequired
+    if @radio_cache_by_pid.empty?
 			parseCache("radio")
-		end
+    end
 		
-	  if @tv_cache_by_pid.empty? || (@parsed_radio_cache_mtime && @parsed_radio_cache_mtime < File.mtime(cachePathForType("tv")))
+    if @tv_cache_by_pid.empty?
 			parseCache("tv")
-		end
-	end
+    end
+  end
 
   def parseCache(type = "radio")
-		Logger.debug("Parsing #{type} cache")
-		cache_path = cachePathForType(type)
+    Logger.debug("Parsing #{type} cache")
+    cache_path = cachePathForType(type)
 		
-		pid_index_number = @cache_format.index("pid")		
-		cache_hash = {}
+    pid_index_number = @cache_format.index("pid")		
+    cache_hash = {}
 		
-		File.open(cache_path) do |f|
-		  lines = f.readlines()
-			comments = lines.shift
-			lines.each do |line|
-				elements = line.split("|")
-				pid = elements[pid_index_number]
-				cache_hash[pid] = elements
-			end
-		end
+    File.open(cache_path) do |f|
+      lines = f.readlines()
+      comments = lines.shift
+      lines.each do |line|
+        elements = line.split("|")
+        pid = elements[pid_index_number]
+        cache_hash[pid] = elements
+      end
+    end
 		
-		# Update the right hash
-		if type == "radio"
-		  @radio_cache_by_pid = cache_hash
-			@parsed_radio_cache_mtime = File.mtime(cache_path)
-		else
-		  @tv_cache_by_pid = cache_hash
-			@parsed_tv_cache_mtime = File.mtime(cache_path)
-		end
+    # Update the right hash
+    if type == "radio"
+      @radio_cache_by_pid = cache_hash
+      @parsed_radio_cache_mtime = File.mtime(cache_path)
+    else
+      @tv_cache_by_pid = cache_hash
+      @parsed_tv_cache_mtime = File.mtime(cache_path)
+    end
 		
-		Logger.debug("Finished cache parse. Have #{@radio_cache_by_pid.keys.length} radio entries, and #{@tv_cache_by_pid.keys.length} tv entries")
-	end
+    Logger.debug("Finished cache parse. Have #{@radio_cache_by_pid.keys.length} radio entries, and #{@tv_cache_by_pid.keys.length} tv entries")
+  end
 
   # For external invocation from ApplicationController
   def testCache(type = "radio")
 		cache_path = cachePathForType(type)
-		raise CacheNotFoundException, "Unable to locate #{cache_path}" unless File.exist?(cache_path)
-		raise CacheStaleException, "Cache #{cache_path} is too old" unless Time.now - File.mtime(cache_path) < @max_cache_age
+    unless File.exist?(cache_path)
+      raise CacheNotFoundException, "Unable to locate #{cache_path}"
+    end
+    
+    cache_mtime = File.mtime(cache_path)
+    
+    unless Time.now - cache_mtime < @max_cache_age
+      raise CacheStaleException, ("Cache #{cache_path} is too old (%d - %d < %d)" % [Time.now.to_i, cache_mtime, @max_cache_age]) 
+    end
 	end
  	
 	def cachePathForType(type)

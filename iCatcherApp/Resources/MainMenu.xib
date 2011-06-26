@@ -40,6 +40,9 @@
 			<object class="NSCustomObject" id="1050">
 				<string key="NSClassName">NSApplication</string>
 			</object>
+			<object class="NSCustomObject" id="656043942">
+				<string key="NSClassName">AppDelegate</string>
+			</object>
 			<object class="NSCustomObject" id="130186834">
 				<string key="NSClassName">ApplicationController</string>
 			</object>
@@ -778,7 +781,7 @@
 				<string key="NSWindowClass">FadeWindow</string>
 				<nil key="NSViewClass"/>
 				<object class="NSView" key="NSWindowView" id="439893737">
-					<nil key="NSNextResponder"/>
+					<reference key="NSNextResponder"/>
 					<int key="NSvFlags">256</int>
 					<object class="NSMutableArray" key="NSSubviews">
 						<bool key="EncodedWithXMLCoder">YES</bool>
@@ -797,6 +800,8 @@
 											<int key="NSvFlags">2322</int>
 											<string key="NSFrameSize">{465, 14}</string>
 											<reference key="NSSuperview" ref="854444578"/>
+											<reference key="NSWindow"/>
+											<reference key="NSNextKeyView" ref="581385817"/>
 											<object class="NSTextContainer" key="NSTextContainer" id="371573860">
 												<object class="NSLayoutManager" key="NSLayoutManager">
 													<object class="NSTextStorage" key="NSTextStorage">
@@ -892,6 +897,7 @@
 									</object>
 									<string key="NSFrame">{{1, 1}, {465, 360}}</string>
 									<reference key="NSSuperview" ref="204545846"/>
+									<reference key="NSWindow"/>
 									<reference key="NSNextKeyView" ref="876057187"/>
 									<reference key="NSDocView" ref="876057187"/>
 									<object class="NSColor" key="NSBGColor">
@@ -908,8 +914,10 @@
 								<object class="NSScroller" id="581385817">
 									<reference key="NSNextResponder" ref="204545846"/>
 									<int key="NSvFlags">256</int>
-									<string key="NSFrame">{{466, 1}, {15, 345}}</string>
+									<string key="NSFrame">{{466, 1}, {15, 360}}</string>
 									<reference key="NSSuperview" ref="204545846"/>
+									<reference key="NSWindow"/>
+									<reference key="NSNextKeyView"/>
 									<reference key="NSTarget" ref="204545846"/>
 									<string key="NSAction">_doScroller:</string>
 									<double key="NSCurValue">1</double>
@@ -920,6 +928,8 @@
 									<int key="NSvFlags">-2147483392</int>
 									<string key="NSFrame">{{-100, -100}, {87, 18}}</string>
 									<reference key="NSSuperview" ref="204545846"/>
+									<reference key="NSWindow"/>
+									<reference key="NSNextKeyView" ref="854444578"/>
 									<int key="NSsFlags">1</int>
 									<reference key="NSTarget" ref="204545846"/>
 									<string key="NSAction">_doScroller:</string>
@@ -929,18 +939,22 @@
 							</object>
 							<string key="NSFrame">{{-1, -1}, {482, 362}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
-							<reference key="NSNextKeyView" ref="854444578"/>
+							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="211643205"/>
 							<int key="NSsFlags">18</int>
 							<reference key="NSVScroller" ref="581385817"/>
 							<reference key="NSHScroller" ref="211643205"/>
 							<reference key="NSContentView" ref="854444578"/>
 						</object>
 					</object>
-					<string key="NSFrameSize">{480, 360}</string>
+					<string key="NSFrame">{{7, 11}, {480, 360}}</string>
+					<reference key="NSSuperview"/>
+					<reference key="NSWindow"/>
+					<reference key="NSNextKeyView" ref="204545846"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1680, 1028}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMaxSize">{1e+13, 1e+13}</string>
-				<string key="NSFrameAutosaveName">taskInspector</string>
+				<string key="NSFrameAutosaveName">TaskInspector</string>
 			</object>
 		</object>
 		<object class="IBObjectContainer" key="IBDocument.Objects">
@@ -1281,6 +1295,14 @@
 						<reference key="destination" ref="876057187"/>
 					</object>
 					<int key="connectionID">386</int>
+				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBOutletConnection" key="connection">
+						<string key="label">delegate</string>
+						<reference key="source" ref="1050"/>
+						<reference key="destination" ref="656043942"/>
+					</object>
+					<int key="connectionID">392</int>
 				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
@@ -1932,6 +1954,11 @@
 						<reference key="object" ref="876057187"/>
 						<reference key="parent" ref="204545846"/>
 					</object>
+					<object class="IBObjectRecord">
+						<int key="objectID">391</int>
+						<reference key="object" ref="656043942"/>
+						<reference key="parent" ref="0"/>
+					</object>
 				</object>
 			</object>
 			<object class="NSMutableDictionary" key="flattenedProperties">
@@ -2084,6 +2111,7 @@
 					<string>377.IBPluginDependency</string>
 					<string>378.IBPluginDependency</string>
 					<string>379.IBPluginDependency</string>
+					<string>391.IBPluginDependency</string>
 					<string>5.IBPluginDependency</string>
 					<string>5.ImportedFromIB2</string>
 					<string>56.IBPluginDependency</string>
@@ -2268,6 +2296,7 @@
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
+					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
 					<string>com.apple.InterfaceBuilder.CocoaPlugin</string>
 					<integer value="1"/>
@@ -2315,11 +2344,19 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">388</int>
+			<int key="maxID">392</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
 				<bool key="EncodedWithXMLCoder">YES</bool>
+				<object class="IBPartialClassDescription">
+					<string key="className">AppDelegate</string>
+					<string key="superclassName">NSObject</string>
+					<object class="IBClassDescriptionSource" key="sourceIdentifier">
+						<string key="majorKey">IBProjectSource</string>
+						<string key="minorKey">./Classes/AppDelegate.h</string>
+					</object>
+				</object>
 				<object class="IBPartialClassDescription">
 					<string key="className">ApplicationController</string>
 					<string key="superclassName">NSObject</string>

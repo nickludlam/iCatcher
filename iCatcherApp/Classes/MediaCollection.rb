@@ -31,7 +31,7 @@ class MediaItem
     @title = "" unless @title
 		
 		@description = tags.comment || ""
-		@pub_date = File.ctime(@filepath).rfc2822
+		@pub_date = File.ctime(@filepath).strftime("%a, %d %b %Y %T %z")
 		@author = tags.artist || ""
 		
 		collection_name = File.basename(File.dirname(@filepath))

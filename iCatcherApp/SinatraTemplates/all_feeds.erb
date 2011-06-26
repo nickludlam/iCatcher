@@ -1,0 +1,10 @@
+<html>
+<head>
+<title>iCatcher feeds</title>
+</head>
+<body>
+<% @dirs.each do |d| %>
+  <p><a href="/feeds/<%= File.basename(d) %>.xml"><%= File.basename(d) %></a></p>
+<% end %>
+</body>
+</html>

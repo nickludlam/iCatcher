@@ -10,7 +10,7 @@ class MediaScanner
 		Logger.debug("listMedia in #{directory}")
     # What are we scanning for? This is a glob match for audio/video files
     if type == "audio" || type == "radio"
-      suffix = "{aac,mp3}"
+      suffix = "{aac,mp3,m4a}"
     elsif type == "video" || type == "tv"
       suffix = "mp4"
     else
@@ -57,7 +57,7 @@ class MediaScanner
     collection.title = collection_name.gsub(/_/, " ").strip
     collection.author = "iCatcher"
 		collection.link = "http://localhost:#{$webserverPort}/?feed=#{collection_name}"
-    collection.pub_date = Time.now.rfc2822
+    collection.pub_date = Time.now.strftime("%a, %d %b %Y %T %z")
 
     files = []
     listMedia(directory, type, age) do |file|
@@ -74,5 +74,4 @@ class MediaScanner
   
     collection
   end
-
 end
