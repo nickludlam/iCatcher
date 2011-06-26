@@ -12,6 +12,11 @@
     <enclosure url="<%= mi.url %>" length="<%= mi.size %>" type="<%= mi.mime_type %>" />
     <guid><%= mi.url %></guid>
     <pubDate><%= mi.pub_date %></pubDate>
+    <description>
+<![CDATA[
+<%= mi.description %>
+]]>
+    </description>
   </item>
 <% end %>
 </channel>
