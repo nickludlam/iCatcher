@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
+  <channel>
+    <title>iCatcher Appcast</title>
+    <link>http://icatcherapp.com/releases/appcast.xml</link>
+    <description>iCatcher Releases</description>
+    <language>en</language>
+    
+    <item>
+      <title>iCatcher <%= version %></title>
+      <description><![CDATA[
+        <html>
+        <body>
+        <style>
+          body {
+            font-size: medium;
+          }
+          h1 {
+            font-size: large;
+          }
+          li {
+            margin: 0.2em 0;
+          }
+        </style>
+        <h1>iCatcher <%= version %></h1>
+        <ul>
+<% updates.each do |e| -%>
+          <li><%= e %></li>
+<% end -%>
+        </ul>
+        </body>
+        </html>
+      ]]></description>
+      <pubDate><%= ftime %></pubDate>
+      <enclosure url="http://icatcherapp.com/releases/<%= package_fname %>"
+                  sparkle:version="<%= version %>" length="<%= fsize %>" type="application/octet-stream"
+                  sparkle:dsaSignature="<%= dsa_signature %>"/>
+    </item>
+    
+  </channel>
+</rss>

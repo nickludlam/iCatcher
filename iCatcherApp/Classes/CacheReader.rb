@@ -20,13 +20,31 @@ class CacheReader
 		
     @cache_format = %w/index type name pid available episode seriesnum episodenum versions duration desc channel categories thumbnail timeadded guidance web/
   end
+  
+  def cachePathForType(type)
+		File.join($downloaderConfigDirectory, "#{type}.cache")
+	end
+
+  def cacheEmpty?(type = "radio")
+    if type == "radio"
+      return @radio_cache_by_pid.empty?
+    else
+      return @tv_cache_by_pid.empty?
+    end
+  end
+  
+  def cacheStale?(type = "radio")
+    cache_path = cachePathForType(type)
+    cache_age = File.mtime(cache_path)
+    return (Time.now - cache_age) > @max_cache_age
+  end
 
   def populateCachesIfRequired
-    if @radio_cache_by_pid.empty?
+    if cacheEmpty?("radio")
 			parseCache("radio")
     end
 		
-    if @tv_cache_by_pid.empty?
+    if cacheEmpty?("tv")
 			parseCache("tv")
     end
   end
@@ -74,10 +92,6 @@ class CacheReader
     end
 	end
  	
-	def cachePathForType(type)
-		File.join($downloaderConfigDirectory, "#{type}.cache")
-	end
-
   # Search methods
 	
   def programmeIndexForPID(pid)

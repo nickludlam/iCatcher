@@ -21,14 +21,15 @@ class MediaItem
     @filepath = fpath
 		tags = TagLib.alloc.initWithFileAtPath(@filepath)
 		
-  	if tags.title.index(tags.album) != nil
-			@title = tags.title
-		else
-			@title = tags.album + " : " + tags.title
+  	if tags.title
+      if tags.title.index(tags.album) != nil
+			  @title = tags.title
+		  else
+			  @title = tags.album + " : " + tags.title
+      end
+    else
+      @title = ""
 		end
-    
-    # Safeguard nil values
-    @title = "" unless @title
 		
 		@description = tags.comment || ""
 		@pub_date = File.ctime(@filepath).strftime("%a, %d %b %Y %T %z")
@@ -36,7 +37,7 @@ class MediaItem
 		
 		collection_name = File.basename(File.dirname(@filepath))
     file_basename = File.basename(@filepath)
-		@url = "http://localhost:#{$webserverPort}/files/#{collection_name}/#{file_basename}"
+		@url = "http://localhost:#{$webserverPort}/feeds/#{collection_name}/#{file_basename}"
   end
   
 	def file_suffix

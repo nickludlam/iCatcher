@@ -7,6 +7,9 @@
 #
 
 class AppDelegate
+  
+  attr_accessor :appController
+  
   def applicationDidFinishLaunching(a_notification)
     # Insert code here to initialize your application
     Logger.debug("appDidFinishLaunching")
@@ -25,6 +28,5 @@ class AppDelegate
     
     prefs.registerDefaults(prefs_dictionary)
   end
-
   
 end

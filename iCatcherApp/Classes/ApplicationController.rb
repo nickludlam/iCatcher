@@ -32,7 +32,6 @@ end
 
 # Our bundled gems
 
-
 # Some globals for configuration
 $homeDirectory = NSHomeDirectory()
 $musicDirectory = "#{$homeDirectory}/Music/"
@@ -50,7 +49,7 @@ $webserverURL = "http://localhost:#{$webserverPort}/"
 $downloadTimerInterval = 6 * 60
 
 
-MODE_IDLE = 
+#MODE_IDLE = 
 
 class ApplicationController
 
@@ -63,6 +62,9 @@ class ApplicationController
   
   def awakeFromNib
     #
+    appDelegate = NSApplication.sharedApplication.delegate
+    appDelegate.appController = self
+    
 		@defaults = NSUserDefaults.standardUserDefaults
     setupStatusBar()
     checkAndCreateRequiredDirectories()
@@ -235,6 +237,8 @@ class ApplicationController
       components = url.split("/")
       pid = components[4]
       findAndDownloadPid(pid)
+    else
+      Logger.debug("BAD URL")
 		end
 		
     showTaskInspectorWindow()
@@ -305,6 +309,14 @@ class ApplicationController
     Dir.mkdir(pvrSearchDownloadDirectory) unless File.directory?(pvrSearchDownloadDirectory)
   end
 	
+  def downloadFromURL(url)
+		@cr = CacheReader.instance
+    @cr.testCache("radio")
+    @cr.testCache("tv")
+    @tw.downloadFromURL(url, $musicDirectory)
+    
+  end
+  
 	def findAndDownloadPid(pid)
 		Logger.debug("Finding and downloading #{pid}")
 		@pidToDownload = pid

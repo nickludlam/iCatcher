@@ -81,6 +81,8 @@
 		0171209913B7E0F40070E05B /* index.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209713B7E0F40070E05B /* index.erb */; };
 		0171209B13B7E45B0070E05B /* feed_test.rb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209A13B7E45B0070E05B /* feed_test.rb */; };
 		0171209D13B7EAEE0070E05B /* all_feeds.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209C13B7EAEE0070E05B /* all_feeds.erb */; };
+		01A25BEC13C8EFC00037266B /* icatcher_icon_16.png in Resources */ = {isa = PBXBuildFile; fileRef = 01A25BEB13C8EFC00037266B /* icatcher_icon_16.png */; };
+		01A25C0113C9D2DC0037266B /* bad_url.erb in Resources */ = {isa = PBXBuildFile; fileRef = 01A25C0013C9D2DC0037266B /* bad_url.erb */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -180,6 +182,8 @@
 		0171209713B7E0F40070E05B /* index.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = index.erb; sourceTree = "<group>"; };
 		0171209A13B7E45B0070E05B /* feed_test.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = feed_test.rb; sourceTree = "<group>"; };
 		0171209C13B7EAEE0070E05B /* all_feeds.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = all_feeds.erb; sourceTree = "<group>"; };
+		01A25BEB13C8EFC00037266B /* icatcher_icon_16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icatcher_icon_16.png; path = iCatcherApp/Resources/Images/icatcher_icon_16.png; sourceTree = SOURCE_ROOT; };
+		01A25C0013C9D2DC0037266B /* bad_url.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bad_url.erb; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -294,6 +298,7 @@
 			isa = PBXGroup;
 			children = (
 				01514FB4133E657B00BC7179 /* icatcher_512.icns */,
+				01A25BEB13C8EFC00037266B /* icatcher_icon_16.png */,
 				01514FB5133E657B00BC7179 /* icatcher_icon_512.png */,
 				01514FB6133E657B00BC7179 /* icatcher_menubar_icon_black.png */,
 				01514FB7133E657B00BC7179 /* icatcher_menubar_icon_white.png */,
@@ -405,6 +410,7 @@
 				0171209613B7E0F40070E05B /* feed.erb */,
 				0171209713B7E0F40070E05B /* index.erb */,
 				0171209C13B7EAEE0070E05B /* all_feeds.erb */,
+				01A25C0013C9D2DC0037266B /* bad_url.erb */,
 			);
 			name = SinatraTemplates;
 			path = iCatcherApp/SinatraTemplates;
@@ -453,6 +459,7 @@
 		01514EFC133E2C0600BC7179 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastUpgradeCheck = 0420;
 				ORGANIZATIONNAME = "Berg London Ltd";
 			};
 			buildConfigurationList = 01514EFF133E2C0600BC7179 /* Build configuration list for PBXProject "iCatcher" */;
@@ -545,6 +552,8 @@
 				0171209913B7E0F40070E05B /* index.erb in Resources */,
 				0171209B13B7E45B0070E05B /* feed_test.rb in Resources */,
 				0171209D13B7EAEE0070E05B /* all_feeds.erb in Resources */,
+				01A25BEC13C8EFC00037266B /* icatcher_icon_16.png in Resources */,
+				01A25C0113C9D2DC0037266B /* bad_url.erb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

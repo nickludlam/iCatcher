@@ -4,6 +4,7 @@
 # Created by Nick Ludlam on 27/02/2011.
 # Copyright 2011 Tactotum Ltd. All rights reserved.
 
+require 'uri'
 
 class SinatraApp < Sinatra::Base
 
@@ -56,7 +57,27 @@ class SinatraApp < Sinatra::Base
     search = PVRSearch.new(params[:filename])
     search.update_attributes(params)
     search.to_json
-  end    
+  end
+
+  get('/feeds/:feed_name/:file_name') do 
+    path = File.join($downloadDirectory, params[:feed_name], params[:file_name])
+    send_file(path)
+  end
+
+  get('/instant-download') do
+    Logger.debug("INSTANT DOWNLOAD -> #{params.inspect}")
+    uri = URI.parse(params[:url])
+    if (uri.host == "www.bbc.co.uk" && uri.path =~ /^\/iplayer\/episode/)
+      appController = NSApplication.sharedApplication.delegate.appController
+      appController.urlAndTitleDropped(params[:url], "fake title")
+    else
+      erb :bad_url
+    end
+  end
+
+  get('/resources/:resource_name') do
+    send_file(NSBundle.mainBundle.resourcePath + "/" + params[:resource_name])
+  end
 
 end
 
