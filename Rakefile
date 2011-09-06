@@ -43,6 +43,16 @@ task :test do |t|
   Dir.glob('iCatcherApp/Tests/*_test.rb').each { |test| require test }
 end
 
+task :console do |t|
+  $:.unshift('iCatcherApp/Classes')
+  $:.unshift('iCatcherApp/StaticBinaries')
+  $:.unshift('./iCatcherApp/Frameworks')
+  require 'irb'
+  require 'ApplicationController'
+  ARGV.clear
+  IRB.start  
+end
+
 #task :package => [:clean, :build, :package_app] do |t|
 task :package => [:package_app] do |t|
 end

@@ -4,23 +4,23 @@
 # Created by Nick Ludlam on 29/12/2010.
 # Copyright 2010 Tactotum Ltd. All rights reserved.
 
+require 'json'
 
-framework 'Cocoa'
-framework 'Sparkle'
+framework 'Sparkle' unless $0 =~ /macirb/ or $0 =~ /macrake/
 
 # Require all our dependencies here for convenience
 require 'rubygems'
-require 'control_tower'
 #require 'rack'
 require 'rack/handler/control_tower'
-require 'sinatra'
 require 'htmlentities'
-require 'json'
 
 # Ruby stdlib
 require 'erb'
 require 'time'
 require 'singleton'
+
+require 'control_tower'
+require 'sinatra'
 
 
 # Append our bundled gems to the search path
@@ -58,7 +58,7 @@ class ApplicationController
   
   attr_writer :taskInspectorWindow
 	attr_writer :taskInspectorTextView
-  attr_writer :preferencesWindow
+  attr_writer :subscriptionsEditorWindow
   
   def awakeFromNib
     #
@@ -105,6 +105,7 @@ class ApplicationController
     addMenuItemToMenu(menu, "Open task inspector", "showTaskInspectorWindow")
     @forceCacheUpdateMenuItem = addMenuItemToMenu(menu, "Force cache update", "forceCacheUpdate")
     addMenuItemToMenu(menu, nil, nil)
+    addMenuItemToMenu(menu, "Show subscriptions", "showSubscriptionsWindow")
     #addMenuItemToMenu(menu, "Preferences", "showPreferencesWindow")
     #addMenuItemToMenu(menu, "Check for updates...", "checkForUpdates")
     addMenuItemToMenu(menu, "Quit", "quit")
@@ -128,6 +129,13 @@ class ApplicationController
     NSApplication.sharedApplication.activateIgnoringOtherApps true
     @taskInspectorWindow.fadeInAndMakeKeyAndOrderFront(true)
   end
+  
+  def showSubscriptionsWindow(sender = nil)
+    NSApplication.sharedApplication.activateIgnoringOtherApps true
+    @subscriptionsEditorWindow.makeKeyAndOrderFront(nil)
+    @subscriptionsEditorWindow.becomeActive
+  end
+
   
   def setMode(mode)
     
@@ -159,8 +167,14 @@ class ApplicationController
     nc.addObserver(self, selector:'endTaskMode:', name:'TaskWrapperTaskFinishedNotification', object:nil)
 	end
 	
-	def endTaskMode(sender = nil)
+	def endTaskMode(notification)
 		Logger.debug("endTaskMode #{@taskMode}")
+    Logger.debug("Notification is #{notification}")
+    taskInfo = notification.userInfo
+    
+    if taskInfo
+      Logger.debug("Task notifcation receieved with exit code #{taskInfo[:terminationStatus]}")
+    end
 
 		if @taskMode == "updateCache"
 		elsif @taskMode == "updateCacheAndDownloadURL"
@@ -359,4 +373,5 @@ class ApplicationController
 		end
 	end
   
+
 end

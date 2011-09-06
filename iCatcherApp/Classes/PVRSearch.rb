@@ -2,7 +2,7 @@ framework 'CoreFoundation'
 
 class PVRSearch
   
-  attr_accessor :filepath, :filename, :category, :channel, :type, :searches, :dirty, :unsaved
+  attr_accessor :filename, :displayname, :category, :channel, :type, :searches, :dirty, :unsaved
 
   def self.all
     prefs = NSUserDefaults.standardUserDefaults
@@ -10,11 +10,18 @@ class PVRSearch
     allSearches = []
     
     Dir.glob("#{$downloaderSearchDirectory}/*") do |file|
-      search = self.new(File.basename(file))
-      allSearches << search
+      searchObj = self.new
+      searchObj.load(File.basename(file))
+      allSearches << searchObj
     end
     
     allSearches
+  end
+
+  def self.load(filename)
+    searchObj = self.new
+    searchObj.load(filename)
+    searchObj
   end
   
   # INSTANCE METHODS ######################################
@@ -30,10 +37,13 @@ class PVRSearch
 	end
   
   def load(filename)
-    @filepath = File.join($downloaderSearchDirectory, @filename)
+    @filename = filename
     
     re = Regexp.new(/^(\w+)\s+(.*)/)
-    File.open(@filepath).each_line do |line|
+    
+    puts "No such file #{filepath}" unless File.exists?(filepath)
+    
+    File.open(filepath).each_line do |line|
       next if line.strip.length == 0
       matches = re.match(line)
       if matches[1] =~ /^search/
@@ -44,6 +54,11 @@ class PVRSearch
       end
     end
     
+    # In case we dont have one
+    if @displayname == nil
+      displayname = "Unnamed"
+    end
+    
     @unsaved = false
     @dirty = false        
   end
@@ -51,12 +66,12 @@ class PVRSearch
   def save
     Logger.debug "Writing to disk"
   
-    if (filepath == nil)
-      Logger.error "ERROR: NO filename for this PVRSearch"
-      return
+    if (@filename == nil)
+      Logger.error "ERROR: No filename for this PVRSearch"
+      return false
     end
   
-    return unless @dirty
+    return true unless @dirty
   
     File.open(filepath, 'w') do |f|
       f.write("category #{@category}\n") if @category != nil
@@ -68,24 +83,16 @@ class PVRSearch
         else
         f.write("search0 .*\n")
       end
+      
+      f.write("displayname #{@displayname}\n")
     end
   
     @unsaved = false
     @dirty = false
   end
 
-  
-  # Setters / Getters customisation
-  
-  def filename=(newFilename)
-    oldFilepath = @filepath
-    @filename = newFilename.gsub(/ +/, "_") # Filename cannot have space at this stage. URL encoding issues etc
-    @filepath = "#{$downloaderSearchDirectory}/#{@filename}"
-    
-    if !@unsaved && oldFilepath != @filepath
-      Logger.debug "Renaming #{oldFilepath} => #{@filepath}"
-      File.rename(oldFilepath, @filepath)
-    end
+  def filepath
+    "#{$downloaderSearchDirectory}/#{@filename}"
   end
   
   def searchesString
@@ -120,9 +127,9 @@ class PVRSearch
     newSearchesString
   end
   
-  def unlink
-    return if @unsaved
-    File.unlink(@filepath)
+  def delete
+    return false if @unsaved
+    return File.unlink(filepath)
   end
 
   # This is used to convert a PVRSearch to json representation

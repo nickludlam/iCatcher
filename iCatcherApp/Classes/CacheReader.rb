@@ -41,11 +41,11 @@ class CacheReader
 
   def populateCachesIfRequired
     if cacheEmpty?("radio")
-			parseCache("radio")
+      parseCache("radio")
     end
 		
     if cacheEmpty?("tv")
-			parseCache("tv")
+      parseCache("tv")
     end
   end
 

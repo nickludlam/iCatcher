@@ -26,7 +26,7 @@ class ActiveStatusItem < NSView
   
   def acceptsFirstResponder(); true; end
 
-  def mouseDown(event)
+  def mouseDown(event = nil)
     @showHighlightImage = true
     enclosingStatusItem.popUpStatusItemMenu(enclosingMenu)
     self.setNeedsDisplay(true)

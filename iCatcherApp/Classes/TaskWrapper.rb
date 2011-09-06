@@ -185,14 +185,17 @@ class TaskWrapper
 
   def taskTerminated(notification = nil)
     Logger.debug("Task finished with notification #{notification}")    
-    Logger.debug("Exit code is #{@task.terminationStatus}")    
+    Logger.debug("Exit code is #{@task.terminationStatus}")
+    taskFinishedMetadata = { 'terminationStatus' => @task.terminationStatus }
+      
+    NSNotificationCenter.defaultCenter.postNotificationName('TaskWrapperTaskFinishedNotification', object:taskFinishedMetadata)
+
     nc = NSNotificationCenter.defaultCenter
     nc.removeObserver(self)
+
     @task = nil
     @taskPipe = nil
     @taskPipeFileHandle = nil
-    
-    NSNotificationCenter.defaultCenter.postNotificationName('TaskWrapperTaskFinishedNotification', object:nil)
   end
 	
 	# Forcefully kill it if needed

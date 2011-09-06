@@ -20,10 +20,7 @@ class PVRSearchTest < Test::Unit::TestCase
   def teardown
   end
   
-  def test_store_and_retrieve
-	  filename = "__test_search.#{$$}"
-		filepath = "#{$downloaderSearchDirectory}/#{filename}"
-		
+  def test_store_and_retrieve		
 		category = "test_category"
 		channel = "test_channel"
 		search_term = "search term"
@@ -31,26 +28,28 @@ class PVRSearchTest < Test::Unit::TestCase
 	  p = PVRSearch.new
 		p.category = category
 		p.channel = channel
-		p.filename = filename
 		p.searchesString = search_term
+    
+    search_filename = p.filename # Find its filename
 		
 		assert p.unsaved == true, "New search should be marked as unsaved"
 		assert p.dirty == true, "New search should be marked as dirty"
 		
-		p.writeToDisk()
+		p.save()
 		
 		assert p.unsaved == false, "Saved search should be marked saved"
 		assert p.dirty == false, "Saved search should not be marked dirty"
 
-		q = PVRSearch.new(filepath)
+		q = PVRSearch.load(search_filename)
 		
-		assert q.filename == filename, "Filenames should match"
 		assert q.category == category, "Category should match"
 		assert q.channel == channel, "Channels should match"
 		assert q.searchesString == search_term, "Search terms should match"		
 		
-		q.removeFromDisk
+		q.delete()
 		
+    filepath = "#{$downloaderSearchDirectory}/#{search_filename}"
+
 		assert !File.exists?(filepath), "PVRSearch file should be gone"
   end
   
