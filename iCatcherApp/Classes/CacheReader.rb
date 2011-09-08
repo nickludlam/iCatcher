@@ -8,6 +8,11 @@ class CacheReader
   include Singleton
 
   attr_accessor :last_cache_update
+  attr_accessor :tv_channels
+  attr_accessor :tv_categories
+  attr_accessor :radio_channels
+  attr_accessor :radio_categories
+
 	
   def initialize
     @max_cache_age = 60 * 60 * 6
@@ -17,7 +22,13 @@ class CacheReader
 		
     @parsed_radio_cache_mtime = nil
     @parsed_tv_cache_mtime = nil
-		
+    
+    @radio_categories = {}
+    @radio_channels = {}
+
+    @tv_categories = {}
+    @tv_channels = {}
+
     @cache_format = %w/index type name pid available episode seriesnum episodenum versions duration desc channel categories thumbnail timeadded guidance web/
   end
   
@@ -54,6 +65,17 @@ class CacheReader
     cache_path = cachePathForType(type)
 		
     pid_index_number = @cache_format.index("pid")		
+    channel_index_number = @cache_format.index("channel")		
+    categories_index_number = @cache_format.index("categories")		
+    
+    if type == 'radio'
+      channels_hash = @radio_channels
+      categories_hash = @radio_categories
+    else
+      channels_hash = @tv_channels
+      categories_hash = @tv_categories
+    end
+
     cache_hash = {}
 		
     File.open(cache_path) do |f|
@@ -63,6 +85,17 @@ class CacheReader
         elements = line.split("|")
         pid = elements[pid_index_number]
         cache_hash[pid] = elements
+        
+        # Also get a hash of all categories
+        categories = elements[categories_index_number]
+        categories.split(",").each do |category|
+          categories_hash[category] = true
+        end
+        
+        # Same for channels
+        channel = elements[channel_index_number]
+        # Don't add these, as I think their superfluous
+        channels_hash[channel] = true unless channel == "Signed" || channel == "Audio Described"
       end
     end
 		
@@ -170,6 +203,27 @@ class CacheReader
 		  raise unless @cache_format.include?(field)
 		end
 	end
+  
+  def allChannels(type = 'radio')
+    populateCachesIfRequired
+    
+    if type == 'radio'
+      return @radio_channels
+      else
+      return @tv_channels
+    end
+  end
+  
+  def allCategories(type = 'radio')
+    populateCachesIfRequired
+    
+    if type == 'radio'
+      return @radio_categories
+    else
+      return @tv_categories
+    end
+  end
+  
 	
 end # end class
 

@@ -2,7 +2,7 @@ framework 'CoreFoundation'
 
 class PVRSearch
   
-  attr_accessor :filename, :displayname, :category, :channel, :type, :searches, :dirty, :unsaved
+  attr_accessor :filename, :displayname, :category, :channel, :type, :searches, :active, :dirty, :unsaved
 
   def self.all
     prefs = NSUserDefaults.standardUserDefaults
@@ -10,6 +10,7 @@ class PVRSearch
     allSearches = []
     
     Dir.glob("#{$downloaderSearchDirectory}/*") do |file|
+      NSLog "Parsing file #{file}"
       searchObj = self.new
       searchObj.load(File.basename(file))
       allSearches << searchObj
@@ -31,9 +32,11 @@ class PVRSearch
     @searches = {}
   
     # Allow blank init
+    @displayname = "New subscription"
     @type = search_type
     @unsaved = true
     @dirty = true
+    @active = "1"
 	end
   
   def load(filename)
@@ -49,8 +52,8 @@ class PVRSearch
       if matches[1] =~ /^search/
         next if matches[1] == "search0" && matches[2] == ".*" # Skip over the 'default' search0 term, as we equate an empty @searches with this
         @searches[matches[1]] = matches[2]
-        else
-        self.send(matches[1].to_s + '=', matches[2])
+      else
+        self.send(matches[1] + '=', matches[2])
       end
     end
     
@@ -76,7 +79,7 @@ class PVRSearch
     File.open(filepath, 'w') do |f|
       f.write("category #{@category}\n") if @category != nil
       f.write("channel #{@channel}\n") if @channel != nil
-      f.write("type radio\n")
+      f.write("type #{@type}\n")
     
       if searches.keys.count > 0
         searches.each_pair { |k,v| f.write("#{k} #{v}\n") }
@@ -84,7 +87,8 @@ class PVRSearch
         f.write("search0 .*\n")
       end
       
-      f.write("displayname #{@displayname}\n")
+      f.write("displayname #{@displayname}\n")      
+      f.write("active #{@active}\n")
     end
   
     @unsaved = false
@@ -132,29 +136,17 @@ class PVRSearch
     return File.unlink(filepath)
   end
 
-  # This is used to convert a PVRSearch to json representation
-  def to_hash
-    { 'filepath' => @filepath,
-      'filename' => @filename,
-      'category' => @category,
-      'channel' =>  @channel,
-      'type' =>     @type,
-      'searches' => searchesString(),
-      'dirty' =>    @dirty,
-      'unsaved' =>  @unsaved,
-      'isActive' => true
-    }
-  end
-
   def update_attributes(attribute_hash)
     self.filename = attribute_hash['filename'] if attribute_hash['filename']
     self.category = attribute_hash['category']
     self.channel = attribute_hash['channel']
     self.searchesString = attribute_hash['searches']
+    self.active = attribute_hash['active']
+    self.displayname = attribute_hash['displayname']
   end
   
   # Debug
-  
+
   def inspect
     output = "PVRSearch\n"
     output << " Filepath: #{filepath}\n"

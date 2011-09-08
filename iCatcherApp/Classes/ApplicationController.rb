@@ -59,6 +59,7 @@ class ApplicationController
   attr_writer :taskInspectorWindow
 	attr_writer :taskInspectorTextView
   attr_writer :subscriptionsEditorWindow
+  attr_writer :subscriptionsEditorController
   
   def awakeFromNib
     #
@@ -131,9 +132,9 @@ class ApplicationController
   end
   
   def showSubscriptionsWindow(sender = nil)
+    @subscriptionsEditorWindow.delegate.becomeActive
     NSApplication.sharedApplication.activateIgnoringOtherApps true
     @subscriptionsEditorWindow.makeKeyAndOrderFront(nil)
-    @subscriptionsEditorWindow.becomeActive
   end
 
   
