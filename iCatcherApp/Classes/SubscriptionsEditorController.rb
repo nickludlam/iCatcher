@@ -20,25 +20,20 @@ class SubscriptionsEditorController < NSWindowController
   attr_writer :categoryPopup
   attr_writer :searchTextField
   attr_writer :activeCheckbox
+  attr_writer :matchCountLabel
   
   attr_accessor :subscription
   
-  
-  def initialize
-    @subscriptions = []
-    @subscription = nil
-  end
-
   def becomeActive
-    if @subscriptions == nil || @subscriptions.length == 0
-      @subscriptions = PVRSearch.all.sort_by { |s| s.displayname }
-      @subscriptionsTable.reloadData
-    end
+    @subscriptions = PVRSearch.all.sort_by { |s| s.displayname }
+    @subscriptionsTable.reloadData
+    
+    @subscriptionsTable.selectRowIndexes(NSIndexSet.indexSetWithIndex(0), byExtendingSelection:false)
+    tableViewSelectionDidChange(nil)
     
     @mediaPopup.removeAllItems
     @mediaPopup.addItemWithTitle("Radio")
-    @mediaPopup.addItemWithTitle("TV")
-    
+    @mediaPopup.addItemWithTitle("TV")    
   end
   
   def setupPopups(subscription, media_type = 'radio')
@@ -72,7 +67,19 @@ class SubscriptionsEditorController < NSWindowController
     end
   end
   
-  def windowWillClose(notification)    
+  def windowShouldClose(notification)
+    @subscriptions.each do |s|
+      matches = CacheReader.instance.programmeIndexesForPVRSearch(s)
+      if matches.count > 20
+        showTooManyMatchesError(s.displayname, matches.count)
+        return false
+      end
+    end
+    
+    true
+  end
+  
+  def windowWillClose(notification)
     saveAllSearches
   end
   
@@ -85,6 +92,7 @@ class SubscriptionsEditorController < NSWindowController
   # Table methods
     
   def numberOfRowsInTableView(tableView)
+    return 0 if @subscriptions == nil
     @subscriptions.count
   end
   
@@ -106,6 +114,12 @@ class SubscriptionsEditorController < NSWindowController
     row = @subscriptionsTable.selectedRow
     # Exit now if there's nothing selected
     if row < 0
+      @nameTextField.stringValue = ""
+      @mediaPopup.selectItemWithTitle("Radio")
+      @categoryPopup.selectItemWithTitle("All")
+      @stationPopup.selectItemWithTitle("All")
+      @searchTextField.stringValue = ""
+      @activeCheckbox.stringValue = "1"
       return
     end
 
@@ -123,16 +137,19 @@ class SubscriptionsEditorController < NSWindowController
     end
     
     @activeCheckbox.stringValue = subscription.active
+    updateMatchCount()
   end
   
   def controlTextDidEndEditing(notification)
+    NSLog("Field did end editing")
     updateCurrentSubscription()
   end
   
   def controlTextDidChange(notification)
+    NSLog("Text changed!")
     updateCurrentSubscription()
   end
-  
+    
   def popupValueChanged(sender)
     if @mediaPopup.selectedItem.title.downcase != @subscription.type
       setupPopups(@subscription, @mediaPopup.selectedItem.title.downcase)
@@ -153,13 +170,25 @@ class SubscriptionsEditorController < NSWindowController
     
     if @searchTextField.stringValue.strip.length > 0
       @subscription.searchesString = @searchTextField.stringValue
+    else
+      @subscription.searchesString = nil
     end
     
     @subscription.active = @activeCheckbox.stringValue
     
+    NSLog @subscription.inspect
+    
     @subscriptionsTable.reloadData if tableNeedsRefresh
+    
+    updateMatchCount()
   end
   
+  def updateMatchCount
+    matches = CacheReader.instance.programmeIndexesForPVRSearch(@subscription)
+    @matchCountLabel.stringValue = "Matches %d programmes" % matches.length
+  end
+  
+  ###############################################
   # Sheeeeeet
   
   def addNewSubscription(sender)
@@ -175,7 +204,7 @@ class SubscriptionsEditorController < NSWindowController
     sheet.orderOut(self)
   end
   
-  def removeSearchAction(sender)
+  def removeSubscriptionAction(sender)
     row = @subscriptionsTable.selectedRow
     if row > -1
       alert = NSAlert.alertWithMessageText("Delete the subscription?",
@@ -186,12 +215,12 @@ class SubscriptionsEditorController < NSWindowController
       
       alert.beginSheetModalForWindow(@subscriptionsWindow,
                                      modalDelegate:self,
-                                     didEndSelector:"alertDidEnd:returnCode:contextInfo:",
+                                     didEndSelector:"removeSubscriptionAlertDidEnd:returnCode:contextInfo:",
                                      contextInfo:nil)
     end
-  end  
-  
-  def alertDidEnd(alert, returnCode:returnCode, contextInfo:contextInfo)
+  end
+
+  def removeSubscriptionAlertDidEnd(alert, returnCode:returnCode, contextInfo:contextInfo)
     if returnCode == 1
       row = @subscriptionsTable.selectedRow
       @subscriptions.delete(@subscription)
@@ -202,5 +231,20 @@ class SubscriptionsEditorController < NSWindowController
     end
   end
 
+  def showTooManyMatchesError(subscriptionDisplayName, match_count)
+    alert = NSAlert.alertWithMessageText("Too many matches for #{subscriptionDisplayName}",
+                                         defaultButton:"OK",
+                                         alternateButton:nil,
+                                         otherButton:nil,
+                                         informativeTextWithFormat:"Your subscription #{subscriptionDisplayName} currently matches #{match_count} programmes. There is a limit of 20 per subscription. Please make the search more specific")    
+    
+    alert.beginSheetModalForWindow(@subscriptionsWindow,
+                                   modalDelegate:self,
+                                   didEndSelector:"tooManyMatchesErrorDidEnd:returnCode:contextInfo:",
+                                   contextInfo:nil)
+  end
   
+  def tooManyMatchesErrorDidEnd(alert, returnCode:returnCode, contextInfo:contextInfo)
+  end
+
 end

@@ -138,7 +138,7 @@ class CacheReader
 		end
 	end
 	
-	def programmeIndexesForPVRSearch(pvrsearch, fields="name,episode,desc")
+	def programmeIndexesForPVRSearch(pvrsearch, fields="name,episode")
 		populateCachesIfRequired
 		
 		# Turn it into an array
@@ -152,10 +152,11 @@ class CacheReader
 			keys = @tv_cache_by_pid.keys
 			cache_lookup = @tv_cache_by_pid
 		end
-		
+
+    match = []
+
 		keys.each do |k|
 		  line_array = cache_lookup[k]
-			match = []
 			target_score = 0
 			match_criteria_score = 0
 			
@@ -172,7 +173,7 @@ class CacheReader
 			if pvrsearch.channel
 				target_score += 1
 			  if line_array[@cache_format.index("channel")].include?(pvrsearch.channel)
-					#Logger.debug("Matching on channel #{pvrsearch.channel}")
+          #Logger.debug("Matching on channel #{pvrsearch.channel}")
 					match_criteria_score += 1
 				end
 			end
@@ -184,7 +185,7 @@ class CacheReader
 					#Logger.debug("Processing search term #{s[1]}")
 				  fields.each do |field|
 						#Logger.debug("Processing search field #{field}")
-  				  if line_array[@cache_format.index(field)].include?(s[1])
+  				  if line_array[@cache_format.index(field)].downcase.include?(s[1].downcase)
 						  #Logger.debug("Term '#{s[1]}' found in field #{field} (#{line_array[@cache_format.index(field)]})")
 							match_criteria_score += 1
 							break
@@ -192,10 +193,14 @@ class CacheReader
 					end
 				end
 				
-				#Logger.debug("Finished search. Got #{match_criteria_score} / #{target_score}")
-				match << k if match_criteria_score == target_score
+				if match_criteria_score == target_score
+          Logger.debug("Finished search. Got #{match_criteria_score} / #{target_score} for search on #{pvrsearch.channel} / #{pvrsearch.category} / #{pvrsearch.searchesString}")
+          match << k
+        end
 			end # end pvrsearch.searches loop
 		end # end keys/cached programmes loop
+    
+    match
 	end # end def
 	
 	def checkFields(fields)

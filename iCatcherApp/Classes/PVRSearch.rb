@@ -83,7 +83,7 @@ class PVRSearch
     
       if searches.keys.count > 0
         searches.each_pair { |k,v| f.write("#{k} #{v}\n") }
-        else
+      else
         f.write("search0 .*\n")
       end
       
@@ -117,8 +117,11 @@ class PVRSearch
     
     @searches = {}
     
-    return if newSearchesString.strip.length == 0
-
+    if newSearchesString == nil || newSearchesString.strip.length == 0
+      @searches = {}
+      return
+    end
+    
     if split
       newSearchesString.split(" ").each do |word|
         suffix = searches.length
@@ -158,6 +161,9 @@ class PVRSearch
     @searches.each_pair do |k, v|
       output << "  | #{k} -> #{v}\n"
     end
+    
+    output << " Displayname: #{displayname}\n"
+    output << " Active: #{active}\n"
     output
   end
   
