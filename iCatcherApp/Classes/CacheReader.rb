@@ -51,11 +51,11 @@ class CacheReader
   end
 
   def populateCachesIfRequired
-    if cacheEmpty?("radio")
+    if cacheEmpty?("radio") || cacheStale?("radio")
       parseCache("radio")
     end
 		
-    if cacheEmpty?("tv")
+    if cacheEmpty?("tv") || cacheStale?("tv")
       parseCache("tv")
     end
   end
@@ -88,8 +88,10 @@ class CacheReader
         
         # Also get a hash of all categories
         categories = elements[categories_index_number]
-        categories.split(",").each do |category|
-          categories_hash[category] = true
+        if categories
+          categories.split(",").each do |category|
+            categories_hash[category] = true
+          end
         end
         
         # Same for channels
@@ -157,6 +159,7 @@ class CacheReader
 
 		keys.each do |k|
 		  line_array = cache_lookup[k]
+      index = line_array[@cache_format.index("index")]
 			target_score = 0
 			match_criteria_score = 0
 			
@@ -195,7 +198,7 @@ class CacheReader
 				
 				if match_criteria_score == target_score
           Logger.debug("Finished search. Got #{match_criteria_score} / #{target_score} for search on #{pvrsearch.channel} / #{pvrsearch.category} / #{pvrsearch.searchesString}")
-          match << k
+          match << index
         end
 			end # end pvrsearch.searches loop
 		end # end keys/cached programmes loop

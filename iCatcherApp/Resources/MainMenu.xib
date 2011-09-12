@@ -88,7 +88,7 @@
 											<string key="NSFrameSize">{259, 418}</string>
 											<reference key="NSSuperview" ref="998025330"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="794783689"/>
+											<reference key="NSNextKeyView" ref="76202995"/>
 											<string key="NSReuseIdentifierKey">_NS:1828</string>
 											<bool key="NSEnabled">YES</bool>
 											<object class="_NSCornerView" key="NSCornerView">
@@ -223,7 +223,7 @@
 							<string key="NSFrame">{{20, 41}, {261, 420}}</string>
 							<reference key="NSSuperview" ref="223525248"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="76202995"/>
+							<reference key="NSNextKeyView" ref="998025330"/>
 							<string key="NSReuseIdentifierKey">_NS:1824</string>
 							<int key="NSsFlags">150034</int>
 							<reference key="NSVScroller" ref="794783689"/>
@@ -826,7 +826,6 @@
 											<string key="NSFrame">{{58, 17}, {249, 32}}</string>
 											<reference key="NSSuperview" ref="385668092"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView"/>
 											<string key="NSReuseIdentifierKey">_NS:687</string>
 											<bool key="NSEnabled">YES</bool>
 											<object class="NSButtonCell" key="NSCell" id="1023975808">
@@ -882,7 +881,7 @@
 					<reference key="NSNextKeyView" ref="175887466"/>
 					<string key="NSReuseIdentifierKey">_NS:224</string>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1200}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<string key="NSFrameAutosaveName">subscriptionEditingWindow</string>
 				<int key="NSWindowCollectionBehavior">2</int>
@@ -1638,7 +1637,7 @@
 											<string key="NSFrameSize">{480, 14}</string>
 											<reference key="NSSuperview" ref="854444578"/>
 											<reference key="NSWindow"/>
-											<reference key="NSNextKeyView" ref="581385817"/>
+											<reference key="NSNextKeyView" ref="211643205"/>
 											<object class="NSTextContainer" key="NSTextContainer" id="371573860">
 												<object class="NSLayoutManager" key="NSLayoutManager">
 													<object class="NSTextStorage" key="NSTextStorage">
@@ -1772,7 +1771,6 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 									<string key="NSFrame">{{466, 1}, {15, 360}}</string>
 									<reference key="NSSuperview" ref="204545846"/>
 									<reference key="NSWindow"/>
-									<reference key="NSNextKeyView"/>
 									<reference key="NSTarget" ref="204545846"/>
 									<string key="NSAction">_doScroller:</string>
 									<double key="NSCurValue">1</double>
@@ -1795,7 +1793,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 							<string key="NSFrame">{{-1, -1}, {482, 362}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="211643205"/>
+							<reference key="NSNextKeyView" ref="854444578"/>
 							<int key="NSsFlags">133138</int>
 							<reference key="NSVScroller" ref="581385817"/>
 							<reference key="NSHScroller" ref="211643205"/>
@@ -1807,7 +1805,7 @@ AAEAAQAAAT0AAwAAAAEAAgAAAVIAAwAAAAEAAQAAAVMAAwAAAAIAAQABAAAAAA</bytes>
 					<reference key="NSWindow"/>
 					<reference key="NSNextKeyView" ref="204545846"/>
 				</object>
-				<string key="NSScreenRect">{{0, 0}, {1920, 1200}}</string>
+				<string key="NSScreenRect">{{0, 0}, {1920, 1178}}</string>
 				<string key="NSMaxSize">{10000000000000, 10000000000000}</string>
 				<string key="NSFrameAutosaveName">TaskInspector</string>
 				<int key="NSWindowCollectionBehavior">2</int>

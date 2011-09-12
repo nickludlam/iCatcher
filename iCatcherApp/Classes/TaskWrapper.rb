@@ -16,6 +16,7 @@ class TaskWrapper
 	end
 	
 	def busy?
+    Logger.debug("Task is #{@task}")
 	  return @task != nil
 	end
 	
@@ -30,9 +31,10 @@ class TaskWrapper
     args << "--hash" # Print progress
     args << "--url"
     args << url
-		args << "--force"
+		args << "--force" if @force
 		args << "--modes=flashaachigh,flashaacstd"
     args << "--debug" if @debug
+    args << "--nopurge" # we do the purging ourselves
     
     bundled_executable_path = NSBundle.mainBundle.resourcePath
     environmentDictionary = { "PATH" => "#{bundled_executable_path}:/usr/bin:/bin:/usr/sbin:/sbin",
@@ -57,8 +59,10 @@ class TaskWrapper
     args << "--pvr-single=#{pvrSearchFilename}" #Execute our specific PVR search
     args << "--modes"
     args << "flashaachigh,flashaacstd"
-		args << "--force"
+		args << "--force" if @force
     args << "--debug" if @debug
+    args << "--nopurge" # we do the purging ourselves
+
     
     bundled_executable_path = NSBundle.mainBundle.resourcePath
     environmentDictionary = { "PATH" => "#{bundled_executable_path}:/usr/bin:/bin:/usr/sbin:/sbin",
@@ -98,8 +102,10 @@ class TaskWrapper
     args << "--thumbsize=640" # Big thumbs!
     args << "--hash" # Print progress
     #args << "--long"
+    args << "--nopurge" # we do the purging ourselves
+
     args << "--debug" if @debug
-		args << "--force"
+		args << "--force" if @force
     args << "--get"
     args << index
 		args << "2>&1"
@@ -188,7 +194,7 @@ class TaskWrapper
     Logger.debug("Exit code is #{@task.terminationStatus}")
     taskFinishedMetadata = { 'terminationStatus' => @task.terminationStatus }
       
-    NSNotificationCenter.defaultCenter.postNotificationName('TaskWrapperTaskFinishedNotification', object:taskFinishedMetadata)
+    NSNotificationCenter.defaultCenter.postNotificationName('TaskWrapperTaskFinishedNotification', object:self, userInfo:taskFinishedMetadata)
 
     nc = NSNotificationCenter.defaultCenter
     nc.removeObserver(self)
@@ -199,11 +205,10 @@ class TaskWrapper
   end
 	
 	# Forcefully kill it if needed
-	def terminate
-		if @task && @task.isRunning
-      @task.terminate
-			taskTerminated
-		end
-	end
+  def terminate(signal = :TERM)
+    Process.kill(signal, @task.processIdentifier) if @task.isRunning
+  end
+  
+
 	
 end

@@ -18,7 +18,7 @@ class ActiveStatusItem < NSView
     Logger.debug("Initialised ActiveStatusItem")
     # Load our image references into an array
     @animationImages = []    
-    (1..36).each do |i|
+    (0..36).each do |i|
       @animationImages << NSImage.imageNamed("icatcher_menubar_icon_%.02i.png" % i)
     end
     self
@@ -26,9 +26,10 @@ class ActiveStatusItem < NSView
   
   def acceptsFirstResponder(); true; end
 
-  def mouseDown(event = nil)
+  def mouseDown(sender = nil)
+    NSApp.activateIgnoringOtherApps(true)
     @showHighlightImage = true
-    enclosingStatusItem.popUpStatusItemMenu(enclosingMenu)
+    enclosingStatusItem.popUpStatusItemMenu(@enclosingMenu) if @enclosingMenu
     self.setNeedsDisplay(true)
   end
   
@@ -36,22 +37,22 @@ class ActiveStatusItem < NSView
     registerForDraggedTypes(["WebURLsWithTitlesPboardType"])
   end   
 
-  def draggingEntered(sender)
-    Logger.debug("ActiveStatusItem Dragging entered from sender")
-    Logger.debug(sender.inspect)
-    pboard = sender.draggingPasteboard()
+  def draggingEntered(draggingInfo)
+    #Logger.debug("ActiveStatusItem Dragging entered from sender")
+    #Logger.debug(draggingInfo.inspect)
+    pboard = draggingInfo.draggingPasteboard()
     types = pboard.types()
     
-    Logger.debug("dragging entered with types:")
-    Logger.debug(types.inspect)
+    #Logger.debug("Dragging entered with types:")
+    #Logger.debug(types.inspect)
     
     # Our default
     op_type = NSDragOperationNone
-
-    Logger.debug("types")
-    Logger.debug(types.inspect)
+        
+    urlDict = getUrlAndTitleFromPasteboard(pboard)
     
-    if types.include?("WebURLsWithTitlesPboardType")
+    # Check for a valid iplayer URL
+    if urlDict.has_key?(:url) && ApplicationController.pidFromURL(urlDict[:url])
       op_type = NSDragOperationCopy
       @showHoverImage = true
       self.setNeedsDisplay(true)
@@ -68,28 +69,31 @@ class ActiveStatusItem < NSView
 
   def performDragOperation(sender)
     pboard = sender.draggingPasteboard()
-    successful = false
+    result = false
     @showHoverImage = false
     self.setNeedsDisplay(true)
 
-    if pboard.types.include?("WebURLsWithTitlesPboardType")
-      pbArray = pboard.propertyListForType("WebURLsWithTitlesPboardType")
+    urlDict = getUrlAndTitleFromPasteboard(pboard)
+    @delegate.urlAndTitleDropped(urlDict[:url], urlDict[:title]) if @delegate && urlDict.has_key?(:url)
 
+    true
+  end
+  
+  def getUrlAndTitleFromPasteboard(pasteboard)
+    result = {}
+
+    if pasteboard.types.include?("WebURLsWithTitlesPboardType")
+      pbArray = pasteboard.propertyListForType("WebURLsWithTitlesPboardType")
       # URL is the first element, title the second
-      if (pbArray.count >= 2)
+      if pbArray && pbArray.count >= 2
         url = pbArray[0][0]
         title = pbArray[1][0]
-
-        Logger.debug("URL title is #{title}")
-        Logger.debug("URL is #{url}")
-
-        @delegate.urlAndTitleDropped(url, title) if @delegate
-        successful = true
+        result[:url] = url
+        result[:title] = title
       end
     end
     
-    
-    successful
+    result
   end
 
   def drawRect(dirtyRect)
@@ -131,7 +135,7 @@ class ActiveStatusItem < NSView
     Logger.debug("starting animation")
     unless @animationTimer
       @animationFrame = 0
-      @animationTimer = NSTimer.scheduledTimerWithTimeInterval(1.0/10.0, target:self, selector:'animationFire:', userInfo:nil, repeats:true)
+      @animationTimer = NSTimer.scheduledTimerWithTimeInterval(1.0/15.0, target:self, selector:'animationFire:', userInfo:nil, repeats:true)
       NSRunLoop.currentRunLoop.addTimer @animationTimer, forMode:NSModalPanelRunLoopMode
       NSRunLoop.currentRunLoop.addTimer @animationTimer, forMode:NSEventTrackingRunLoopMode
     end

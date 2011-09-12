@@ -5,14 +5,17 @@
 # Copyright 2010 Tactotum Ltd. All rights reserved.
 
 class MediaScanner
-
-  def self.listMedia(directory, type, age=60 * 60 * 24 * 7 * 4)
+  DEFAULT_AGE = 60 * 60 * 24 * 7 * 4 # 4 weeks
+  
+  def self.listMedia(directory, type, age=DEFAULT_AGE)
 		Logger.debug("listMedia in #{directory}")
     # What are we scanning for? This is a glob match for audio/video files
     if type == "audio" || type == "radio"
       suffix = "{aac,mp3,m4a}"
     elsif type == "video" || type == "tv"
       suffix = "mp4"
+    elsif type == "all"
+      suffix = "{aac,mp3,mp4,m4a,m4v,mov}"
     else
       Logger.fatal("Unknown listMedia type #{type}")
     end
@@ -42,25 +45,23 @@ class MediaScanner
     end
   end
     
-  def self.createVideoCollection(directory)
-    self.createCollection(directory, "video", 0)
+  def self.createVideoCollection(search)
+    self.createCollectionFromPVRSearch(search, "video")
   end
   
-  def self.createAudioCollection(directory)
-    self.createCollection(directory, "audio", 0)
+  def self.createAudioCollection(search)
+    self.createCollectionFromPVRSearch(search, "audio")
   end
     
-  def self.createCollection(directory, type, age)	
-    collection_name = File.basename(directory)
-
+  def self.createCollectionFromPVRSearch(search, age = DEFAULT_AGE)	
     collection = MediaCollection.new()
-    collection.title = collection_name.gsub(/_/, " ").strip
+    collection.title = "[iCatcher] " + search.displayname
     collection.author = "iCatcher"
-		collection.link = "http://localhost:#{$webserverPort}/?feed=#{collection_name}"
+		collection.link = "#{$webserverURL}feeds/#{search.filename}.xml"
     collection.pub_date = Time.now.strftime("%a, %d %b %Y %T %z")
 
     files = []
-    listMedia(directory, type, age) do |file|
+    listMedia(search.mediaDirectory, search.type, age) do |file|
 			# Skip over obviously bad files
 			if File.size(file) == 0
 				Logger.info("Skipping zero-length file #{file}") 
@@ -74,4 +75,28 @@ class MediaScanner
   
     collection
   end
+
+  def self.createCollectionFromAdHocDirectory(age = DEFAULT_AGE)	
+    collection = MediaCollection.new()
+    collection.title = "iCatcher Ad Hoc Downloads"
+    collection.author = "iCatcher"
+    collection.link = "#{$webserverURL}adhoc_feed.xml"
+    collection.pub_date = Time.now.strftime("%a, %d %b %Y %T %z")
+
+    files = []
+    listMedia($downloaderAdHocDirectory, "all", age) do |file|
+    # Skip over obviously bad files
+    if File.size(file) == 0
+      Logger.info("Skipping zero-length file #{file}") 
+      next
+    else
+      Logger.debug("Adding #{file}")
+    end
+    
+    collection.media_items << MediaItem.new(file)
+  end
+
+    collection
+  end
+
 end

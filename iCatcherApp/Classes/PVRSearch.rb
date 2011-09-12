@@ -10,6 +10,7 @@ class PVRSearch
     allSearches = []
     
     Dir.glob("#{$downloaderSearchDirectory}/*") do |file|
+      next if File.basename(file) == "AdHoc"
       NSLog "Parsing file #{file}"
       searchObj = self.new
       searchObj.load(File.basename(file))
@@ -21,7 +22,12 @@ class PVRSearch
 
   def self.load(filename)
     searchObj = self.new
-    searchObj.load(filename)
+    begin
+      searchObj.load(filename)
+    rescue
+      searchObj = nil
+    end 
+
     searchObj
   end
   
@@ -44,7 +50,7 @@ class PVRSearch
     
     re = Regexp.new(/^(\w+)\s+(.*)/)
     
-    puts "No such file #{filepath}" unless File.exists?(filepath)
+    raise "No such file #{filepath}" unless File.exists?(filepath)
     
     File.open(filepath).each_line do |line|
       next if line.strip.length == 0
@@ -90,6 +96,8 @@ class PVRSearch
       f.write("displayname #{@displayname}\n")      
       f.write("active #{@active}\n")
     end
+    
+    Dir.mkdir(mediaDirectory)
   
     @unsaved = false
     @dirty = false
@@ -133,6 +141,12 @@ class PVRSearch
     
     newSearchesString
   end
+
+  def deleteDownloadedMedia
+    Dir.glob(mediaDirectory + "/*").each do |entry|
+      File.unlink(entry)
+    end
+  end
   
   def delete
     return false if @unsaved
@@ -146,6 +160,14 @@ class PVRSearch
     self.searchesString = attribute_hash['searches']
     self.active = attribute_hash['active']
     self.displayname = attribute_hash['displayname']
+  end
+
+  def url
+    "#{$webserverURL}feeds/#{filename}.xml"
+  end
+
+  def mediaDirectory
+    "#{$downloadDirectory}/#{filename}/"
   end
   
   # Debug

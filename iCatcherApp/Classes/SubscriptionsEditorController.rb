@@ -80,7 +80,7 @@ class SubscriptionsEditorController < NSWindowController
   end
   
   def windowWillClose(notification)
-    saveAllSearches
+    saveAllSearches if @subscriptions
   end
   
   def saveAllSearches
@@ -211,7 +211,7 @@ class SubscriptionsEditorController < NSWindowController
                                            defaultButton:"Yes",
                                            alternateButton:"No",
                                            otherButton:nil,
-                                           informativeTextWithFormat:"Deleted subscriptions will also need to be removed in iTunes")    
+                                           informativeTextWithFormat:"This will delete all previously downloaded media from #{@subscription.mediaDirectory}.") 
       
       alert.beginSheetModalForWindow(@subscriptionsWindow,
                                      modalDelegate:self,
@@ -224,6 +224,7 @@ class SubscriptionsEditorController < NSWindowController
     if returnCode == 1
       row = @subscriptionsTable.selectedRow
       @subscriptions.delete(@subscription)
+      @subscription.deleteDownloadedMedia
       @subscription.delete
       @subscriptionsTable.reloadData
       @subscriptionsTable.selectRowIndexes(NSIndexSet.indexSetWithIndex(0), byExtendingSelection:false)

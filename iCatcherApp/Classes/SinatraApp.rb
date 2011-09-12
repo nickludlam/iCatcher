@@ -12,52 +12,27 @@ class SinatraApp < Sinatra::Base
   set :views, $sinatraViewsPath
   
   get('/') do
-    @dirs = []
-    Dir.glob($downloadDirectory + "/*") do |entry|
-      @dirs << entry if File.directory?(entry) 
-    end
-  
+    @all_searches = PVRSearch.all  
     erb :all_feeds
   end
 
-  get('/feeds.json') do
-    dirs = []
-    
-    Dir.glob($downloadDirectory + "/*") do |entry|
-      dirs << entry if File.directory?(entry) 
-    end
-    
-    puts "Dirs are #{dirs}"
-    content_type :json
-    {'content' => dirs}.to_json
-  end
-
-  post('/feeds.json') do
-    Logger.debug("POST -> #{params.inspect}")
-    new_search = PVRSearch.new()
-    content_type :json
-    new_search.to_json
-  end
-  
-  get('/feeds/:feed_name.xml') do
-    Logger.debug("GET -> #{params.inspect}")
-    base = $downloadDirectory
-    @mc = MediaScanner.createCollection(File.join($downloadDirectory, params[:feed_name]), "radio", 0)
+  get('/adhoc_feed.xml') do
+    @mc = MediaScanner.createCollectionFromAdHocDirectory()
     erb :feed
   end
 
-  get('/feeds/:feed_name.json') do
-    search = PVRSearch.new(params[:filename])
-    content_type :json
-    search.to_json
+  get('/feeds/:feed_name.xml') do
+    Logger.debug("GET -> #{params.inspect}")
+    base = $downloadDirectory
+    search = PVRSearch.load(params[:feed_name])
+    if search
+      @mc = MediaScanner.createCollectionFromPVRSearch(search)
+      erb :feed
+    else
+      erb :bad_url
+    end
   end
 
-  put('/feeds/:feed_name.json') do
-    Logger.debug("PUT -> #{params.inspect}")
-    search = PVRSearch.new(params[:filename])
-    search.update_attributes(params)
-    search.to_json
-  end
 
   get('/feeds/:feed_name/:file_name') do 
     path = File.join($downloadDirectory, params[:feed_name], params[:file_name])
@@ -69,7 +44,7 @@ class SinatraApp < Sinatra::Base
     uri = URI.parse(params[:url])
     if (uri.host == "www.bbc.co.uk" && uri.path =~ /^\/iplayer\/episode/)
       appController = NSApplication.sharedApplication.delegate.appController
-      appController.urlAndTitleDropped(params[:url], "fake title")
+      appController.urlAndTitleDropped(params[:url], "")
     else
       erb :bad_url
     end
