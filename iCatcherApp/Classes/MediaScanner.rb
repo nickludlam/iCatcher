@@ -25,7 +25,7 @@ class MediaScanner
     
     if files.length > 0
       files.sort_by { |f| File.mtime f }.each do |file|
-        Logger.debug("Evaluating #{file}")
+        #Logger.debug("Evaluating #{file}")
         # Don't yield those  partial files that get_iplayer creates in the download dir while active
         yield file unless file =~ /\.partial\./ || (age > 0 && File.mtime(file) < (current_time - age))
       end
@@ -55,7 +55,7 @@ class MediaScanner
     
   def self.createCollectionFromPVRSearch(search, age = DEFAULT_AGE)	
     collection = MediaCollection.new()
-    collection.title = "[iCatcher] " + search.displayname
+    collection.title = search.displayname + " (via iCatcher)"
     collection.author = "iCatcher"
 		collection.link = "#{$webserverURL}feeds/#{search.filename}.xml"
     collection.pub_date = Time.now.strftime("%a, %d %b %Y %T %z")
@@ -67,7 +67,7 @@ class MediaScanner
 				Logger.info("Skipping zero-length file #{file}") 
 				next
       else
-        Logger.debug("Adding #{file}")
+        #Logger.debug("Adding #{file}")
 			end
 			
 			collection.media_items << MediaItem.new(file)

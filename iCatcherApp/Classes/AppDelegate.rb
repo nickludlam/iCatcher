@@ -74,4 +74,16 @@ class AppDelegate
                                            )
   end
   
+  # Applescript
+  def setupiTunes(sender = nil)
+    PVRSearch.all.each do |s|
+      AppleScripter.subscribeToURL(s.url)
+    end
+    
+    # Last is the ad hoc feed
+    # FIXME: This needs to be shared information somewhere 
+    AppleScripter.subscribeToURL("#{$webserverURL}adhoc_feed.xml")
+  end
+
+  
 end

@@ -7,7 +7,7 @@
 class TaskWrapper
   include Singleton
 	
-	attr_accessor :debug, :delegate
+	attr_accessor :debug, :delegate, :verbose
 	
 	def initialize
 		@task = nil
@@ -19,8 +19,8 @@ class TaskWrapper
     Logger.debug("Task is #{@task}")
 	  return @task != nil
 	end
-	
-  def downloadFromURL(url, directory = $downloadDirectory)
+  	
+  def downloadFromURL(url, directory = $downloaderAdHocDirectory)
     Logger.debug("Starting downloader with URL #{url}")
     
 		@task = NSTask.alloc.init
@@ -32,9 +32,13 @@ class TaskWrapper
     args << "--url"
     args << url
 		args << "--force" if @force
-		args << "--modes=flashaachigh,flashaacstd"
     args << "--debug" if @debug
     args << "--nopurge" # we do the purging ourselves
+    args << "--tag-fulltitle"
+    args << "--profile-dir=#{$downloaderConfigDirectory}"
+    args << "--packagemanager"
+    args << "disable"
+
     
     bundled_executable_path = NSBundle.mainBundle.resourcePath
     environmentDictionary = { "PATH" => "#{bundled_executable_path}:/usr/bin:/bin:/usr/sbin:/sbin",
@@ -62,6 +66,12 @@ class TaskWrapper
 		args << "--force" if @force
     args << "--debug" if @debug
     args << "--nopurge" # we do the purging ourselves
+    args << "--tag-fulltitle"
+    args << "--profile-dir"
+    args << "#{$downloaderConfigDirectory}"
+    args << "--packagemanager"
+    args << "disable"
+
 
     
     bundled_executable_path = NSBundle.mainBundle.resourcePath
@@ -106,6 +116,12 @@ class TaskWrapper
 
     args << "--debug" if @debug
 		args << "--force" if @force
+    args << "--tag-fulltitle"
+    args << "--profile-dir"
+    args << "#{$downloaderConfigDirectory}"
+    args << "--packagemanager"
+    args << "disable"
+
     args << "--get"
     args << index
 		args << "2>&1"
@@ -131,7 +147,12 @@ class TaskWrapper
     args.addObject("--type=#{type}")
     args.addObject("--nopurge")
     args.addObject("--refresh")
-		
+    args << "--profile-dir"
+    args << "#{$downloaderConfigDirectory}"
+    args << "--packagemanager"
+    args << "disable"
+    args << "--verbose" if @verbose
+
     bundled_executable_path = NSBundle.mainBundle.resourcePath
     environmentDictionary = NSDictionary.dictionaryWithObjectsAndKeys("#{bundled_executable_path}:/usr/bin:/bin:/usr/sbin:/sbin",
                                                                       "PATH",

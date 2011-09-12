@@ -4,10 +4,10 @@
 # Created by Nick Ludlam on 29/12/2010.
 # Copyright 2010 Tactotum Ltd. All rights reserved.
 
-require 'json'
 
 # Require all our dependencies here for convenience
 require 'rubygems'
+require 'json'
 require 'rack/handler/control_tower'
 
 # Ruby stdlib
@@ -44,7 +44,7 @@ $webserverPort = 8019
 $webserverURL = "http://localhost:#{$webserverPort}/"
 
 # Periodicity
-$downloadTimerInterval = 6 * 60
+$downloadTimerInterval = 6 * 60 * 60
 
 
 class ApplicationController
@@ -72,7 +72,7 @@ class ApplicationController
   end
 
   def awakeFromNib
-    appDelegate = NSApplication.sharedApplication.delegate
+    appDelegate = NSApp.delegate
     appDelegate.appController = self
     
 		@defaults = NSUserDefaults.standardUserDefaults
@@ -83,6 +83,16 @@ class ApplicationController
     @taskQueue = []    
     nc = NSNotificationCenter.defaultCenter
     nc.addObserver(self, selector:'taskFinished:', name:'TaskWrapperTaskFinishedNotification', object:nil)
+    
+    setupTimer()
+    
+    cacheUpdate()
+  end
+
+  def setupTimer()
+    if @downloadTimer
+      @downloadTimer.invalidate
+    end
     
     @downloaderTimer = NSTimer.scheduledTimerWithTimeInterval($downloadTimerInterval, target:self, selector:'runAllSearches:', userInfo:nil, repeats:true)
   end
@@ -117,21 +127,33 @@ class ApplicationController
   # Menu contents
   ###########################################################
   def setupMenu(menu)
-    addMenuItemToMenu(menu, "iCatcher BETA", nil)
-    @timeLeftMenuItem = addMenuItemToMenu(menu, "", nil)
+    @debugmenu = NSMenu.alloc.initWithTitle("Debug")
+    @forceCacheUpdateMenuItem = addMenuItemToMenu(@debugmenu, "Force cache update", "forceCacheUpdate")
+    addMenuItemToMenu(@debugmenu, "Show activity inspector", "showTaskInspectorWindow")
+    addMenuItemToMenu(@debugmenu, "Setup iTunes podcasts", "setupiTunes:")
+    
     @activityPhaseMenu = addMenuItemToMenu(menu, "Status: Idle", nil)
+    @timeLeftMenuItem = addMenuItemToMenu(menu, "", nil)
+    addMenuItemToMenu(menu, nil, nil)
+    @editSubscriptionsMenuItem = addMenuItemToMenu(menu, "Edit subscriptions", "showSubscriptionsWindow")
+    @startDownloaderMenuItem = addMenuItemToMenu(menu, "Run subscriptions now", "runAllSearches:")
     addMenuItemToMenu(menu, nil, nil)
     
-    @startDownloaderMenuItem = addMenuItemToMenu(menu, "Check subscriptions now", "runAllSearches:")
-    addMenuItemToMenu(menu, "Show subscriptions", "showSubscriptionsWindow")
-    addMenuItemToMenu(menu, "Setup iTunes feeds", "setupiTunes:")
-    addMenuItemToMenu(menu, nil, nil)
-    addMenuItemToMenu(menu, "Show activity inspector", "showTaskInspectorWindow")
-    @forceCacheUpdateMenuItem = addMenuItemToMenu(menu, "Force cache update", "forceCacheUpdate")
+    @debugmenuItem = addMenuItemToMenu(menu, "Debug", nil)
+    menu.setSubmenu(@debugmenu, forItem: @debugmenuItem)
+    
     addMenuItemToMenu(menu, nil, nil)
     #addMenuItemToMenu(menu, "Preferences", "showPreferencesWindow")
     addMenuItemToMenu(menu, "Check for updates...", "checkForUpdates")
-    addMenuItemToMenu(menu, "Quit", "quit")
+    addMenuItemToMenu(menu, "Quit iCatcher", "quit")
+  end
+
+  def findTimerFireTime
+    fireDate = @downloaderTimer.fireDate
+
+    formatter = NSDateFormatter.alloc.init
+    formatter.dateFormat = "hh:mm a"    
+    @timeLeftMenuItem.title = "Next run at #{formatter.stringFromDate(fireDate)}"
   end
   
   def addMenuItemToMenu(menu, menuTitle, methodName)
@@ -149,40 +171,46 @@ class ApplicationController
 	# Task business
   
   def showTaskInspectorWindow(sender = nil)
-    NSApplication.sharedApplication.activateIgnoringOtherApps true
-    @taskInspectorWindow.fadeInAndMakeKeyAndOrderFront(true)
+    NSApp.activateIgnoringOtherApps(true)
+    #@taskInspectorWindow.fadeInAndMakeKeyAndOrderFront(true)
+    @taskInspectorWindow.makeKeyAndOrderFront(nil)
   end
   
   def showSubscriptionsWindow(sender = nil)
+    NSApp.activateIgnoringOtherApps(true)
     @subscriptionsEditorWindow.delegate.becomeActive
-    NSApplication.sharedApplication.activateIgnoringOtherApps true
     @subscriptionsEditorWindow.makeKeyAndOrderFront(nil)
   end
 	
-	def setTaskMode(mode)
-    raise unless VALID_MODES.index(mode)
-    @activityPhaseMenu.title = ("Status: %s" % VALID_MODES_DESCRIPTION[mode])
-		@taskMode = mode
-
-		Logger.debug("Starting task mode #{@taskMode}")
-		@status_item.view.startAnimation()
+	def setTaskMode(newmode)
+    raise unless VALID_MODES.index(newmode)
+    @activityPhaseMenu.title = ("Status: %s" % VALID_MODES_DESCRIPTION[newmode])
     
-		# By default, turn off all the menu items which could interfere
-		disableTaskWrapperMenuItems()
-
-    if mode == :idle
-      @startDownloaderMenuItem.setTitle("Check subscriptions now")
-      @status_item.view.endAnimation()
-    elsif mode == :cacheUpdate
-      @startDownloaderMenuItem.setTitle("Stop cache update")
-    elsif mode == :downloading
-      @startDownloaderMenuItem.setTitle("Stop download")
-    elsif mode == :stopping
-      
+    # If we're transitioning from :downloading -> :idle, reset the timer
+    if @taskMode == :downloading && newmode == :idle
+      setupTimer()
     end
     
-		# Clear the task inspector contents
-		@taskInspectorTextView.textStorage.mutableString.setString("")
+		@taskMode = newmode
+
+		Logger.debug("Starting task mode #{@taskMode}")
+
+    if newmode == :idle
+      @startDownloaderMenuItem.setTitle("Check subscriptions now")
+      @status_item.view.endAnimation()
+      enableTaskWrapperMenuItems()
+    elsif newmode == :cacheUpdate
+      disableTaskWrapperMenuItems()
+      @status_item.view.startAnimation()
+      @startDownloaderMenuItem.setTitle("Stop cache update")
+    elsif newmode == :downloading
+      disableTaskWrapperMenuItems()
+      @status_item.view.startAnimation()
+      @startDownloaderMenuItem.setTitle("Stop downloads")
+    elsif newmode == :stopping
+      disableTaskWrapperMenuItems()
+    end
+    
 	end
 	
 	def taskFinished(notification)
@@ -192,8 +220,6 @@ class ApplicationController
     taskInfo = notification.userInfo
     exitCode = taskInfo["terminationStatus"]
     
-    setTaskMode(:idle)
-
     if @taskMode == :stopping
       NSApplication.sharedApplication.delegate.growlMessage(:title => "Download stopped",
                                                             :description => "The download has been stopped",
@@ -201,6 +227,7 @@ class ApplicationController
 
     end
     
+
 		@tw = nil
     
     if exitCode == 0
@@ -213,13 +240,13 @@ class ApplicationController
   end
 	
 	def disableTaskWrapperMenuItems
-		@startDownloaderMenuItem.enabled = false
 		@forceCacheUpdateMenuItem.enabled = false
+    @editSubscriptionsMenuItem.enabled = false
 	end
 	
 	def enableTaskWrapperMenuItems
-		@startDownloaderMenuItem.enabled = false
 		@forceCacheUpdateMenuItem.enabled = true
+    @editSubscriptionsMenuItem.enabled = true
 	end
 
 	def appendOutputToTaskInspector(output)		
@@ -235,18 +262,20 @@ class ApplicationController
 	###########################################################
 	
   def validateMenuItem(menuItem)
-    Logger.debug("Validating #{menuItem.title}")
+    #Logger.debug("Validating #{menuItem.title}")
     true
   end
 
   def menuWillOpen(menu)
-    Logger.debug("menuWillOpen")
-    #fireDate = @downloaderTimer.fireDate
-    #formatter = NSDateFormatter.alloc.init
-    #formatter.dateFormat = "HH:mm"
-    #@timeLeftMenuItem.title = "Dummy title"
-    #@timeLeftMenuItem.title = "Next run: #{formatter.stringFromDate(fireDate)}"
+    #Logger.debug("menuWillOpen")
+    findTimerFireTime
     
+    if @taskInspectorWindow.isVisible || @subscriptionsEditorWindow.isVisible
+      NSApp.activateIgnoringOtherApps(nil)
+      @taskInspectorWindow.orderFrontRegardless if @taskInspectorWindow.isVisible
+      @subscriptionsEditorWindow.orderFrontRegardless if @subscriptionsEditorWindow.isVisible
+    end
+      
     
     @status_item.view.showHighlightImage = true
     @status_item.view.setNeedsDisplay(true)
@@ -257,14 +286,6 @@ class ApplicationController
     @status_item.view.showHighlightImage = false
     @status_item.view.setNeedsDisplay(true)
   end
-  
-  # ActiveStatusItem delegate methods
-  ###########################################################
-  
-  def urlAndTitleDropped(url, title)
-    downloadFromURL(url)
-  end
-
   
   # Control Tower
   ###########################################################
@@ -327,37 +348,21 @@ class ApplicationController
   end
   	
   def downloadFromURL(url)
-    @taskQueue << [url]
+    @cr = CacheReader.instance
+    pid = ApplicationController.pidFromURL(url)
+    
+    if pid
+      index, type = @cr.programmeIndexAndTypeForPID(pid)
+      if index
+        @taskQueue << [index, type, $downloaderAdHocDirectory]
+      end
+    else
+      @taskQueue << [url]
+    end
+    
     checkWorkQueue()
   end
   
-	def findAndDownloadPid(pid)
-		Logger.debug("Finding and downloading #{pid}")
-		@pidToDownload = pid
-
-		@cr = CacheReader.instance
-		begin
-			@cr.testCache("radio")
-			@cr.testCache("tv")
-      
-      # Try radio first
-			index, type = @cr.programmeIndexForPID(pid)
-      
-      if index
-        @tw = TaskWrapper.instance
-        @tw.delegate = self
-        setTaskMode(:downloading)
-        @tw.downloadFromIndex(index, type, $musicDirectory)
-      else
-        @tw = TaskWrapper.instance
-        @tw.delegate = self
-        setTaskMode(:downloading)
-        @tw.downloadFromURL(@urlToDownload, $musicDirectory)
-        Logger.debug("Attepmting direct URL download")
-      end
-		end
-	end
-
   def stopAllTasks(sender = nil)
     setTaskMode(:stopping)
     @taskQueue.clear
@@ -367,7 +372,22 @@ class ApplicationController
     end
   end
 	
-	def forceCacheUpdate(sender = nil)
+
+  def cacheUpdate()
+    @cr = CacheReader.instance
+    if @cr.cacheStale?("radio")
+      @taskQueue << ["updateRadioCache"]
+    end
+    
+    if
+      @cr.cacheStale?("tv")
+      @taskQueue << ["updateTVCache"]
+    end
+    
+    checkWorkQueue()
+  end
+
+  def forceCacheUpdate(sender = nil)
 		if @tw
       Logger.debug("Terminating the old task")
 		else
@@ -392,7 +412,7 @@ class ApplicationController
       matches = cr.programmeIndexesForPVRSearch(search)
       # Put them on the queue
       matches.each do |m|
-        @taskQueue << [m, search.type, search.mediaDirectory]
+        @taskQueue << [m, search.type, search.mediaDirectory] if search.active
       end
     end
     
@@ -401,11 +421,16 @@ class ApplicationController
 
   # Background work
   def checkWorkQueue(sender = nil)
-    if @taskQueue.length > 0 && !@tw        
+    return if @tw # Busy already
+    
+    if @taskQueue.length > 0        
       @tw = TaskWrapper.instance
       @tw.delegate = self
 
       task = @taskQueue.shift
+
+      # Clear the task inspector contents
+      #@taskInspectorTextView.textStorage.mutableString.setString("")
 
       if task.length == 1 && task[0] == 'updateRadioCache'
         setTaskMode(:cacheUpdate)
@@ -423,20 +448,14 @@ class ApplicationController
       else
         Logger.error("Unknown task object #{task}")
       end
-    else   
-      Logger.debug("No work to do")
+    else
+      #Logger.debug("No work to do")
+      setTaskMode(:idle)
     end
   end
 
-  # AppleScripter stuff
   def setupiTunes(sender = nil)
-    PVRSearch.all.each do |s|
-      AppleScripter.subscribeToURL(s.url)
-    end
-    
-    # Last is the ad hoc feed 
-    AppleScripter.subscribeToURL("#{$webserverURL}ad_hoc.xml")
-
+    NSApp.delegate.setupiTunes()
   end
   
 end

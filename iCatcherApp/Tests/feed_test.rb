@@ -10,8 +10,8 @@ require 'singleton'
 require 'PVRSearch'
 require 'CacheReader'
 
-$downloaderSearchDirectory = "/Users/nick/.get_iplayer/pvr/"
-$downloaderConfigDirectory = "/Users/nick/.get_iplayer/"
+#$downloaderSearchDirectory = "/Users/nick/.get_iplayer/pvr/"
+#$downloaderConfigDirectory = "/Users/nick/.get_iplayer/"
 
 class FeedTest < Test::Unit::TestCase
   def setup

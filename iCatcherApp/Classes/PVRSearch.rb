@@ -97,7 +97,7 @@ class PVRSearch
       f.write("active #{@active}\n")
     end
     
-    Dir.mkdir(mediaDirectory)
+    Dir.mkdir(mediaDirectory) unless File.exists?(mediaDirectory)
   
     @unsaved = false
     @dirty = false
@@ -149,7 +149,7 @@ class PVRSearch
   end
   
   def delete
-    return false if @unsaved
+    return true if @unsaved
     return File.unlink(filepath)
   end
 

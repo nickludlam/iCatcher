@@ -4,7 +4,7 @@
 # Created by Nick Ludlam on 14/02/2011.
 # Copyright 2011 Tactotum Ltd. All rights reserved.
 
-class FadeWindow < NSPanel
+class FadeWindow < NSWindow
 
   def fadeInAndMakeKeyAndOrderFront(orderFront)
     self.setAlphaValue(0);

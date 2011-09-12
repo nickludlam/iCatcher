@@ -24,7 +24,12 @@ class SubscriptionsEditorController < NSWindowController
   
   attr_accessor :subscription
   
+  MAX_MATCH_COUNT = 20
+  
   def becomeActive
+    @shouldUpdateiTunes = false  # Do we need to offer to update iTunes after closing the window
+    @iTunesAlertShowing = false
+    
     @subscriptions = PVRSearch.all.sort_by { |s| s.displayname }
     @subscriptionsTable.reloadData
     
@@ -33,7 +38,9 @@ class SubscriptionsEditorController < NSWindowController
     
     @mediaPopup.removeAllItems
     @mediaPopup.addItemWithTitle("Radio")
-    @mediaPopup.addItemWithTitle("TV")    
+    @mediaPopup.addItemWithTitle("TV")
+    
+    @matchCountLabel.stringValue = "No matching programmes"
   end
   
   def setupPopups(subscription, media_type = 'radio')
@@ -70,17 +77,26 @@ class SubscriptionsEditorController < NSWindowController
   def windowShouldClose(notification)
     @subscriptions.each do |s|
       matches = CacheReader.instance.programmeIndexesForPVRSearch(s)
-      if matches.count > 20
-        showTooManyMatchesError(s.displayname, matches.count)
+      if matches.count > MAX_MATCH_COUNT
+        # TODO: DRY up the "unnamed subscription" code
+        showTooManyMatchesError((s.displayname.strip.length == 0) ? "Unnamed subscription" : s.displayname, matches.count)
+        Logger.debug("Too many matches for search {s.displayname}")
         return false
       end
+    end
+    
+    saveAllSearches if @subscriptions
+
+    if @shouldUpdateiTunes
+      Logger.debug("Showing the updateiTunes alert")
+      showUpdateiTunesAlert unless @iTunesAlertShowing
+      return false
     end
     
     true
   end
   
   def windowWillClose(notification)
-    saveAllSearches if @subscriptions
   end
   
   def saveAllSearches
@@ -101,7 +117,7 @@ class SubscriptionsEditorController < NSWindowController
     
     case column.identifier
     when 'displayname'
-      return subscription.displayname
+      return (subscription.displayname.strip.length == 0) ? "Unnamed subscription" : subscription.displayname
     when 'active'
       return subscription.active
     else
@@ -114,6 +130,7 @@ class SubscriptionsEditorController < NSWindowController
     row = @subscriptionsTable.selectedRow
     # Exit now if there's nothing selected
     if row < 0
+      @subscription = nil
       @nameTextField.stringValue = ""
       @mediaPopup.selectItemWithTitle("Radio")
       @categoryPopup.selectItemWithTitle("All")
@@ -127,7 +144,13 @@ class SubscriptionsEditorController < NSWindowController
     
     media_type = subscription.type    
     @nameTextField.stringValue = subscription.displayname
-    @mediaPopup.selectItemWithTitle(subscription.type.capitalize)
+    
+    if subscription.type == "tv"
+      @mediaPopup.selectItemWithTitle("TV")
+    else
+      @mediaPopup.selectItemWithTitle("Radio")
+    end
+    
     setupPopups(subscription, media_type)
     
     if subscription.searchesString != nil
@@ -146,7 +169,7 @@ class SubscriptionsEditorController < NSWindowController
   end
   
   def controlTextDidChange(notification)
-    NSLog("Text changed!")
+    #NSLog("Text changed!")
     updateCurrentSubscription()
   end
     
@@ -158,6 +181,8 @@ class SubscriptionsEditorController < NSWindowController
   end
 
   def updateCurrentSubscription()
+    return unless @subscription
+    
     tableNeedsRefresh = false
     if @subscription.displayname != @nameTextField.stringValue
       tableNeedsRefresh = true
@@ -176,7 +201,7 @@ class SubscriptionsEditorController < NSWindowController
     
     @subscription.active = @activeCheckbox.stringValue
     
-    NSLog @subscription.inspect
+    #NSLog @subscription.inspect
     
     @subscriptionsTable.reloadData if tableNeedsRefresh
     
@@ -185,7 +210,18 @@ class SubscriptionsEditorController < NSWindowController
   
   def updateMatchCount
     matches = CacheReader.instance.programmeIndexesForPVRSearch(@subscription)
-    @matchCountLabel.stringValue = "Matches %d programmes" % matches.length
+    
+    if matches == nil || matches == 0
+      @matchCountLabel.stringValue = "No matching programmes"
+    else
+      @matchCountLabel.stringValue = "Matches %d programmes" % matches.length
+    end
+    
+    if matches.length >= MAX_MATCH_COUNT
+      @matchCountLabel.setTextColor(NSColor.redColor)
+    else
+      @matchCountLabel.setTextColor(NSColor.controlTextColor)
+    end
   end
   
   ###############################################
@@ -198,6 +234,8 @@ class SubscriptionsEditorController < NSWindowController
     @subscriptionsTable.reloadData
     @subscriptionsTable.selectRowIndexes(NSIndexSet.indexSetWithIndex(0), byExtendingSelection:false)
     tableViewSelectionDidChange(nil)
+    @shouldUpdateiTunes = true
+    @nameTextField.becomeFirstResponder()
   end
   
   def didEndSheet(sheet, returnCode:returnCode, contextInfo:contextInfo)
@@ -211,7 +249,7 @@ class SubscriptionsEditorController < NSWindowController
                                            defaultButton:"Yes",
                                            alternateButton:"No",
                                            otherButton:nil,
-                                           informativeTextWithFormat:"This will delete all previously downloaded media from #{@subscription.mediaDirectory}.") 
+                                           informativeTextWithFormat:"This will also delete all of the previously downloaded media") 
       
       alert.beginSheetModalForWindow(@subscriptionsWindow,
                                      modalDelegate:self,
@@ -229,6 +267,7 @@ class SubscriptionsEditorController < NSWindowController
       @subscriptionsTable.reloadData
       @subscriptionsTable.selectRowIndexes(NSIndexSet.indexSetWithIndex(0), byExtendingSelection:false)
       tableViewSelectionDidChange(nil)
+      @shouldUpdateiTunes = true
     end
   end
 
@@ -237,7 +276,7 @@ class SubscriptionsEditorController < NSWindowController
                                          defaultButton:"OK",
                                          alternateButton:nil,
                                          otherButton:nil,
-                                         informativeTextWithFormat:"Your subscription #{subscriptionDisplayName} currently matches #{match_count} programmes. There is a limit of 20 per subscription. Please make the search more specific")    
+                                         informativeTextWithFormat:"Your subscription #{subscriptionDisplayName} currently matches #{match_count} programmes. There is a limit of #{MAX_MATCH_COUNT} per subscription. Please make the search more specific.")    
     
     alert.beginSheetModalForWindow(@subscriptionsWindow,
                                    modalDelegate:self,
@@ -246,6 +285,31 @@ class SubscriptionsEditorController < NSWindowController
   end
   
   def tooManyMatchesErrorDidEnd(alert, returnCode:returnCode, contextInfo:contextInfo)
+  end
+  
+  def showUpdateiTunesAlert
+    @iTunesAlertShowing = true
+    alert = NSAlert.alertWithMessageText("Update iTunes podcasts?",
+                                         defaultButton:"Yes",
+                                         alternateButton:"No",
+                                         otherButton:nil,
+                                         informativeTextWithFormat:"Do you want to update the Podcast subscriptions in iTunes now?")
+    
+    alert.beginSheetModalForWindow(@subscriptionsWindow,
+                                   modalDelegate:self,
+                                   didEndSelector:"updateiTunesAlertDidEnd:returnCode:contextInfo:",
+                                   contextInfo:nil)
+
+  end
+  
+  def updateiTunesAlertDidEnd(alert, returnCode:returnCode, contextInfo:contextInfo)
+    if returnCode == 1
+      NSApp.delegate.setupiTunes()
+    end
+
+    @shouldUpdateiTunes = false
+    @iTunesAlertShowing = false
+    @subscriptionsWindow.performSelectorOnMainThread('performClose:', withObject:nil, waitUntilDone:false)
   end
 
 end

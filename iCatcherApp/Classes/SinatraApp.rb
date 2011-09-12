@@ -43,8 +43,9 @@ class SinatraApp < Sinatra::Base
     Logger.debug("INSTANT DOWNLOAD -> #{params.inspect}")
     uri = URI.parse(params[:url])
     if (uri.host == "www.bbc.co.uk" && uri.path =~ /^\/iplayer\/episode/)
-      appController = NSApplication.sharedApplication.delegate.appController
-      appController.urlAndTitleDropped(params[:url], "")
+      appController = NSApp.delegate.appController
+      NSApp.delegate.appController.performSelectorOnMainThread('downloadFromURL:', withObject:params[:url], waitUntilDone:false)
+      erb :downloading_adhoc
     else
       erb :bad_url
     end

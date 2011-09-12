@@ -27,7 +27,6 @@ class ActiveStatusItem < NSView
   def acceptsFirstResponder(); true; end
 
   def mouseDown(sender = nil)
-    NSApp.activateIgnoringOtherApps(true)
     @showHighlightImage = true
     enclosingStatusItem.popUpStatusItemMenu(@enclosingMenu) if @enclosingMenu
     self.setNeedsDisplay(true)
@@ -74,8 +73,7 @@ class ActiveStatusItem < NSView
     self.setNeedsDisplay(true)
 
     urlDict = getUrlAndTitleFromPasteboard(pboard)
-    @delegate.urlAndTitleDropped(urlDict[:url], urlDict[:title]) if @delegate && urlDict.has_key?(:url)
-
+    @delegate.downloadFromURL(urlDict[:url]) if @delegate && urlDict.has_key?(:url)
     true
   end
   

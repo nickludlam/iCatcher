@@ -13,9 +13,8 @@ class CacheReader
   attr_accessor :radio_channels
   attr_accessor :radio_categories
 
-	
   def initialize
-    @max_cache_age = 60 * 60 * 6
+    @max_cache_age = 60 * 60 * 4 # Same as get_iplayer
   	
     @radio_cache_by_pid = {}
     @tv_cache_by_pid = {}
@@ -46,16 +45,18 @@ class CacheReader
   
   def cacheStale?(type = "radio")
     cache_path = cachePathForType(type)
+    return true unless File.exist?(cache_path)
+    
     cache_age = File.mtime(cache_path)
     return (Time.now - cache_age) > @max_cache_age
   end
 
   def populateCachesIfRequired
-    if cacheEmpty?("radio") || cacheStale?("radio")
+    if cacheEmpty?("radio")
       parseCache("radio")
     end
 		
-    if cacheEmpty?("tv") || cacheStale?("tv")
+    if cacheEmpty?("tv")
       parseCache("tv")
     end
   end
@@ -110,7 +111,7 @@ class CacheReader
       @parsed_tv_cache_mtime = File.mtime(cache_path)
     end
 		
-    Logger.debug("Finished cache parse. Have #{@radio_cache_by_pid.keys.length} radio entries, and #{@tv_cache_by_pid.keys.length} tv entries")
+    #Logger.debug("Finished cache parse. Have #{@radio_cache_by_pid.keys.length} radio entries, and #{@tv_cache_by_pid.keys.length} tv entries")
   end
 
   # For external invocation from ApplicationController
@@ -129,7 +130,7 @@ class CacheReader
  	
   # Search methods
 	
-  def programmeIndexForPID(pid)
+  def programmeIndexAndTypeForPID(pid)
 	  populateCachesIfRequired
 		if @radio_cache_by_pid[pid]
 		  return [@radio_cache_by_pid[pid][0], "radio"]
@@ -140,7 +141,7 @@ class CacheReader
 		end
 	end
 	
-	def programmeIndexesForPVRSearch(pvrsearch, fields="name,episode")
+	def programmeDetailsForPVRSearch(pvrsearch, fields="name,episode")
 		populateCachesIfRequired
 		
 		# Turn it into an array
@@ -155,7 +156,7 @@ class CacheReader
 			cache_lookup = @tv_cache_by_pid
 		end
 
-    match = []
+    matches = []
 
 		keys.each do |k|
 		  line_array = cache_lookup[k]
@@ -197,14 +198,25 @@ class CacheReader
 				end
 				
 				if match_criteria_score == target_score
-          Logger.debug("Finished search. Got #{match_criteria_score} / #{target_score} for search on #{pvrsearch.channel} / #{pvrsearch.category} / #{pvrsearch.searchesString}")
-          match << index
+          #Logger.debug("Finished search. Got #{match_criteria_score} / #{target_score} for search on #{pvrsearch.channel} / #{pvrsearch.category} / #{pvrsearch.searchesString}")
+          programme_hash = {}
+          
+          @cache_format.each_with_index do |key, i|
+            programme_hash[key] = line_array[i]
+          end
+          
+          matches << programme_hash
         end
 			end # end pvrsearch.searches loop
 		end # end keys/cached programmes loop
     
-    match
+    matches
 	end # end def
+  
+  def programmeIndexesForPVRSearch(search)
+    matches = programmeDetailsForPVRSearch(search)
+    matches.collect { |x| x["index"] }
+  end
 	
 	def checkFields(fields)
 		fields.each do |field|

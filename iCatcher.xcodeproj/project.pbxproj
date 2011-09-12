@@ -77,11 +77,11 @@
 		0171209413B7DFE90070E05B /* AppleScripter.rb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209313B7DFE90070E05B /* AppleScripter.rb */; };
 		0171209813B7E0F40070E05B /* feed.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209613B7E0F40070E05B /* feed.erb */; };
 		0171209913B7E0F40070E05B /* index.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209713B7E0F40070E05B /* index.erb */; };
-		0171209B13B7E45B0070E05B /* feed_test.rb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209A13B7E45B0070E05B /* feed_test.rb */; };
 		0171209D13B7EAEE0070E05B /* all_feeds.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209C13B7EAEE0070E05B /* all_feeds.erb */; };
 		01A25BEC13C8EFC00037266B /* icatcher_icon_16.png in Resources */ = {isa = PBXBuildFile; fileRef = 01A25BEB13C8EFC00037266B /* icatcher_icon_16.png */; };
 		01A25C0113C9D2DC0037266B /* bad_url.erb in Resources */ = {isa = PBXBuildFile; fileRef = 01A25C0013C9D2DC0037266B /* bad_url.erb */; };
 		01AD23BF141D7FB300F3802E /* AppDelegate.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01AD23BE141D7FB300F3802E /* AppDelegate.rb */; };
+		01AD23C1141E292700F3802E /* downloading_adhoc.erb in Resources */ = {isa = PBXBuildFile; fileRef = 01AD23C0141E292700F3802E /* downloading_adhoc.erb */; };
 		01FEC9E01416CF5900434B0E /* SubscriptionsEditorController.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01FEC9DF1416CF5900434B0E /* SubscriptionsEditorController.rb */; };
 /* End PBXBuildFile section */
 
@@ -183,6 +183,7 @@
 		01A25BEB13C8EFC00037266B /* icatcher_icon_16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icatcher_icon_16.png; path = iCatcherApp/Resources/Images/icatcher_icon_16.png; sourceTree = SOURCE_ROOT; };
 		01A25C0013C9D2DC0037266B /* bad_url.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bad_url.erb; sourceTree = "<group>"; };
 		01AD23BE141D7FB300F3802E /* AppDelegate.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = AppDelegate.rb; path = iCatcherApp/Classes/AppDelegate.rb; sourceTree = SOURCE_ROOT; };
+		01AD23C0141E292700F3802E /* downloading_adhoc.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = downloading_adhoc.erb; sourceTree = "<group>"; };
 		01FEC9DF1416CF5900434B0E /* SubscriptionsEditorController.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = SubscriptionsEditorController.rb; path = iCatcherApp/Classes/SubscriptionsEditorController.rb; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -411,6 +412,7 @@
 				0171209713B7E0F40070E05B /* index.erb */,
 				0171209C13B7EAEE0070E05B /* all_feeds.erb */,
 				01A25C0013C9D2DC0037266B /* bad_url.erb */,
+				01AD23C0141E292700F3802E /* downloading_adhoc.erb */,
 			);
 			name = SinatraTemplates;
 			path = iCatcherApp/SinatraTemplates;
@@ -549,12 +551,12 @@
 				0171209413B7DFE90070E05B /* AppleScripter.rb in Resources */,
 				0171209813B7E0F40070E05B /* feed.erb in Resources */,
 				0171209913B7E0F40070E05B /* index.erb in Resources */,
-				0171209B13B7E45B0070E05B /* feed_test.rb in Resources */,
 				0171209D13B7EAEE0070E05B /* all_feeds.erb in Resources */,
 				01A25BEC13C8EFC00037266B /* icatcher_icon_16.png in Resources */,
 				01A25C0113C9D2DC0037266B /* bad_url.erb in Resources */,
 				01FEC9E01416CF5900434B0E /* SubscriptionsEditorController.rb in Resources */,
 				01AD23BF141D7FB300F3802E /* AppDelegate.rb in Resources */,
+				01AD23C1141E292700F3802E /* downloading_adhoc.erb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
