@@ -12,7 +12,7 @@ framework 'Cocoa'
 
 # Add in our custom TagLib bundle
 require "TagLib.bundle"
-raise unless TagLib # Bail unless it's loaded properly
+raise "TagLib failed to load" unless TagLib # Bail unless it's loaded properly
 
 # Loading all the Ruby project files.
 main = File.basename(__FILE__, File.extname(__FILE__))

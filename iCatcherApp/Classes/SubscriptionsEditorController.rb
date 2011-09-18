@@ -20,6 +20,7 @@ class SubscriptionsEditorController < NSWindowController
   attr_writer :categoryPopup
   attr_writer :searchTextField
   attr_writer :activeCheckbox
+  attr_writer :searchInDescriptionCheckbox
   attr_writer :matchCountLabel
   
   attr_accessor :subscription
@@ -103,6 +104,7 @@ class SubscriptionsEditorController < NSWindowController
     @subscriptions.each do |s|
       s.save
     end
+    @subscriptionsWindow.setDocumentEdited(false)
   end
 
   # Table methods
@@ -136,7 +138,8 @@ class SubscriptionsEditorController < NSWindowController
       @categoryPopup.selectItemWithTitle("All")
       @stationPopup.selectItemWithTitle("All")
       @searchTextField.stringValue = ""
-      @activeCheckbox.stringValue = "1"
+      @activeCheckbox.intValue = 0
+      @searchInDescriptionCheckbox.intValue = 0
       return
     end
 
@@ -144,6 +147,7 @@ class SubscriptionsEditorController < NSWindowController
     
     media_type = subscription.type    
     @nameTextField.stringValue = subscription.displayname
+    
     
     if subscription.type == "tv"
       @mediaPopup.selectItemWithTitle("TV")
@@ -153,13 +157,16 @@ class SubscriptionsEditorController < NSWindowController
     
     setupPopups(subscription, media_type)
     
+    # Blank the search string if needed
     if subscription.searchesString != nil
       @searchTextField.stringValue = subscription.searchesString
     else
       @searchTextField.stringValue = ""
     end
     
-    @activeCheckbox.stringValue = subscription.active
+    @activeCheckbox.intValue = subscription.active.to_i
+    @searchInDescriptionCheckbox.intValue = subscription.descriptionSearch.to_i
+    
     updateMatchCount()
   end
   
@@ -177,6 +184,7 @@ class SubscriptionsEditorController < NSWindowController
     if @mediaPopup.selectedItem.title.downcase != @subscription.type
       setupPopups(@subscription, @mediaPopup.selectedItem.title.downcase)
     end
+    
     updateCurrentSubscription()
   end
 
@@ -199,9 +207,8 @@ class SubscriptionsEditorController < NSWindowController
       @subscription.searchesString = nil
     end
     
-    @subscription.active = @activeCheckbox.stringValue
-    
-    #NSLog @subscription.inspect
+    @subscription.active = @activeCheckbox.intValue
+    @subscription.descriptionSearch = @searchInDescriptionCheckbox.intValue
     
     @subscriptionsTable.reloadData if tableNeedsRefresh
     
@@ -235,6 +242,7 @@ class SubscriptionsEditorController < NSWindowController
     @subscriptionsTable.selectRowIndexes(NSIndexSet.indexSetWithIndex(0), byExtendingSelection:false)
     tableViewSelectionDidChange(nil)
     @shouldUpdateiTunes = true
+    @subscriptionsWindow.setDocumentEdited(true)
     @nameTextField.becomeFirstResponder()
   end
   
@@ -268,6 +276,7 @@ class SubscriptionsEditorController < NSWindowController
       @subscriptionsTable.selectRowIndexes(NSIndexSet.indexSetWithIndex(0), byExtendingSelection:false)
       tableViewSelectionDidChange(nil)
       @shouldUpdateiTunes = true
+      @subscriptionsWindow.setDocumentEdited(true)
     end
   end
 
@@ -309,7 +318,9 @@ class SubscriptionsEditorController < NSWindowController
 
     @shouldUpdateiTunes = false
     @iTunesAlertShowing = false
-    @subscriptionsWindow.performSelectorOnMainThread('performClose:', withObject:nil, waitUntilDone:false)
+    @subscriptionsWindow.performSelectorOnMainThread('performClose:',
+                                                     withObject:nil,
+                                                     waitUntilDone:false)
   end
 
 end

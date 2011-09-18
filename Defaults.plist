@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>autoSearch</key>
+	<true/>
+	<key>autoSearchDropdownIndex</key>
+	<integer>1</integer>
+	<key>autoDelete</key>
+	<false/>
+	<key>autoDeleteDropdownIndex</key>
+	<integer>0</integer>
+	<key>sendGrowlNotifications</key>
+	<true/>
+	<key>syncImmediately</key>
+	<false/>
+	<key>autoShowActivityWindow</key>
+	<false/>
+	<key>verboseOutput</key>
+	<false/>
+</dict>
+</plist>

@@ -19,7 +19,22 @@ class TaskWrapper
     Logger.debug("Task is #{@task}")
 	  return @task != nil
 	end
-  	
+  
+  def baseArgs()
+    args = []
+    args << "--thumb" # We want thumbnails of images down as well
+    args << "--thumbsize=4" # Big thumbs!
+    args << "--hash" # Print progress
+    args << "--nopurge" # we do the purging ourselves
+    args << "--tag-fulltitle"
+    args << "--profile-dir=#{$downloaderConfigDirectory}"
+    args << "--packagemanager"
+    args << "disable"
+    args << "--verbose" if $verboseOutput
+    args
+  end
+  
+  
   def downloadFromURL(url, directory = $downloaderAdHocDirectory)
     Logger.debug("Starting downloader with URL #{url}")
     
@@ -27,18 +42,9 @@ class TaskWrapper
 		downloaderPath = NSBundle.mainBundle.pathForResource('get_iplayer', ofType:nil)
     @task.setLaunchPath(downloaderPath)
     
-    args = []
-    args << "--hash" # Print progress
+    args = baseArgs()
     args << "--url"
     args << url
-		args << "--force" if @force
-    args << "--debug" if @debug
-    args << "--nopurge" # we do the purging ourselves
-    args << "--tag-fulltitle"
-    args << "--profile-dir=#{$downloaderConfigDirectory}"
-    args << "--packagemanager"
-    args << "disable"
-
     
     bundled_executable_path = NSBundle.mainBundle.resourcePath
     environmentDictionary = { "PATH" => "#{bundled_executable_path}:/usr/bin:/bin:/usr/sbin:/sbin",
@@ -47,41 +53,7 @@ class TaskWrapper
     
     invokeGetIplayerWithArgs(args, andEnvironment:environmentDictionary)
   end
-  
-	def runPvrSearch(pvrSearchFilename)
-    Logger.debug("Starting downloader against #{pvrSearchFilename}")
-    
-		@task = NSTask.alloc.init
-		downloaderPath = NSBundle.mainBundle.pathForResource('get_iplayer', ofType:nil)
-    @task.setLaunchPath(downloaderPath)
-
-    args = []
-    args << "--thumb" # We want thumbnails of images down as well
-    args << "--thumbsize=4" # Big thumbs!
-    args << "--hash" # Print progress
-    args << "--long" # Match on name+episode+desc
-    args << "--pvr-single=#{pvrSearchFilename}" #Execute our specific PVR search
-    args << "--modes"
-    args << "flashaachigh,flashaacstd"
-		args << "--force" if @force
-    args << "--debug" if @debug
-    args << "--nopurge" # we do the purging ourselves
-    args << "--tag-fulltitle"
-    args << "--profile-dir"
-    args << "#{$downloaderConfigDirectory}"
-    args << "--packagemanager"
-    args << "disable"
-
-
-    
-    bundled_executable_path = NSBundle.mainBundle.resourcePath
-    environmentDictionary = { "PATH" => "#{bundled_executable_path}:/usr/bin:/bin:/usr/sbin:/sbin",
-                              "HOME" => $homeDirectory,
-                              "IPLAYER_OUTDIR" => $downloadDirectory + "/" + pvrSearchFilename }
-
-    invokeGetIplayerWithArgs(args, andEnvironment:environmentDictionary)
-  end
-	
+  	
 	def downloadFromIndex(index, type = "radio", directory = $downloadDirectory)
     Logger.debug("Too busy to update the cache") && return if busy?
     Logger.debug("Starting download of index #{index}")
@@ -90,12 +62,8 @@ class TaskWrapper
 		downloaderPath = NSBundle.mainBundle.pathForResource('get_iplayer', ofType:nil)
     @task.setLaunchPath(downloaderPath)
 
-    args = []
-    
-    # Custom profile dir to not interfere with the regular get_iplayer 
-    args << "--profile-dir"
-    args << $downloaderConfigDirectory
-    
+    args = baseArgs()
+        
     if type == "radio"
       args << "--type"
       args << "radio"
@@ -108,20 +76,6 @@ class TaskWrapper
       args << "flashvhigh,flashhigh"
     end
     
-    #args << "--thumb" # We want thumbnails of images down as well
-    args << "--thumbsize=640" # Big thumbs!
-    args << "--hash" # Print progress
-    #args << "--long"
-    args << "--nopurge" # we do the purging ourselves
-
-    args << "--debug" if @debug
-		args << "--force" if @force
-    args << "--tag-fulltitle"
-    args << "--profile-dir"
-    args << "#{$downloaderConfigDirectory}"
-    args << "--packagemanager"
-    args << "disable"
-
     args << "--get"
     args << index
 		args << "2>&1"
@@ -143,15 +97,9 @@ class TaskWrapper
     downloaderPath = NSBundle.mainBundle.pathForResource('get_iplayer', ofType:nil)
     @task.setLaunchPath(downloaderPath)
     
-    args = NSMutableArray.alloc.init
-    args.addObject("--type=#{type}")
-    args.addObject("--nopurge")
-    args.addObject("--refresh")
-    args << "--profile-dir"
-    args << "#{$downloaderConfigDirectory}"
-    args << "--packagemanager"
-    args << "disable"
-    args << "--verbose" if @verbose
+    args = baseArgs()    
+    args << "--type=#{type}"
+    args << "--refresh"
 
     bundled_executable_path = NSBundle.mainBundle.resourcePath
     environmentDictionary = NSDictionary.dictionaryWithObjectsAndKeys("#{bundled_executable_path}:/usr/bin:/bin:/usr/sbin:/sbin",
@@ -230,6 +178,4 @@ class TaskWrapper
     Process.kill(signal, @task.processIdentifier) if @task.isRunning
   end
   
-
-	
 end

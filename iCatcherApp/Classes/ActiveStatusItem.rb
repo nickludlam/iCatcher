@@ -17,9 +17,11 @@ class ActiveStatusItem < NSView
     super(frame)
     Logger.debug("Initialised ActiveStatusItem")
     # Load our image references into an array
-    @animationImages = []    
+    @colouredAnimationImages = []    
+    @whiteAnimationImages = []    
     (0..36).each do |i|
-      @animationImages << NSImage.imageNamed("icatcher_menubar_icon_%.02i.png" % i)
+      @colouredAnimationImages << NSImage.imageNamed("icatcher_menubar_icon_%.02i.png" % i)
+      @whiteAnimationImages << NSImage.imageNamed("icatcher_menubar_icon_white_%.02i.png" % i)
     end
     self
   end
@@ -104,7 +106,11 @@ class ActiveStatusItem < NSView
 		rect = NSMakeRect(7, 3, 16, 16)
  
     if @animationTimer
-      i = @animationImages[@animationFrame]
+      if @showHighlightImage
+        i = @whiteAnimationImages[@animationFrame]
+      else
+        i = @colouredAnimationImages[@animationFrame]
+      end
     elsif @showHighlightImage
       #Logger.debug("Highlight mode!")
       i = NSImage.imageNamed('icatcher_menubar_icon_white.png')

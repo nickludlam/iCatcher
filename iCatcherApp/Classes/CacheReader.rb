@@ -52,11 +52,11 @@ class CacheReader
   end
 
   def populateCachesIfRequired
-    if cacheEmpty?("radio")
+    if cacheEmpty?("radio") || @parsed_radio_cache_mtime < File.mtime(cachePathForType("radio"))
       parseCache("radio")
     end
 		
-    if cacheEmpty?("tv")
+    if cacheEmpty?("tv") || @parsed_tv_cache_mtime < File.mtime(cachePathForType("tv"))
       parseCache("tv")
     end
   end
@@ -142,8 +142,14 @@ class CacheReader
 	end
 	
 	def programmeDetailsForPVRSearch(pvrsearch, fields="name,episode")
-		populateCachesIfRequired
+		populateCachesIfRequired()
 		
+    Logger.debug(pvrsearch.inspect)
+    
+    fields << ",desc" if pvrsearch.descriptionSearch.to_i == 1
+    
+    Logger.debug("programmeDetailsForPVRSearch searching in fields: #{fields}")
+    
 		# Turn it into an array
 		fields = fields.split(",").map { |x| x.strip }
 		checkFields(fields)
@@ -220,7 +226,7 @@ class CacheReader
 	
 	def checkFields(fields)
 		fields.each do |field|
-		  raise unless @cache_format.include?(field)
+		  raise "Unknown search field #{field}" unless @cache_format.include?(field)
 		end
 	end
   

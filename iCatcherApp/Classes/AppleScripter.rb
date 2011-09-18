@@ -11,19 +11,29 @@ class AppleScripter
 
   def self.subscribeToURL(url)
     Logger.debug("Subscribing to URL #{url} in iTunes")
+  
     activate_command = "osascript -e \"
-    tell application \\\"iTunes\\\"
-    activate
-    set visible of every window to true
-    set the view of the front browser window to playlist \\\"Podcasts\\\"
-    end tell\""
+     tell application \\\"iTunes\\\"
+     activate
+     set visible of every window to true
+     set the view of the front browser window to playlist \\\"Podcasts\\\"
+     end tell\""
+
     activate_output = `#{activate_command}`
     
     subscribe_command = "osascript -e \"
-    tell application \\\"iTunes\\\"
-    subscribe \\\"#{url}\\\"
-    end tell\""
+     tell application \\\"iTunes\\\"
+     subscribe \\\"#{url}\\\"
+     end tell\""
+
     subscribe_output = `#{subscribe_command}`
+  end
+
+  def self.updateiTunes
+  Logger.debug("Making iTunes update")
+
+  update_command = "osascript -e \"tell application \\\"iTunes\\\" to updateAllPodcasts\""
+    update_output = `#{update_command}`
   end
   
 end

@@ -16,8 +16,9 @@ class AppDelegate
   def applicationDidFinishLaunching(a_notification)
     # Insert code here to initialize your application
     Logger.debug("appDidFinishLaunching")
+
     setupSparkle()
-    setupAndRegisterGrowl()
+    setupAndRegisterGrowl() if $preferences["sendGrowlNotifications"]
   end
   
   def registerSavedSearchesIfNeeded
@@ -71,7 +72,7 @@ class AppDelegate
                                            priority: 0,
                                            isSticky: false,
                                            clickContext: nil
-                                           )
+                                           ) if $preferences["sendGrowlNotifications"]
   end
   
   # Applescript
@@ -85,5 +86,8 @@ class AppDelegate
     AppleScripter.subscribeToURL("#{$webserverURL}adhoc_feed.xml")
   end
 
+  def updateiTunes(sender = nil)
+    AppleScripter.updateiTunes()
+  end
   
 end

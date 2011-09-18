@@ -2,7 +2,7 @@ framework 'CoreFoundation'
 
 class PVRSearch
   
-  attr_accessor :filename, :displayname, :category, :channel, :type, :searches, :active, :dirty, :unsaved
+  attr_accessor :filename, :displayname, :category, :channel, :type, :searches, :active, :dirty, :unsaved, :descriptionSearch
 
   def self.all
     prefs = NSUserDefaults.standardUserDefaults
@@ -43,6 +43,7 @@ class PVRSearch
     @unsaved = true
     @dirty = true
     @active = "1"
+    @descriptionSearch = "0"
 	end
   
   def load(filename)
@@ -55,6 +56,7 @@ class PVRSearch
     File.open(filepath).each_line do |line|
       next if line.strip.length == 0
       matches = re.match(line)
+      # OMG THIS SUCKS
       if matches[1] =~ /^search/
         next if matches[1] == "search0" && matches[2] == ".*" # Skip over the 'default' search0 term, as we equate an empty @searches with this
         @searches[matches[1]] = matches[2]
@@ -69,7 +71,7 @@ class PVRSearch
     end
     
     @unsaved = false
-    @dirty = false        
+    @dirty = false
   end
 
   def save
@@ -95,6 +97,7 @@ class PVRSearch
       
       f.write("displayname #{@displayname}\n")      
       f.write("active #{@active}\n")
+      f.write("descriptionSearch #{@descriptionSearch}")
     end
     
     Dir.mkdir(mediaDirectory) unless File.exists?(mediaDirectory)
@@ -153,15 +156,6 @@ class PVRSearch
     return File.unlink(filepath)
   end
 
-  def update_attributes(attribute_hash)
-    self.filename = attribute_hash['filename'] if attribute_hash['filename']
-    self.category = attribute_hash['category']
-    self.channel = attribute_hash['channel']
-    self.searchesString = attribute_hash['searches']
-    self.active = attribute_hash['active']
-    self.displayname = attribute_hash['displayname']
-  end
-
   def url
     "#{$webserverURL}feeds/#{filename}.xml"
   end
@@ -186,6 +180,10 @@ class PVRSearch
     
     output << " Displayname: #{displayname}\n"
     output << " Active: #{active}\n"
+    output << " Dirty: #{dirty}\n"
+    output << " Unsaved: #{unsaved}\n"
+    output << " Description search: #{descriptionSearch}\n"
+    
     output
   end
   

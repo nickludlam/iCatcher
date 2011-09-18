@@ -20,6 +20,7 @@ require 'control_tower'
 require 'sinatra'
 require 'htmlentities'
 
+TIMER_INTERVALS = [6, 12, 24]
 
 # Append our bundled gems to the search path
 bundled_gem_path = NSBundle.mainBundle.resourcePath + "/gems/"
@@ -43,14 +44,11 @@ $sinatraViewsPath = NSBundle.mainBundle.resourcePath
 $webserverPort = 8019
 $webserverURL = "http://localhost:#{$webserverPort}/"
 
-# Periodicity
-$downloadTimerInterval = 6 * 60 * 60
-
 
 class ApplicationController
 
   VALID_MODES = [ :idle, :cacheUpdate, :downloading, :stopping ]
-  VALID_MODES_DESCRIPTION = { :idle => "Idle", :cacheUpdate => "Updating cache", :downloading => "Downloading", :stopping => "Stopping" }
+  VALID_MODES_DESCRIPTION = { :idle => "Idle", :cacheUpdate => "Updating cache", :downloading => "Downloading (1/%s)", :stopping => "Stopping" }
   
   attr_writer :taskInspectorWindow
 	attr_writer :taskInspectorTextView
@@ -82,19 +80,50 @@ class ApplicationController
     
     @taskQueue = []    
     nc = NSNotificationCenter.defaultCenter
-    nc.addObserver(self, selector:'taskFinished:', name:'TaskWrapperTaskFinishedNotification', object:nil)
-    
-    setupTimer()
+    nc.addObserver(self,
+                   selector:'taskFinished:',
+                   name:'TaskWrapperTaskFinishedNotification',
+                   object:nil)
     
     cacheUpdate()
+    
+    # Set up the preferences
+    NSApp.activateIgnoringOtherApps(true)
+    @preferencesWindowController = PreferencesController.alloc.initWithWindowNibName("Preferences")    
+    @preferencesWindowController.setupPreferences
+    @preferencesWindowController.readPreferences
+    
+    setupStateAccordingToPreferences
+  end
+
+  def setupStateAccordingToPreferences
+    if $preferences['autoSearch']
+      Logger.debug("autoSearch enabled")
+      setupTimer()
+    else
+      Logger.debug("autoSearch disabled")
+      cancelTimerIfRequired()
+    end
+    
+    findTimerFireTime()
   end
 
   def setupTimer()
-    if @downloadTimer
-      @downloadTimer.invalidate
-    end
+    cancelTimerIfRequired()
     
-    @downloaderTimer = NSTimer.scheduledTimerWithTimeInterval($downloadTimerInterval, target:self, selector:'runAllSearches:', userInfo:nil, repeats:true)
+    timer_interval = TIMER_INTERVALS[$preferences["autoSearchDropdownIndex"]] * 60 * 60
+    
+    Logger.debug("Timer interval is #{timer_interval}")
+    
+    @downloadTimer = NSTimer.scheduledTimerWithTimeInterval(timer_interval, target:self, selector:'runAllSearches:', userInfo:nil, repeats:true)
+  end
+    
+  def cancelTimerIfRequired()
+    if @downloadTimer
+      Logger.debug("Cancelling the timer")
+      @downloadTimer.invalidate
+      @downloadTimer = nil
+    end
   end
     
   def setupStatusBar
@@ -136,31 +165,35 @@ class ApplicationController
     @timeLeftMenuItem = addMenuItemToMenu(menu, "", nil)
     addMenuItemToMenu(menu, nil, nil)
     @editSubscriptionsMenuItem = addMenuItemToMenu(menu, "Edit subscriptions", "showSubscriptionsWindow")
-    @startDownloaderMenuItem = addMenuItemToMenu(menu, "Run subscriptions now", "runAllSearches:")
+    @startDownloaderMenuItem = addMenuItemToMenu(menu, "Check subscriptions now", "runAllSearches:")
     addMenuItemToMenu(menu, nil, nil)
     
     @debugmenuItem = addMenuItemToMenu(menu, "Debug", nil)
     menu.setSubmenu(@debugmenu, forItem: @debugmenuItem)
     
     addMenuItemToMenu(menu, nil, nil)
-    #addMenuItemToMenu(menu, "Preferences", "showPreferencesWindow")
+    addMenuItemToMenu(menu, "Preferences", "showPreferencesWindow", ",")
     addMenuItemToMenu(menu, "Check for updates...", "checkForUpdates")
     addMenuItemToMenu(menu, "Quit iCatcher", "quit")
   end
 
   def findTimerFireTime
-    fireDate = @downloaderTimer.fireDate
+    if @downloadTimer
+      fireDate = @downloadTimer.fireDate
 
-    formatter = NSDateFormatter.alloc.init
-    formatter.dateFormat = "hh:mm a"    
-    @timeLeftMenuItem.title = "Next run at #{formatter.stringFromDate(fireDate)}"
+      formatter = NSDateFormatter.alloc.init
+      formatter.dateFormat = "hh:mm a"    
+      @timeLeftMenuItem.title = "Next run at #{formatter.stringFromDate(fireDate)}"
+    else
+      @timeLeftMenuItem.title = "Automatic search disabled"
+    end
   end
   
-  def addMenuItemToMenu(menu, menuTitle, methodName)
+  def addMenuItemToMenu(menu, menuTitle, methodName, keyEquivalent = "")
     if menuTitle == nil
       newMenuItem = menu.insertItem(NSMenuItem.separatorItem, atIndex:menu.itemArray.length)
     else 
-      newMenuItem = menu.addItemWithTitle menuTitle, action:methodName, keyEquivalent:""
+      newMenuItem = menu.addItemWithTitle menuTitle, action:methodName, keyEquivalent:keyEquivalent
       newMenuItem.target = self
       newMenuItem.enabled = true
     end
@@ -168,8 +201,8 @@ class ApplicationController
     newMenuItem
   end
 	
-	# Task business
-  
+  # Windows
+
   def showTaskInspectorWindow(sender = nil)
     NSApp.activateIgnoringOtherApps(true)
     #@taskInspectorWindow.fadeInAndMakeKeyAndOrderFront(true)
@@ -181,14 +214,25 @@ class ApplicationController
     @subscriptionsEditorWindow.delegate.becomeActive
     @subscriptionsEditorWindow.makeKeyAndOrderFront(nil)
   end
+
+  def showPreferencesWindow(sender = nil)
+    NSApp.activateIgnoringOtherApps(true)
+    Logger.debug("Prefs window is #{@preferencesWindowController.window}")
+    @preferencesWindowController.window.makeKeyAndOrderFront(nil)
+  end
 	
+  # Task business
+
 	def setTaskMode(newmode)
-    raise unless VALID_MODES.index(newmode)
-    @activityPhaseMenu.title = ("Status: %s" % VALID_MODES_DESCRIPTION[newmode])
-    
+    raise "InvalidTaskMode #{newmode}" unless VALID_MODES.index(newmode)
+        
     # If we're transitioning from :downloading -> :idle, reset the timer
     if @taskMode == :downloading && newmode == :idle
       setupTimer()
+    end
+    
+    if @taskMode == :cacheUpdate && newmode == :idle
+      @cr.populateCachesIfRequired()
     end
     
 		@taskMode = newmode
@@ -210,7 +254,6 @@ class ApplicationController
     elsif newmode == :stopping
       disableTaskWrapperMenuItems()
     end
-    
 	end
 	
 	def taskFinished(notification)
@@ -221,13 +264,11 @@ class ApplicationController
     exitCode = taskInfo["terminationStatus"]
     
     if @taskMode == :stopping
-      NSApplication.sharedApplication.delegate.growlMessage(:title => "Download stopped",
+      NSApp.delegate.growlMessage(:title => "Download stopped",
                                                             :description => "The download has been stopped",
                                                             :notificationName => "Stopped")
-
     end
     
-
 		@tw = nil
     
     if exitCode == 0
@@ -236,6 +277,7 @@ class ApplicationController
       Logger.error("Last run exited uncleanly. Halting the queue")
       NSApplication.sharedApplication.delegate.growlError()
       @taskQueue.clear
+      setTaskMode(:idle)
     end
   end
 	
@@ -270,12 +312,15 @@ class ApplicationController
     #Logger.debug("menuWillOpen")
     findTimerFireTime
     
-    if @taskInspectorWindow.isVisible || @subscriptionsEditorWindow.isVisible
+    if @taskInspectorWindow.isVisible || @subscriptionsEditorWindow.isVisible ||
+      @preferencesWindowController.window.isVisible
       NSApp.activateIgnoringOtherApps(nil)
       @taskInspectorWindow.orderFrontRegardless if @taskInspectorWindow.isVisible
       @subscriptionsEditorWindow.orderFrontRegardless if @subscriptionsEditorWindow.isVisible
+      @preferencesWindowController.window.orderFrontRegardless if @preferencesWindowController.window.isVisible
     end
-      
+        
+    @activityPhaseMenu.title = ("Status: %s" % (VALID_MODES_DESCRIPTION[@taskMode] % @taskQueue.length))
     
     @status_item.view.showHighlightImage = true
     @status_item.view.setNeedsDisplay(true)
@@ -346,14 +391,13 @@ class ApplicationController
     Dir.mkdir($downloaderSearchDirectory) unless File.directory?($downloaderSearchDirectory)
     Dir.mkdir($downloaderAdHocDirectory) unless File.directory?($downloaderAdHocDirectory)
   end
-  	
+  
   def downloadFromURL(url)
-    @cr = CacheReader.instance
     pid = ApplicationController.pidFromURL(url)
     
     if pid
       index, type = @cr.programmeIndexAndTypeForPID(pid)
-      if index
+      if index and ! checkQueueForIndex(index)
         @taskQueue << [index, type, $downloaderAdHocDirectory]
       end
     else
@@ -372,6 +416,15 @@ class ApplicationController
     end
   end
 	
+  def checkQueueForIndex(searchIndex)
+    @taskQueue.each do |entry|
+      if entry.is_a?(Array) and entry.length == 3
+        index = entry[0]
+        return true if searchIndex == index
+      end
+    end
+    false
+  end
 
   def cacheUpdate()
     @cr = CacheReader.instance
@@ -406,7 +459,15 @@ class ApplicationController
     
     return unless @taskQueue.empty?
     cr = CacheReader.instance
-    cr.populateCachesIfRequired()
+    
+    # Update the caches if they're stale
+    if cr.cacheStale?("radio")
+      @taskQueue << ["updateRadioCache"]
+    end
+
+    if cr.cacheStale?("tv")
+      @taskQueue << ["updateTVCache"]
+    end
     
     PVRSearch.all.each do |search|
       matches = cr.programmeIndexesForPVRSearch(search)
@@ -430,8 +491,11 @@ class ApplicationController
       task = @taskQueue.shift
 
       # Clear the task inspector contents
-      #@taskInspectorTextView.textStorage.mutableString.setString("")
+      @taskInspectorTextView.textStorage.mutableString.setString("")
 
+      # Bring up the taskInspectorWindow if we need to according to the prefs
+      @taskInspectorWindow.makeKeyAndOrderFront if $preferences['autoShowActivityWindow']
+      
       if task.length == 1 && task[0] == 'updateRadioCache'
         setTaskMode(:cacheUpdate)
         @tw.updateGetIplayerCaches('radio')
@@ -457,5 +521,10 @@ class ApplicationController
   def setupiTunes(sender = nil)
     NSApp.delegate.setupiTunes()
   end
+
+#
+
+
+
   
 end
