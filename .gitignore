@@ -17,3 +17,6 @@ iCatcher/build/*
 # osx noise
 .DS_Store
 profile
+
+# Proj specifics
+iCatcherApp/Tests/test_data/*
