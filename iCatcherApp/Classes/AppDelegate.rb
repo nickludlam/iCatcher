@@ -60,18 +60,18 @@ class AppDelegate
   def growlError()
     growlMessage(:title => "Download error",
                  :description => "The last download finished uncleanly. Downloading has been halted",
-                 :notificationName => "Error")
+                 :notificationName => "Error",
+                 :clickContext => "Error")
   end
   
   def growlMessage(params = {})
-    GrowlApplicationBridge.notifyWithTitle(
-                                           params[:title],
+    GrowlApplicationBridge.notifyWithTitle(params[:title],
                                            description: params[:description],
                                            notificationName: params[:notificationName],
                                            iconData: nil,
                                            priority: 0,
                                            isSticky: false,
-                                           clickContext: nil
+                                           clickContext: params[:clickContext]
                                            ) if $preferences["sendGrowlNotifications"]
   end
   
@@ -88,6 +88,13 @@ class AppDelegate
 
   def updateiTunes(sender = nil)
     AppleScripter.updateiTunes()
+  end
+  
+  # If we have any sort of error, show the task inspector view
+  def growlNotificationWasClicked(clickContext)
+    if clickContext == "Error"
+      appController.showTaskInspectorWindow()
+    end
   end
   
 end

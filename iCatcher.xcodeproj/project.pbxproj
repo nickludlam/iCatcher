@@ -121,6 +121,7 @@
 		01CEA17214265E62000A8E83 /* Preferences.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01CEA17114265E62000A8E83 /* Preferences.xib */; };
 		01CEA1771426669D000A8E83 /* PreferencesController.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01CEA1761426669D000A8E83 /* PreferencesController.rb */; };
 		01CEA17914266C1D000A8E83 /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 01CEA17814266C1D000A8E83 /* Defaults.plist */; };
+		01F9BED51427594900584515 /* Task.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01F9BED41427594900584515 /* Task.rb */; };
 		01FEC9E01416CF5900434B0E /* SubscriptionsEditorController.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01FEC9DF1416CF5900434B0E /* SubscriptionsEditorController.rb */; };
 /* End PBXBuildFile section */
 
@@ -262,6 +263,7 @@
 		01CEA17114265E62000A8E83 /* Preferences.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Preferences.xib; sourceTree = SOURCE_ROOT; };
 		01CEA1761426669D000A8E83 /* PreferencesController.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = PreferencesController.rb; sourceTree = SOURCE_ROOT; };
 		01CEA17814266C1D000A8E83 /* Defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Defaults.plist; sourceTree = SOURCE_ROOT; };
+		01F9BED41427594900584515 /* Task.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = Task.rb; sourceTree = SOURCE_ROOT; };
 		01FEC9DF1416CF5900434B0E /* SubscriptionsEditorController.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = SubscriptionsEditorController.rb; path = iCatcherApp/Classes/SubscriptionsEditorController.rb; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -372,6 +374,7 @@
 				01514F58133E64CB00BC7179 /* SinatraApp.rb */,
 				01514F59133E64CB00BC7179 /* TaskWrapper.rb */,
 				0171209313B7DFE90070E05B /* AppleScripter.rb */,
+				01F9BED41427594900584515 /* Task.rb */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -721,6 +724,7 @@
 				01CEA17214265E62000A8E83 /* Preferences.xib in Resources */,
 				01CEA1771426669D000A8E83 /* PreferencesController.rb in Resources */,
 				01CEA17914266C1D000A8E83 /* Defaults.plist in Resources */,
+				01F9BED51427594900584515 /* Task.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

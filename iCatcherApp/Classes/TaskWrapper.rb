@@ -34,6 +34,13 @@ class TaskWrapper
     args
   end
   
+  def baseEnvironment(hash = {})
+    bundled_executable_path = NSBundle.mainBundle.resourcePath
+    environmentDictionary = { "PATH" => "#{bundled_executable_path}:/usr/bin:/bin:/usr/sbin:/sbin",
+                              "HOME" => $homeDirectory,
+                              "IPLAYER_OUTDIR" => $downloadDirectory }.merge(hash)
+    environmentDictionary
+  end
   
   def downloadFromURL(url, directory = $downloaderAdHocDirectory)
     Logger.debug("Starting downloader with URL #{url}")
@@ -46,11 +53,7 @@ class TaskWrapper
     args << "--url"
     args << url
     
-    bundled_executable_path = NSBundle.mainBundle.resourcePath
-    environmentDictionary = { "PATH" => "#{bundled_executable_path}:/usr/bin:/bin:/usr/sbin:/sbin",
-      "HOME" => $homeDirectory,
-      "IPLAYER_OUTDIR" => $downloadDirectory }
-    
+    environmentDictionary = baseEnvironment({"IPLAYER_OUTDIR" => directory})
     invokeGetIplayerWithArgs(args, andEnvironment:environmentDictionary)
   end
   	
@@ -80,11 +83,7 @@ class TaskWrapper
     args << index
 		args << "2>&1"
 
-    bundled_executable_path = NSBundle.mainBundle.resourcePath
-    environmentDictionary = { "PATH" => "#{bundled_executable_path}:/usr/bin:/bin:/usr/sbin:/sbin",
-                              "HOME" => $homeDirectory,
-                              "IPLAYER_OUTDIR" => directory }
-
+    environmentDictionary = baseEnvironment({"IPLAYER_OUTDIR" => directory})
     invokeGetIplayerWithArgs(args, andEnvironment:environmentDictionary)
   end
 	
@@ -101,12 +100,7 @@ class TaskWrapper
     args << "--type=#{type}"
     args << "--refresh"
 
-    bundled_executable_path = NSBundle.mainBundle.resourcePath
-    environmentDictionary = NSDictionary.dictionaryWithObjectsAndKeys("#{bundled_executable_path}:/usr/bin:/bin:/usr/sbin:/sbin",
-                                                                      "PATH",
-                                                                      $homeDirectory,
-                                                                      "HOME",
-                                                                      nil)
+    environmentDictionary = baseEnvironment()
 
     invokeGetIplayerWithArgs(args, andEnvironment:environmentDictionary)
   end

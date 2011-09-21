@@ -52,9 +52,9 @@ class PreferencesController < NSWindowController
   # Save on close
   def windowWillClose(notification)
     Logger.debug("PreferencesController windowWillClose")
-    NSUserDefaults.standardUserDefaults.synchronize
+    NSUserDefaults.standardUserDefaults.synchronize()
 
-    readPreferences
+    readPreferences()
 
     # Make the state changes in the main AppController
     NSApp.delegate.appController.setupStateAccordingToPreferences()

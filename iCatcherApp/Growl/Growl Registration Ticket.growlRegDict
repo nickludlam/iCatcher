@@ -15,11 +15,13 @@
 		<array>
 			<string>Started</string>
 			<string>NewFiles</string>
+			<string>Error</string>
 		</array>
 		<key>DefaultNotifications</key>
 		<array>
 			<string>Started</string>
 			<string>NewFiles</string>
+			<string>Error</string>
 		</array>
     </dict>
 </plist>

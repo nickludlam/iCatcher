@@ -33,7 +33,6 @@ class SinatraApp < Sinatra::Base
     end
   end
 
-
   get('/feeds/:feed_name/:file_name') do 
     path = File.join($downloadDirectory, params[:feed_name], params[:file_name])
     send_file(path)
@@ -44,7 +43,8 @@ class SinatraApp < Sinatra::Base
     uri = URI.parse(params[:url])
     if (uri.host == "www.bbc.co.uk" && uri.path =~ /^\/iplayer\/episode/)
       appController = NSApp.delegate.appController
-      NSApp.delegate.appController.performSelectorOnMainThread('downloadFromURL:', withObject:params[:url], waitUntilDone:false)
+      @status = NSApp.delegate.appController.downloadFromURL(params[:url])
+      #NSApp.delegate.appController.performSelectorOnMainThread('downloadFromURL:', withObject:params[:url], waitUntilDone:false)
       erb :downloading_adhoc
     else
       erb :bad_url
