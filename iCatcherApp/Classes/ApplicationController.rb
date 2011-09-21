@@ -48,7 +48,10 @@ $webserverURL = "http://localhost:#{$webserverPort}/"
 class ApplicationController
 
   VALID_MODES = [ :idle, :cacheUpdate, :downloading, :stopping ]
-  VALID_MODES_DESCRIPTION = { :idle => "Idle", :cacheUpdate => "Updating cache", :downloading => "Downloading (1/%s)", :stopping => "Stopping" }
+  VALID_MODES_DESCRIPTION = { :idle => "iCatcher is idle",
+                              :cacheUpdate => "Updating cache",
+                              :downloading => "Searching (#%s)",
+                              :stopping => "Stopping" }
   
   attr_writer :taskInspectorWindow
 	attr_writer :taskInspectorTextView
@@ -78,22 +81,24 @@ class ApplicationController
     checkAndCreateRequiredDirectories()
 		startServer()
     
-    @taskQueue = []    
+    @taskQueue = []
     nc = NSNotificationCenter.defaultCenter
     nc.addObserver(self,
                    selector:'taskFinished:',
                    name:'TaskWrapperTaskFinishedNotification',
                    object:nil)
     
-    cacheUpdate()
-    
     # Set up the preferences
-    NSApp.activateIgnoringOtherApps(true)
     @preferencesWindowController = PreferencesController.alloc.initWithWindowNibName("Preferences")    
-    @preferencesWindowController.setupPreferences
-    @preferencesWindowController.readPreferences
+    @preferencesWindowController.setupPreferences()
+    @preferencesWindowController.readPreferences()
+
+    setupStateAccordingToPreferences()
     
-    setupStateAccordingToPreferences
+    @cr = CacheReader.instance
+
+    @taskMode = :idle
+    updateCacheIfRequired()
   end
 
   def setupStateAccordingToPreferences
@@ -102,23 +107,25 @@ class ApplicationController
       setupTimer()
     else
       Logger.debug("autoSearch disabled")
-      cancelTimerIfRequired()
+      cancelTimerIfExists()
     end
     
     findTimerFireTime()
   end
 
-  def setupTimer()
-    cancelTimerIfRequired()
+  def setupTimer(interval = nil)
+    cancelTimerIfExists()
     
-    timer_interval = TIMER_INTERVALS[$preferences["autoSearchDropdownIndex"]] * 60 * 60
+    if interval == nil
+      interval = TIMER_INTERVALS[$preferences["autoSearchDropdownIndex"]] * 60 * 60
+    end
     
-    Logger.debug("Timer interval is #{timer_interval}")
+    Logger.debug("Timer interval is #{interval}")
     
-    @downloadTimer = NSTimer.scheduledTimerWithTimeInterval(timer_interval, target:self, selector:'runAllSearches:', userInfo:nil, repeats:true)
+    @downloadTimer = NSTimer.scheduledTimerWithTimeInterval(interval, target:self, selector:'startStopPVRSearches:', userInfo:nil, repeats:true)
   end
     
-  def cancelTimerIfRequired()
+  def cancelTimerIfExists()
     if @downloadTimer
       Logger.debug("Cancelling the timer")
       @downloadTimer.invalidate
@@ -156,16 +163,18 @@ class ApplicationController
   # Menu contents
   ###########################################################
   def setupMenu(menu)
+    # Debug sub-menu
     @debugmenu = NSMenu.alloc.initWithTitle("Debug")
-    @forceCacheUpdateMenuItem = addMenuItemToMenu(@debugmenu, "Force cache update", "forceCacheUpdate")
+    @forceCacheUpdateMenuItem = addMenuItemToMenu(@debugmenu, "Force cache update", "updateCache")
     addMenuItemToMenu(@debugmenu, "Show activity inspector", "showTaskInspectorWindow")
     addMenuItemToMenu(@debugmenu, "Setup iTunes podcasts", "setupiTunes:")
     
+    # Main
     @activityPhaseMenu = addMenuItemToMenu(menu, "Status: Idle", nil)
     @timeLeftMenuItem = addMenuItemToMenu(menu, "", nil)
     addMenuItemToMenu(menu, nil, nil)
     @editSubscriptionsMenuItem = addMenuItemToMenu(menu, "Edit subscriptions", "showSubscriptionsWindow")
-    @startDownloaderMenuItem = addMenuItemToMenu(menu, "Check subscriptions now", "runAllSearches:")
+    @startDownloaderMenuItem = addMenuItemToMenu(menu, "Run now", "startStopPVRSearches:")
     addMenuItemToMenu(menu, nil, nil)
     
     @debugmenuItem = addMenuItemToMenu(menu, "Debug", nil)
@@ -225,24 +234,20 @@ class ApplicationController
 
 	def setTaskMode(newmode)
     raise "InvalidTaskMode #{newmode}" unless VALID_MODES.index(newmode)
-        
-    # If we're transitioning from :downloading -> :idle, reset the timer
-    if @taskMode == :downloading && newmode == :idle
-      setupTimer()
-    end
     
     if @taskMode == :cacheUpdate && newmode == :idle
       @cr.populateCachesIfRequired()
     end
-    
+        
 		@taskMode = newmode
 
 		Logger.debug("Starting task mode #{@taskMode}")
 
     if newmode == :idle
-      @startDownloaderMenuItem.setTitle("Check subscriptions now")
+      @startDownloaderMenuItem.setTitle("Run now")
       @status_item.view.endAnimation()
       enableTaskWrapperMenuItems()
+      setupTimer()
     elsif newmode == :cacheUpdate
       disableTaskWrapperMenuItems()
       @status_item.view.startAnimation()
@@ -258,24 +263,26 @@ class ApplicationController
 	
 	def taskFinished(notification)
 		Logger.debug("taskFinished #{@taskMode}")
-    Logger.debug("Notification is #{notification}")
+    Logger.debug("Notification is #{notification.inspect}")
     Logger.debug("UserInfo is #{notification.userInfo.inspect}")
     taskInfo = notification.userInfo
     exitCode = taskInfo["terminationStatus"]
     
     if @taskMode == :stopping
       NSApp.delegate.growlMessage(:title => "Download stopped",
-                                                            :description => "The download has been stopped",
-                                                            :notificationName => "Stopped")
+                                  :description => "The download has been stopped",
+                                  :notificationName => "Stopped")
     end
     
 		@tw = nil
     
     if exitCode == 0
+      appendOutputToTaskInspector("\nTASK FINISHED!\n")
       self.performSelectorOnMainThread('checkWorkQueue', withObject:nil, waitUntilDone:false)
     else
       Logger.error("Last run exited uncleanly. Halting the queue")
-      NSApplication.sharedApplication.delegate.growlError()
+      appendOutputToTaskInspector("\nTASK FAILED!\n")
+      NSApp.delegate.growlError()
       @taskQueue.clear
       setTaskMode(:idle)
     end
@@ -291,7 +298,7 @@ class ApplicationController
     @editSubscriptionsMenuItem.enabled = true
 	end
 
-	def appendOutputToTaskInspector(output)		
+	def appendOutputToTaskInspector(output)
 		start = @taskInspectorTextView.textStorage.mutableString.length
 		@taskInspectorTextView.textStorage.mutableString.appendString(output)
 		length = @taskInspectorTextView.textStorage.length()
@@ -320,7 +327,8 @@ class ApplicationController
       @preferencesWindowController.window.orderFrontRegardless if @preferencesWindowController.window.isVisible
     end
         
-    @activityPhaseMenu.title = ("Status: %s" % (VALID_MODES_DESCRIPTION[@taskMode] % @taskQueue.length))
+    activity_count = @taskQueue.length + 1
+    @activityPhaseMenu.title = VALID_MODES_DESCRIPTION[@taskMode] % activity_count
     
     @status_item.view.showHighlightImage = true
     @status_item.view.setNeedsDisplay(true)
@@ -367,16 +375,7 @@ class ApplicationController
 
   # Window delegate methods
   ############################################################
- 
-  def windowShouldClose(sender)
-    if sender == @downloaderOutputWindow
-      sender.fadeOutAndOrderOut(true)
-      false
-    else
-      true
-    end
-  end
-	
+ 	
 	def quit(sender = nil)
 		@tw.terminate() if @tw
 		@defaults.synchronize
@@ -393,20 +392,27 @@ class ApplicationController
   end
   
   def downloadFromURL(url)
-    pid = ApplicationController.pidFromURL(url)
-    
-    if pid
-      index, type = @cr.programmeIndexAndTypeForPID(pid)
-      if index and ! checkQueueForIndex(index)
-        @taskQueue << [index, type, $downloaderAdHocDirectory]
+    if @currentTask
+      if @currentTask.url == url
+        Logger.debug("That's the current download!")
+        return "Download is already in progress"
       end
-    else
-      @taskQueue << [url]
     end
+
+    Logger.debug("Enqueueing URL")
+
+    if @taskQueue.length > 0
+      status = "Queued up for download"
+    else
+      status = "Starting the download now"
+    end
+
+    @taskQueue << Task.downloadFromURL(url)
+    self.performSelectorOnMainThread("checkWorkQueue", withObject:nil, waitUntilDone:false)
     
-    checkWorkQueue()
+    status
   end
-  
+      
   def stopAllTasks(sender = nil)
     setTaskMode(:stopping)
     @taskQueue.clear
@@ -426,55 +432,44 @@ class ApplicationController
     false
   end
 
-  def cacheUpdate()
-    @cr = CacheReader.instance
-    if @cr.cacheStale?("radio")
-      @taskQueue << ["updateRadioCache"]
-    end
-    
-    if
-      @cr.cacheStale?("tv")
-      @taskQueue << ["updateTVCache"]
+  
+  def updateCache(sender = nil)
+    ["radio", "tv"].each do |mediatype|
+      Logger.debug("Adding cacheUpdateTask(#{mediatype}) to the taskQueue")
+      @taskQueue << Task.cacheUpdate(mediatype) 
     end
     
     checkWorkQueue()
   end
 
-  def forceCacheUpdate(sender = nil)
-		if @tw
-      Logger.debug("Terminating the old task")
-		else
-      @taskQueue << ["updateRadioCache"]
-      @taskQueue << ["updateTVCache"]
-		end
+    
+  def updateCacheIfRequired(sender = nil)    
+    ["radio", "tv"].each do |mediatype|
+      if @cr.cacheStale?(mediatype)
+        Logger.debug("Adding cacheUpdate(#{mediatype}) to the taskQueue")
+        @taskQueue << Task.cacheUpdate(mediatype) 
+      end
+    end
     
     checkWorkQueue()
-	end
+  end
 
-  def runAllSearches(sender = nil)
+  # Either starts or stops a download session
+  def startStopPVRSearches(sender = nil)
     if @tw
+      Logger.debug("Stopping the running task")
       stopAllTasks()
       return
     end
     
-    return unless @taskQueue.empty?
-    cr = CacheReader.instance
+    # So we don't accidentally have the timer cancel us!
+    cancelTimerIfExists()
     
     # Update the caches if they're stale
-    if cr.cacheStale?("radio")
-      @taskQueue << ["updateRadioCache"]
-    end
-
-    if cr.cacheStale?("tv")
-      @taskQueue << ["updateTVCache"]
-    end
+    updateCacheIfRequired()
     
     PVRSearch.all.each do |search|
-      matches = cr.programmeIndexesForPVRSearch(search)
-      # Put them on the queue
-      matches.each do |m|
-        @taskQueue << [m, search.type, search.mediaDirectory] if search.active
-      end
+      @taskQueue << Task.downloadFromPVRSearch(search)
     end
     
     checkWorkQueue()
@@ -482,49 +477,96 @@ class ApplicationController
 
   # Background work
   def checkWorkQueue(sender = nil)
-    return if @tw # Busy already
+    if @tw # Busy already
+      Logger.debug("Busy")
+      return
+    elsif @taskQueue.length == 0
+      Logger.debug("Empty")
+      setTaskMode(:idle)
+      return
+    end
     
-    if @taskQueue.length > 0        
+
+    # Get the next item to work with
+    @currentTask = @taskQueue.shift
+    Logger.debug("Processing task #{@currentTask}")
+
+    # We don't need an @tw if we are unpacking a pvrsearch
+    unless @currentTask.mode == :pvrsearch
       @tw = TaskWrapper.instance
       @tw.delegate = self
+    end
 
-      task = @taskQueue.shift
+    # Clear the task inspector contents
+    @taskInspectorTextView.textStorage.mutableString.setString("")
 
-      # Clear the task inspector contents
-      @taskInspectorTextView.textStorage.mutableString.setString("")
-
-      # Bring up the taskInspectorWindow if we need to according to the prefs
-      @taskInspectorWindow.makeKeyAndOrderFront if $preferences['autoShowActivityWindow']
+    # Bring up the taskInspectorWindow if we need to according to the prefs
+    showTaskInspectorWindow() if $preferences['autoShowActivityWindow']
       
-      if task.length == 1 && task[0] == 'updateRadioCache'
-        setTaskMode(:cacheUpdate)
-        @tw.updateGetIplayerCaches('radio')
-      elsif task.length == 1 && task[0] == 'updateTVCache'
-        setTaskMode(:cacheUpdate)
-        @tw.updateGetIplayerCaches('tv')
-      elsif task.length == 1
-        @tw.downloadFromURL(task[0], $downloaderAdHocDirectory)
-      elsif task.length == 3
-        setTaskMode(:downloading)
-        index, type, directory = task
-        Logger.debug("Downloading index #{index} of type #{type} to dir #{directory}")
-        @tw.downloadFromIndex(index, type, directory)
-      else
-        Logger.error("Unknown task object #{task}")
+    if @currentTask.mode == :cacheUpdate
+      setTaskMode(:cacheUpdate)
+      @tw.updateGetIplayerCaches(@currentTask.type)
+    elsif @currentTask.mode == :url
+      Logger.debug("Downloading from url #{@currentTask.url}")
+      issueWorkForURLTask(@currentTask)
+    elsif @currentTask.mode == :pvrsearch
+      # Unpack the PVRSearch into a series of indexes
+      @cr.programmeIndexesForPVRSearch(@currentTask.pvrsearch).each do |index|
+        Logger.debug("Adding index #{index} to @taskQueue for pvrSearch #{@currentTask.pvrsearch.displayname}")
+        @taskQueue << Task.downloadFromIndex(index, @currentTask.pvrsearch.type, @currentTask.pvrsearch.mediaDirectory)
       end
+      checkWorkQueue()
+    elsif @currentTask.mode == :index
+      Logger.debug("Downloading index #{@currentTask.index} of type #{@currentTask.type} to dir #{@currentTask.directory}")
+      setTaskMode(:downloading)
+      @tw.downloadFromIndex(@currentTask.index, @currentTask.type, @currentTask.directory)
     else
-      #Logger.debug("No work to do")
-      setTaskMode(:idle)
+      Logger.error("Unknown task object #{@currentTask}")
     end
   end
+
+  def issueWorkForURLTask(task)
+    pid = ApplicationController.pidFromURL(task.url)
+    
+    if pid
+      Logger.debug("Found a pid for url #{task.url}")
+      index, type = @cr.programmeIndexAndTypeForPID(pid)
+      if index
+        Logger.debug("Found a current programme index for pid #{pid}")
+        setTaskMode(:downloading)
+        @tw.downloadFromIndex(index, type, $downloaderAdHocDirectory)
+        else
+        Logger.debug("Could not find a programme index for pid #{pid}. Passing to get_iplayer")
+        setTaskMode(:downloading)
+        @tw.downloadFromURL(task.url)
+      end
+    else
+      Logger.debug("Could not find a pid for the given URL. Passing to get_iplayer")
+      setTaskMode(:downloading)
+      @tw.downloadFromURL(task.url)
+    end
+  end
+
+
+  # Misc methods
 
   def setupiTunes(sender = nil)
     NSApp.delegate.setupiTunes()
   end
 
-#
+  # Sleep / Wake notifications
 
+  def receiveSleepNote(notification)
+    Logger.debug("Zzzzz")
+  end
 
+  def receiveWakeNote(notification)
+    Logger.debug("Whaaa?!")
+    #setupTimer
+  end
 
-  
+  def setupSleepWakeNotifications()
+    NSWorkspace.sharedWorkspace.notificationCenter.addObserver(self, selector:"receiveSleepNote:", name: NSWorkspaceWillSleepNotification, object: nil)
+    NSWorkspace.sharedWorkspace.notificationCenter.addObserver(self, selector:"receiveWakeNote:", name: NSWorkspaceDidWakeNotification, object: nil)
+  end
 end
