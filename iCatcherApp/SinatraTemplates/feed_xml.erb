@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+<channel>
+<title><%= @mc.title %></title>
+<link><%= @mc.link %></link>
+<description><%= @mc.description %></description>
+<language>en-us</language>
+
+<% @mc.media_items.each do |mi| %>
+  <item>
+    <title><%= mi.title %></title>
+    <enclosure url="<%= mi.url %>" length="<%= mi.size %>" type="<%= mi.mime_type %>" />
+    <guid><%= mi.url %></guid>
+    <pubDate><%= mi.pub_date %></pubDate>
+    <description>
+<![CDATA[
+<%= mi.description %>
+]]>
+    </description>
+  </item>
+<% end %>
+</channel>
+</rss>

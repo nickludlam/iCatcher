@@ -96,5 +96,5 @@ class AppDelegate
       appController.showTaskInspectorWindow()
     end
   end
-  
+    
 end

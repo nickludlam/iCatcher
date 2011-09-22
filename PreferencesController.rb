@@ -52,9 +52,6 @@ class PreferencesController < NSWindowController
   # Save on close
   def windowWillClose(notification)
     Logger.debug("PreferencesController windowWillClose")
-    NSUserDefaults.standardUserDefaults.synchronize()
-
-    readPreferences()
 
     # Make the state changes in the main AppController
     NSApp.delegate.appController.setupStateAccordingToPreferences()
@@ -65,6 +62,8 @@ class PreferencesController < NSWindowController
     
     if PREFERENCE_KEYPATHS.index(ch["new"])
       Logger.debug("Got a new value of #{ch['new']} for #{aKey}")
+      $preferences[aKey] = ch["new"]
+      NSUserDefaults.standardUserDefaults.synchronize()
     end
   end  
 

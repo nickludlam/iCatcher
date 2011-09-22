@@ -13,7 +13,7 @@ class MediaCollection
 end
 
 class MediaItem
-  attr_accessor :media_id, :filepath, :size, :url, :title, :description, :pub_date, :author, :image_url
+  attr_accessor :media_id, :filepath, :size, :url, :title, :description, :pub_date, :human_date, :author, :image_url
   
   MIME_TYPES = { '.mp3' => 'audio/mpeg', '.m4a' => 'audio/mp4', '.mp4' => 'video/mp4' }
 
@@ -33,11 +33,12 @@ class MediaItem
 		
 		@description = tags.comment || ""
 		@pub_date = File.ctime(@filepath).strftime("%a, %d %b %Y %T %z")
+    @human_date = File.ctime(@filepath).strftime("%A %h %d, %I:%M %p") # Human formatted version
 		@author = tags.artist || ""
 		
 		collection_name = File.basename(File.dirname(@filepath))
     file_basename = File.basename(@filepath)
-		@url = "http://localhost:#{$webserverPort}/feeds/#{collection_name}/#{file_basename}"
+		@url = "http://localhost:#{$webserverPort}/files/#{collection_name}/#{file_basename}"
   end
   
 	def file_suffix

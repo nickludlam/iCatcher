@@ -99,14 +99,14 @@
 						<object class="NSPopUpButton" id="780788543">
 							<reference key="NSNextResponder" ref="1006"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{383, 188}, {85, 26}}</string>
+							<string key="NSFrame">{{383, 188}, {99, 26}}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="682402018"/>
 							<string key="NSReuseIdentifierKey">_NS:868</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSPopUpButtonCell" key="NSCell" id="188428200">
-								<int key="NSCellFlags">-1539178944</int>
+								<int key="NSCellFlags">71433792</int>
 								<int key="NSCellFlags2">2048</int>
 								<object class="NSFont" key="NSSupport" id="164798555">
 									<string key="NSName">LucidaGrande</string>
@@ -121,23 +121,7 @@
 								<string key="NSKeyEquivalent"/>
 								<int key="NSPeriodicDelay">400</int>
 								<int key="NSPeriodicInterval">75</int>
-								<object class="NSMenuItem" key="NSMenuItem" id="446846546">
-									<reference key="NSMenu" ref="199205669"/>
-									<string key="NSTitle">4 weeks</string>
-									<string key="NSKeyEquiv"/>
-									<int key="NSMnemonicLoc">2147483647</int>
-									<int key="NSState">1</int>
-									<object class="NSCustomResource" key="NSOnImage" id="215647968">
-										<string key="NSClassName">NSImage</string>
-										<string key="NSResourceName">NSMenuCheckmark</string>
-									</object>
-									<object class="NSCustomResource" key="NSMixedImage" id="593521914">
-										<string key="NSClassName">NSImage</string>
-										<string key="NSResourceName">NSMenuMixedState</string>
-									</object>
-									<string key="NSAction">_popUpItemAction:</string>
-									<reference key="NSTarget" ref="188428200"/>
-								</object>
+								<nil key="NSMenuItem"/>
 								<bool key="NSMenuItemRespectAlignment">YES</bool>
 								<object class="NSMenu" key="NSMenu" id="199205669">
 									<string key="NSTitle">OtherViews</string>
@@ -148,8 +132,15 @@
 											<string key="NSTitle">1 week</string>
 											<string key="NSKeyEquiv"/>
 											<int key="NSMnemonicLoc">2147483647</int>
-											<reference key="NSOnImage" ref="215647968"/>
-											<reference key="NSMixedImage" ref="593521914"/>
+											<int key="NSState">1</int>
+											<object class="NSCustomResource" key="NSOnImage" id="70702852">
+												<string key="NSClassName">NSImage</string>
+												<string key="NSResourceName">NSMenuCheckmark</string>
+											</object>
+											<object class="NSCustomResource" key="NSMixedImage" id="152355917">
+												<string key="NSClassName">NSImage</string>
+												<string key="NSResourceName">NSMenuMixedState</string>
+											</object>
 											<string key="NSAction">_popUpItemAction:</string>
 											<reference key="NSTarget" ref="188428200"/>
 										</object>
@@ -158,8 +149,8 @@
 											<string key="NSTitle">2 weeks</string>
 											<string key="NSKeyEquiv"/>
 											<int key="NSMnemonicLoc">2147483647</int>
-											<reference key="NSOnImage" ref="215647968"/>
-											<reference key="NSMixedImage" ref="593521914"/>
+											<reference key="NSOnImage" ref="70702852"/>
+											<reference key="NSMixedImage" ref="152355917"/>
 											<string key="NSAction">_popUpItemAction:</string>
 											<reference key="NSTarget" ref="188428200"/>
 										</object>
@@ -168,16 +159,25 @@
 											<string key="NSTitle">3 weeks</string>
 											<string key="NSKeyEquiv"/>
 											<int key="NSMnemonicLoc">2147483647</int>
-											<reference key="NSOnImage" ref="215647968"/>
-											<reference key="NSMixedImage" ref="593521914"/>
+											<reference key="NSOnImage" ref="70702852"/>
+											<reference key="NSMixedImage" ref="152355917"/>
 											<string key="NSAction">_popUpItemAction:</string>
 											<reference key="NSTarget" ref="188428200"/>
 										</object>
-										<reference ref="446846546"/>
+										<object class="NSMenuItem" id="446846546">
+											<reference key="NSMenu" ref="199205669"/>
+											<string key="NSTitle">4 weeks</string>
+											<string key="NSKeyEquiv"/>
+											<int key="NSMnemonicLoc">2147483647</int>
+											<reference key="NSOnImage" ref="70702852"/>
+											<reference key="NSMixedImage" ref="152355917"/>
+											<string key="NSAction">_popUpItemAction:</string>
+											<reference key="NSTarget" ref="188428200"/>
+										</object>
 									</object>
 									<reference key="NSMenuFont" ref="164798555"/>
 								</object>
-								<int key="NSSelectedIndex">3</int>
+								<int key="NSSelectedIndex">-1</int>
 								<int key="NSPreferredEdge">1</int>
 								<bool key="NSUsesItemFromMenu">YES</bool>
 								<bool key="NSAltersState">YES</bool>
@@ -270,7 +270,7 @@
 							<string key="NSReuseIdentifierKey">_NS:771</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="366510188">
-								<int key="NSCellFlags">-1543373312</int>
+								<int key="NSCellFlags">-2080244224</int>
 								<int key="NSCellFlags2">0</int>
 								<string key="NSContents">Automatically delete media after</string>
 								<reference key="NSSupport" ref="164798555"/>
@@ -294,7 +294,7 @@
 						<object class="NSPopUpButton" id="747645493">
 							<reference key="NSNextResponder" ref="1006"/>
 							<int key="NSvFlags">268</int>
-							<string key="NSFrame">{{347, 227}, {85, 26}}</string>
+							<string key="NSFrame">{{347, 227}, {99, 26}}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<reference key="NSWindow"/>
 							<reference key="NSNextKeyView" ref="312231021"/>
@@ -318,8 +318,8 @@
 									<string key="NSKeyEquiv"/>
 									<int key="NSMnemonicLoc">2147483647</int>
 									<int key="NSState">1</int>
-									<reference key="NSOnImage" ref="215647968"/>
-									<reference key="NSMixedImage" ref="593521914"/>
+									<reference key="NSOnImage" ref="70702852"/>
+									<reference key="NSMixedImage" ref="152355917"/>
 									<string key="NSAction">_popUpItemAction:</string>
 									<reference key="NSTarget" ref="361468624"/>
 								</object>
@@ -334,8 +334,8 @@
 											<string key="NSTitle">12 hours</string>
 											<string key="NSKeyEquiv"/>
 											<int key="NSMnemonicLoc">2147483647</int>
-											<reference key="NSOnImage" ref="215647968"/>
-											<reference key="NSMixedImage" ref="593521914"/>
+											<reference key="NSOnImage" ref="70702852"/>
+											<reference key="NSMixedImage" ref="152355917"/>
 											<string key="NSAction">_popUpItemAction:</string>
 											<reference key="NSTarget" ref="361468624"/>
 										</object>
@@ -344,8 +344,8 @@
 											<string key="NSTitle">24 hours</string>
 											<string key="NSKeyEquiv"/>
 											<int key="NSMnemonicLoc">2147483647</int>
-											<reference key="NSOnImage" ref="215647968"/>
-											<reference key="NSMixedImage" ref="593521914"/>
+											<reference key="NSOnImage" ref="70702852"/>
+											<reference key="NSMixedImage" ref="152355917"/>
 											<string key="NSAction">_popUpItemAction:</string>
 											<reference key="NSTarget" ref="361468624"/>
 										</object>
@@ -466,7 +466,7 @@
 							<string key="NSReuseIdentifierKey">_NS:771</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="790577032">
-								<int key="NSCellFlags">-1543373312</int>
+								<int key="NSCellFlags">-2080244224</int>
 								<int key="NSCellFlags2">0</int>
 								<string key="NSContents">Sync iTunes immediately after downloads complete</string>
 								<reference key="NSSupport" ref="164798555"/>

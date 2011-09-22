@@ -27,8 +27,14 @@
 
     <div class="row">
       <div class="twelvecol last">
-        <h1>Downloading</h1>
-        <p><%= @status %></p>
+        <h1><%= @mc.title %></h1>
+        <br/>
+    <% @mc.media_items.each do |mi| %>
+         <h3><%= mi.title %></h3>
+         <p><%= mi.description %></p>
+         <small><p>Downloaded on <%= mi.human_date %></p></small>
+         <hr />
+    <% end %>
       </div>
     </div>
   </div>

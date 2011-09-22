@@ -1,18 +1,59 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
-<channel>
-  <title><%= mc.title %></title>
-	<link><%= mc.link %></link>
-	<description><%= mc.description %></description>
-	<language>en-us</language>
+<!doctype html>
+<html lang="en">
 
-	<%- media_items.each do |mi| -%>
-  <item>
-    <title><%= mi.title %></title>
-    <enclosure url="<%= mi.url %>" length="<%= mi.filesize %>" type="<%= mi.mime_type %>" />
-    <guid><%= mi.url %></guid>
-    <pubDate><%= mi.pub_date %></pubDate>
-  </item>
-	<%- end -%>
-</channel>
-</rss>
+<head>
+	<meta charset="utf-8" />
+  <title>iCatcher</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="icon" type="image/png" href="<%= @serverURL %>resources/icatcher_icon_16.png" />
+
+  <!-- 1140 css grid things -->
+  <link rel="stylesheet" href="/resources/1140.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/resources/styles.css" type="text/css" media="screen" />
+	<script type="text/javascript" src="/resources/css3-mediaqueries.js"></script>  
+</head>
+<body>
+
+
+  <div class="container">
+    <div class="row">
+      <div class="twelvecol last">
+        <div class="maintitle">
+          <a href="<%= $webserverURL %>"><img src="/resources/icatcher_icon_512.png" class="largeicon" /></a>
+          <h1 class="largetitle"><a href="<%= $webserverURL %>">iCatcher</a></h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="fourcol">
+        <h1>About</h1>
+        <p>iCatcher helps you by automatically downloading your favorite programmes from BBC iPlayer and then syncing them with iTunes. It does the all the hard work, and you get to put your feet up!</p>
+        <p><strong>Please note</strong> this software is still in testing, so please <a href="mailto:nick@recoil.org?subject=iCatcher">send me comments and bug reports</a>!</p>
+        <p>iCatcher is written and maintained by <a href="http://nick.recoil.org/">Nick Ludlam</a>.</p>
+      </div>
+      <div class="fourcol">
+        <h1>Podcast feeds</h1>
+        <h2>User subscriptions</h2>
+        <ul><% @all_searches.each do |s| %>
+          <li><a href="/feeds/<%= s.filename %>.html"><%= s.displayname %></a></li>
+        <% end %>
+        </ul>
+        <h2>Built-in subscriptions</h2>
+        <p><a href="/adhoc_feed.xml">Ad Hoc Downloads</a></p>
+      </div>
+        <div class="fourcol last">
+          <h1>Tools</h1>
+          <h2>Bookmarklet</h2>
+          <b><a id="bookmarklet"
+onclick="window.alert('Drag this link to your bookmarks toolbar...');return false;"
+href="javascript:document.location='http://localhost:8019/instant-download?url='+encodeURIComponent(document.location.href)" />
+          iCatch</a></b><br/>
+          <span>Drag the link above to the bookmarks bar and use on iPlayer programme pages to make ad-hoc downloads. It will work on both tv and radio.</span>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

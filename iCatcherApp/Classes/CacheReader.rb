@@ -146,6 +146,7 @@ class CacheReader
 		
     Logger.debug(pvrsearch.inspect)
     
+    # Add in searching on the 'desc' column if the pvrsearch is so configured
     fields << ",desc" if pvrsearch.descriptionSearch.to_i == 1
     
     Logger.debug("programmeDetailsForPVRSearch searching in fields: #{fields}")

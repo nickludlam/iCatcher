@@ -1,0 +1,101 @@
+/* ============================== */
+/* ! Layout for desktop version   */
+/* ============================== */
+
+	body {
+		font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+		font-size: 14px;
+		color: #3D3D3D;
+    line-height: 1.3em;
+	}
+
+  ul { list-style: none; }
+
+  h1 { margin: 1.0em 0 }
+
+  h2 { margin: 0.5em 0 }
+
+  h3 { margin: 0.2em 0 }
+
+  p { margin: 1.12em 0 }
+
+  strong { color: #000; }
+
+  small {
+    color: #999;
+  }
+
+
+  .largeicon {
+    width: 128px;
+    height: 128px;
+    float: right;
+  }
+
+  .maintitle { 
+    padding-top: 30px;
+    padding-bottom: 50px;
+  }
+
+  h1.largetitle {
+    font-size: 100px;
+    font-weight: bold;
+    line-height: 1em;
+    margin: 0px;
+  }
+
+  h1.largetitle a {
+    color: #3D3D3D;
+    text-decoration: none;
+
+  }
+
+
+/* ============================= */
+/* ! Layout for mobile version   */
+/* ============================= */
+
+@media handheld, only screen and (max-width: 767px) {
+
+	body {
+		margin-bottom: 30px;
+	}
+
+  .maintitle { 
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+  
+  .largeicon {
+    width: 64px;
+    height: 64px;
+    float: right;
+  }
+  
+  h1.largetitle {
+    font-size: 70px;
+    font-weight: bold;
+    line-height: 1em;
+    margin: 0px;
+  }
+  
+  h1.largetitle a {
+    color: #3D3D3D;
+    text-decoration: none;
+  }
+
+}
+
+
+/* ========================================== */
+/* ! Provide higher res assets for iPhone 4   */
+/* ========================================== */
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2) { 
+
+/*	.logo {
+		background: url(logo2x.jpg) no-repeat;
+		background-size: 212px 303px;
+	}*/
+
+}

@@ -12,8 +12,9 @@ class SinatraApp < Sinatra::Base
   set :views, $sinatraViewsPath
   
   get('/') do
+    @serverURL = $webserverURL
     @all_searches = PVRSearch.all  
-    erb :all_feeds
+    erb :index
   end
 
   get('/adhoc_feed.xml') do
@@ -21,22 +22,22 @@ class SinatraApp < Sinatra::Base
     erb :feed
   end
 
-  get('/feeds/:feed_name.xml') do
+  get('/feeds/:feed_name.:format') do
     Logger.debug("GET -> #{params.inspect}")
     base = $downloadDirectory
     search = PVRSearch.load(params[:feed_name])
     if search
       @mc = MediaScanner.createCollectionFromPVRSearch(search)
-      erb :feed
+      erb "feed_#{params[:format]}".to_sym
     else
       erb :bad_url
     end
   end
 
-  get('/feeds/:feed_name/:file_name') do 
-    path = File.join($downloadDirectory, params[:feed_name], params[:file_name])
-    send_file(path)
-  end
+#get('/feeds/:feed_name/:file_name') do 
+#    path = File.join($downloadDirectory, params[:feed_name], params[:file_name])
+#    send_file(path)
+#  end
 
   get('/instant-download') do
     Logger.debug("INSTANT DOWNLOAD -> #{params.inspect}")

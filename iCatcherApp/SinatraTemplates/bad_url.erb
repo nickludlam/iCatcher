@@ -1,9 +1,37 @@
-<html>
+<!doctype html>
+<html lang="en">
+
 <head>
-<title>Bad URL</title>
+	<meta charset="utf-8" />
+  <title>Bad URL</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="icon" type="image/png" href="<%= @serverURL %>resources/icatcher_icon_16.png" />
+
+  <!-- 1140 css grid things -->
+  <link rel="stylesheet" href="/resources/1140.css" type="text/css" media="screen" />
+  <link rel="stylesheet" href="/resources/styles.css" type="text/css" media="screen" />
+	<script type="text/javascript" src="/resources/css3-mediaqueries.js"></script>  
 </head>
 <body>
-<h1>Bad URL</h1>
-<p>You can only use the iCatcher bookmarklet on BBC iPlayer webpages</p>
+
+  <div class="container">
+    <div class="row">
+      <div class="twelvecol last">
+        <div class="maintitle">
+          <a href="<%= $webserverURL %>"><img src="/resources/icatcher_icon_512.png" class="largeicon" /></a>
+          <h1 class="largetitle"><a href="<%= $webserverURL %>">iCatcher</a></h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="twelvecol last">
+        <h1>Bad URL</h1>
+        <p>Sorry, you can only use iCatcher to download content from the BBC iPlayer.</p>
+      </div>
+    </div>
+  </div>
 </body>
+
 </html>

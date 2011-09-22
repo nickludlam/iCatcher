@@ -20,7 +20,9 @@ require 'control_tower'
 require 'sinatra'
 require 'htmlentities'
 
+# Need to keep this in sync with the UI
 TIMER_INTERVALS = [6, 12, 24]
+DELETE_OLDER_THAN_WEEKS = [1, 2, 3, 4]
 
 # Append our bundled gems to the search path
 bundled_gem_path = NSBundle.mainBundle.resourcePath + "/gems/"
@@ -97,6 +99,9 @@ class ApplicationController
     
     @cr = CacheReader.instance
 
+    # Throw this result away, as it will be the total media count
+    calculateAvailableMediaCountDifference
+    
     @taskMode = :idle
     updateCacheIfRequired()
   end
@@ -170,18 +175,20 @@ class ApplicationController
     addMenuItemToMenu(@debugmenu, "Setup iTunes podcasts", "setupiTunes:")
     
     # Main
-    @activityPhaseMenu = addMenuItemToMenu(menu, "Status: Idle", nil)
-    @timeLeftMenuItem = addMenuItemToMenu(menu, "", nil)
-    addMenuItemToMenu(menu, nil, nil)
-    @editSubscriptionsMenuItem = addMenuItemToMenu(menu, "Edit subscriptions", "showSubscriptionsWindow")
     @startDownloaderMenuItem = addMenuItemToMenu(menu, "Run now", "startStopPVRSearches:")
+    @editSubscriptionsMenuItem = addMenuItemToMenu(menu, "Edit subscriptions", "showSubscriptionsWindow")
+    @openWebpageMenuItem = addMenuItemToMenu(menu, "View podcasts", "openIndexPage:")
+    addMenuItemToMenu(menu, nil, nil)
+    @activityPhaseMenu = addMenuItemToMenu(menu, "Status: Idle", nil)
+    addMenuItemToMenu(menu, nil, nil)
+    @timeLeftMenuItem = addMenuItemToMenu(menu, "", nil)
     addMenuItemToMenu(menu, nil, nil)
     
     @debugmenuItem = addMenuItemToMenu(menu, "Debug", nil)
     menu.setSubmenu(@debugmenu, forItem: @debugmenuItem)
     
     addMenuItemToMenu(menu, nil, nil)
-    addMenuItemToMenu(menu, "Preferences", "showPreferencesWindow", ",")
+    addMenuItemToMenu(menu, "Preferences...", "showPreferencesWindow", ",")
     addMenuItemToMenu(menu, "Check for updates...", "checkForUpdates")
     addMenuItemToMenu(menu, "Quit iCatcher", "quit")
   end
@@ -210,6 +217,7 @@ class ApplicationController
     newMenuItem
   end
 	
+  #
   # Windows
 
   def showTaskInspectorWindow(sender = nil)
@@ -218,6 +226,7 @@ class ApplicationController
     @taskInspectorWindow.makeKeyAndOrderFront(nil)
   end
   
+  # TODO: Needs some refactoring, as we have a few different methods for bringing windows forward
   def showSubscriptionsWindow(sender = nil)
     NSApp.activateIgnoringOtherApps(true)
     @subscriptionsEditorWindow.delegate.becomeActive
@@ -242,29 +251,28 @@ class ApplicationController
 		@taskMode = newmode
 
 		Logger.debug("Starting task mode #{@taskMode}")
-
+    
     if newmode == :idle
       @startDownloaderMenuItem.setTitle("Run now")
       @status_item.view.endAnimation()
-      enableTaskWrapperMenuItems()
       setupTimer()
+      processUpdatedMediaCount()
+      deleteOldMedia()
     elsif newmode == :cacheUpdate
-      disableTaskWrapperMenuItems()
       @status_item.view.startAnimation()
       @startDownloaderMenuItem.setTitle("Stop cache update")
     elsif newmode == :downloading
-      disableTaskWrapperMenuItems()
+      countAvailableMedia()
       @status_item.view.startAnimation()
       @startDownloaderMenuItem.setTitle("Stop downloads")
     elsif newmode == :stopping
-      disableTaskWrapperMenuItems()
     end
 	end
 	
 	def taskFinished(notification)
 		Logger.debug("taskFinished #{@taskMode}")
-    Logger.debug("Notification is #{notification.inspect}")
-    Logger.debug("UserInfo is #{notification.userInfo.inspect}")
+    #Logger.debug("Notification is #{notification.inspect}")
+    #Logger.debug("UserInfo is #{notification.userInfo.inspect}")
     taskInfo = notification.userInfo
     exitCode = taskInfo["terminationStatus"]
     
@@ -288,16 +296,6 @@ class ApplicationController
     end
   end
 	
-	def disableTaskWrapperMenuItems
-		@forceCacheUpdateMenuItem.enabled = false
-    @editSubscriptionsMenuItem.enabled = false
-	end
-	
-	def enableTaskWrapperMenuItems
-		@forceCacheUpdateMenuItem.enabled = true
-    @editSubscriptionsMenuItem.enabled = true
-	end
-
 	def appendOutputToTaskInspector(output)
 		start = @taskInspectorTextView.textStorage.mutableString.length
 		@taskInspectorTextView.textStorage.mutableString.appendString(output)
@@ -311,7 +309,13 @@ class ApplicationController
 	###########################################################
 	
   def validateMenuItem(menuItem)
-    #Logger.debug("Validating #{menuItem.title}")
+    if @taskMode != :idle
+      # Disable the force cache update method when the downloader is running. 
+      if menuItem == @forceCacheUpdateMenuItem
+        return false
+      end
+    end
+    
     true
   end
 
@@ -321,10 +325,10 @@ class ApplicationController
     
     if @taskInspectorWindow.isVisible || @subscriptionsEditorWindow.isVisible ||
       @preferencesWindowController.window.isVisible
-      NSApp.activateIgnoringOtherApps(nil)
+      NSApp.activateIgnoringOtherApps(true)
       @taskInspectorWindow.orderFrontRegardless if @taskInspectorWindow.isVisible
-      @subscriptionsEditorWindow.orderFrontRegardless if @subscriptionsEditorWindow.isVisible
       @preferencesWindowController.window.orderFrontRegardless if @preferencesWindowController.window.isVisible
+      @subscriptionsEditorController.bringAllToFront()
     end
         
     activity_count = @taskQueue.length + 1
@@ -435,7 +439,7 @@ class ApplicationController
   
   def updateCache(sender = nil)
     ["radio", "tv"].each do |mediatype|
-      Logger.debug("Adding cacheUpdateTask(#{mediatype}) to the taskQueue")
+      #Logger.debug("Adding cacheUpdateTask(#{mediatype}) to the taskQueue")
       @taskQueue << Task.cacheUpdate(mediatype) 
     end
     
@@ -446,7 +450,7 @@ class ApplicationController
   def updateCacheIfRequired(sender = nil)    
     ["radio", "tv"].each do |mediatype|
       if @cr.cacheStale?(mediatype)
-        Logger.debug("Adding cacheUpdate(#{mediatype}) to the taskQueue")
+        #Logger.debug("Adding cacheUpdate(#{mediatype}) to the taskQueue")
         @taskQueue << Task.cacheUpdate(mediatype) 
       end
     end
@@ -481,7 +485,7 @@ class ApplicationController
       Logger.debug("Busy")
       return
     elsif @taskQueue.length == 0
-      Logger.debug("Empty")
+      #Logger.debug("Empty")
       setTaskMode(:idle)
       return
     end
@@ -507,17 +511,17 @@ class ApplicationController
       setTaskMode(:cacheUpdate)
       @tw.updateGetIplayerCaches(@currentTask.type)
     elsif @currentTask.mode == :url
-      Logger.debug("Downloading from url #{@currentTask.url}")
+      #Logger.debug("Downloading from url #{@currentTask.url}")
       issueWorkForURLTask(@currentTask)
     elsif @currentTask.mode == :pvrsearch
       # Unpack the PVRSearch into a series of indexes
       @cr.programmeIndexesForPVRSearch(@currentTask.pvrsearch).each do |index|
-        Logger.debug("Adding index #{index} to @taskQueue for pvrSearch #{@currentTask.pvrsearch.displayname}")
+        #Logger.debug("Adding index #{index} to @taskQueue for pvrSearch #{@currentTask.pvrsearch.displayname}")
         @taskQueue << Task.downloadFromIndex(index, @currentTask.pvrsearch.type, @currentTask.pvrsearch.mediaDirectory)
       end
       checkWorkQueue()
     elsif @currentTask.mode == :index
-      Logger.debug("Downloading index #{@currentTask.index} of type #{@currentTask.type} to dir #{@currentTask.directory}")
+      #Logger.debug("Downloading index #{@currentTask.index} of type #{@currentTask.type} to dir #{@currentTask.directory}")
       setTaskMode(:downloading)
       @tw.downloadFromIndex(@currentTask.index, @currentTask.type, @currentTask.directory)
     else
@@ -569,4 +573,62 @@ class ApplicationController
     NSWorkspace.sharedWorkspace.notificationCenter.addObserver(self, selector:"receiveSleepNote:", name: NSWorkspaceWillSleepNotification, object: nil)
     NSWorkspace.sharedWorkspace.notificationCenter.addObserver(self, selector:"receiveWakeNote:", name: NSWorkspaceDidWakeNotification, object: nil)
   end
+
+  def openIndexPage(sender = nil)
+    NSWorkspace.sharedWorkspace.openURL(NSURL.URLWithString($webserverURL))
+  end
+
+  # Counting files available through pvr searches and adhoc
+  def countAvailableMedia
+    count = 0
+    
+    PVRSearch.all.each do |pvr|
+      collection = MediaScanner.createCollectionFromPVRSearch(pvr)
+      count += collection.media_items.count
+    end
+
+    count += MediaScanner.createCollectionFromAdHocDirectory().media_items.count
+    
+    count
+  end
+
+  def calculateAvailableMediaCountDifference
+    oldCount = @totalAvailableMediaCount || 0
+    
+    @totalAvailableMediaCount = countAvailableMedia()
+    
+    @totalAvailableMediaCount - oldCount
+  end
+
+  def processUpdatedMediaCount()
+    count = calculateAvailableMediaCountDifference()
+    Logger.debug("Downloaded media count is #{count}")
+
+    if count > 0
+      NSApp.delegate.growlDownloadedFileCount(count)
+      if $preferences['syncImmediately']
+        Logger.debug("syncImmediately is enabled. Prodding iTunes")
+        NSApp.delegate.updateiTunes()
+      end
+    end
+  end
+
+  # Deleting old files
+  def deleteOldMedia
+    return unless $preferences['autoDelete']
+    
+    delete_older_than_days = DELETE_OLDER_THAN_WEEKS[$preferences["autoDeleteDropdownIndex"]] * 7
+    
+    #Logger.debug("delete_older_than_days is #{delete_older_than_days}")
+    
+    # For each PVRSearch, delete the content inside it
+    PVRSearch.all.each do |pvr|
+      MediaScanner.deleteMedia(pvr.mediaDirectory, "all", delete_older_than_days)
+    end
+    
+    # Clean up the ad-hoc directory
+    MediaScanner.deleteMedia($downloaderAdHocDirectory, "all", delete_older_than_days)
+  end
+                               
+
 end

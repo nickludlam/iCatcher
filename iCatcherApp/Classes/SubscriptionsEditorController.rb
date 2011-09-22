@@ -23,6 +23,9 @@ class SubscriptionsEditorController < NSWindowController
   attr_writer :searchInDescriptionCheckbox
   attr_writer :matchCountLabel
   
+  attr_writer :previewPanel
+  attr_writer :previewPanelTextView
+  
   attr_accessor :subscription
   
   MAX_MATCH_COUNT = 20
@@ -33,15 +36,16 @@ class SubscriptionsEditorController < NSWindowController
     
     @subscriptions = PVRSearch.all.sort_by { |s| s.displayname }
     @subscriptionsTable.reloadData
-    
-    @subscriptionsTable.selectRowIndexes(NSIndexSet.indexSetWithIndex(0), byExtendingSelection:false)
-    tableViewSelectionDidChange(nil)
-    
+
+    # Defaults
+    @matchCountLabel.stringValue = "No matching programmes"
+
     @mediaPopup.removeAllItems
     @mediaPopup.addItemWithTitle("Radio")
     @mediaPopup.addItemWithTitle("TV")
-    
-    @matchCountLabel.stringValue = "No matching programmes"
+
+    @subscriptionsTable.selectRowIndexes(NSIndexSet.indexSetWithIndex(0), byExtendingSelection:false)
+    tableViewSelectionDidChange(nil)
   end
   
   def setupPopups(subscription, media_type = 'radio')
@@ -98,6 +102,7 @@ class SubscriptionsEditorController < NSWindowController
   end
   
   def windowWillClose(notification)
+    @previewPanel.close()
   end
   
   def saveAllSearches
@@ -168,6 +173,7 @@ class SubscriptionsEditorController < NSWindowController
     @searchInDescriptionCheckbox.intValue = subscription.descriptionSearch.to_i
     
     updateMatchCount()
+    updatePreviewPanel()
   end
   
   def controlTextDidEndEditing(notification)
@@ -213,6 +219,7 @@ class SubscriptionsEditorController < NSWindowController
     @subscriptionsTable.reloadData if tableNeedsRefresh
     
     updateMatchCount()
+    updatePreviewPanel()
   end
   
   def updateMatchCount
@@ -281,11 +288,11 @@ class SubscriptionsEditorController < NSWindowController
   end
 
   def showTooManyMatchesError(subscriptionDisplayName, match_count)
-    alert = NSAlert.alertWithMessageText("Too many matches for #{subscriptionDisplayName}",
+    alert = NSAlert.alertWithMessageText("Too many matches for '#{subscriptionDisplayName}'",
                                          defaultButton:"OK",
                                          alternateButton:nil,
                                          otherButton:nil,
-                                         informativeTextWithFormat:"Your subscription #{subscriptionDisplayName} currently matches #{match_count} programmes. There is a limit of #{MAX_MATCH_COUNT} per subscription. Please make the search more specific.")    
+                                         informativeTextWithFormat:"Your subscription named '#{subscriptionDisplayName}' currently matches #{match_count} programmes. There is a limit of #{MAX_MATCH_COUNT} per subscription. Please make the search more specific.")    
     
     alert.beginSheetModalForWindow(@subscriptionsWindow,
                                    modalDelegate:self,
@@ -323,4 +330,51 @@ class SubscriptionsEditorController < NSWindowController
                                                      waitUntilDone:false)
   end
 
+  
+  def bringAllToFront()
+    @subscriptionsWindow.makeKeyAndOrderFront(nil) if @subscriptionsWindow.isVisible
+    @previewPanel.orderFrontRegardless() if @previewPanel.isVisible
+  end
+  
+  def openPreviewPanel(sender)
+    updatePreviewPanel()
+    @previewPanel.makeKeyAndOrderFront(nil)
+  end
+  
+  def updatePreviewPanel()
+    # Blank the window
+    @previewPanelTextView.textStorage.mutableString.setString("")
+    
+    matchingProgrammes = CacheReader.instance.programmeDetailsForPVRSearch(@subscription)    
+    Logger.debug("Got #{matchingProgrammes.count} matches")
+    
+    # Prevent over matching.
+    over_max_matches = false
+    
+    if matchingProgrammes.count > MAX_MATCH_COUNT
+      addContentToPreviewPanel("TOO MANY MATCHES, PLEASE MAKE A MORE SPECIFIC SEARCH\n\n", :error)
+      matchingProgrammes = matchingProgrammes.first(MAX_MATCH_COUNT)
+      Logger.debug("Count is now #{matchingProgrammes.count}")
+    end
+    
+    matchingProgrammes.each do |p|
+      addContentToPreviewPanel("#{p['name']} - #{p['episode']}\n", :bold)
+      addContentToPreviewPanel("#{p['desc']}\n\n")
+    end
+  end
+
+  def addContentToPreviewPanel(content, style=:normal)
+    before = @previewPanelTextView.textStorage.mutableString.length
+    @previewPanelTextView.textStorage.mutableString.appendString(content)
+    after = @previewPanelTextView.textStorage.mutableString.length
+    
+    color = (style == :error) ? NSColor.redColor : NSColor.blackColor
+    
+    @previewPanelTextView.setTextColor(color, range:NSRange.new(before, after-before))
+    
+    if style == :bold
+      @previewPanelTextView.textStorage.applyFontTraits(NSBoldFontMask, range:NSRange.new(before, content.length - 1))
+    end
+  end
+  
 end

@@ -4,6 +4,8 @@ class PVRSearch
   
   attr_accessor :filename, :displayname, :category, :channel, :type, :searches, :active, :dirty, :unsaved, :descriptionSearch
 
+  HELPER_FILENAME_PATTERN = ".icatcher-subscription-%s"
+  
   def self.all
     prefs = NSUserDefaults.standardUserDefaults
     
@@ -11,7 +13,7 @@ class PVRSearch
     
     Dir.glob("#{$downloaderSearchDirectory}/*") do |file|
       next if File.basename(file) == "AdHoc"
-      NSLog "Parsing file #{file}"
+      #NSLog "Parsing file #{file}"
       searchObj = self.new
       searchObj.load(File.basename(file))
       allSearches << searchObj
@@ -75,7 +77,7 @@ class PVRSearch
   end
 
   def save
-    Logger.debug "Writing to disk"
+    #Logger.debug "Writing to disk"
   
     if (@filename == nil)
       Logger.error "ERROR: No filename for this PVRSearch"
@@ -101,6 +103,17 @@ class PVRSearch
     end
     
     Dir.mkdir(mediaDirectory) unless File.exists?(mediaDirectory)
+    
+    # Create or rename our visual naming aid as required
+    unless File.exists?(nameHelperFilepath())
+      Logger.debug("File #{nameHelperFilepath()} doesn't exist. Creating/Moving")
+      if old_path = findNameHelperFilepath()
+        File.rename(old_path, nameHelperFilepath())
+      else
+        File.open(nameHelperFilepath(), "w") { |fp| fp.write("") }
+      end
+    end
+    
   
     @unsaved = false
     @dirty = false
@@ -109,7 +122,23 @@ class PVRSearch
   def filepath
     "#{$downloaderSearchDirectory}/#{@filename}"
   end
+
+  # For the dotfile helper
+  def nameHelperName
+    name = friendly_filename(@displayname)
+    (HELPER_FILENAME_PATTERN % name)
+  end
+
+  def nameHelperFilepath
+    mediaDirectory() + nameHelperName()
+  end
+
+  def findNameHelperFilepath
+    glob = Dir.glob(mediaDirectory() + (HELPER_FILENAME_PATTERN % "*"))
+    glob.empty? ? nil : glob[0]
+  end
   
+  # For the special case around the searches string
   def searchesString
     return nil if @searches.keys.length == 0
     
@@ -161,7 +190,13 @@ class PVRSearch
   end
 
   def mediaDirectory
-    "#{$downloadDirectory}/#{filename}/"
+    "#{$downloadDirectory}#{filename}/"
+  end
+
+  def friendly_filename(name)
+    name.gsub(/[^\w\s_-]+/, '')
+    .gsub(/(^|\b\s)\s+($|\s?\b)/, '\\1\\2')
+    .gsub(/\s/, '_')
   end
   
   # Debug

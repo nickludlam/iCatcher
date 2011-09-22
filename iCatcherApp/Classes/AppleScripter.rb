@@ -30,9 +30,9 @@ class AppleScripter
   end
 
   def self.updateiTunes
-  Logger.debug("Making iTunes update")
+    Logger.debug("Making iTunes update")
 
-  update_command = "osascript -e \"tell application \\\"iTunes\\\" to updateAllPodcasts\""
+    update_command = "osascript -e \"tell application \\\"iTunes\\\" to updateAllPodcasts\""
     update_output = `#{update_command}`
   end
   

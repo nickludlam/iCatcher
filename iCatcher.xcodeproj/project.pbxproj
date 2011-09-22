@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		014E6641142B8D1000685E91 /* 1140.css in Resources */ = {isa = PBXBuildFile; fileRef = 014E663E142B8D0F00685E91 /* 1140.css */; };
+		014E6642142B8D1000685E91 /* styles.css in Resources */ = {isa = PBXBuildFile; fileRef = 014E663F142B8D0F00685E91 /* styles.css */; };
+		014E6643142B8D1000685E91 /* css3-mediaqueries.js in Sources */ = {isa = PBXBuildFile; fileRef = 014E6640142B8D0F00685E91 /* css3-mediaqueries.js */; };
+		014E6649142BE11900685E91 /* icatcher_icon_64.png in Resources */ = {isa = PBXBuildFile; fileRef = 014E6648142BE11900685E91 /* icatcher_icon_64.png */; };
+		014E664B142BE4C900685E91 /* css3-mediaqueries.js in Resources */ = {isa = PBXBuildFile; fileRef = 014E6640142B8D0F00685E91 /* css3-mediaqueries.js */; };
+		014E664D142BF20000685E91 /* feed_html.erb in Resources */ = {isa = PBXBuildFile; fileRef = 014E664C142BF1FF00685E91 /* feed_html.erb */; };
 		01514F0A133E2C0700BC7179 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01514F09133E2C0700BC7179 /* Cocoa.framework */; };
 		01514F4F133E64BE00BC7179 /* ActiveStatusItem.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F4A133E64BE00BC7179 /* ActiveStatusItem.rb */; };
 		01514F50133E64BE00BC7179 /* ApplicationController.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F4B133E64BE00BC7179 /* ApplicationController.rb */; };
@@ -75,9 +81,8 @@
 		01514FEB133E682700BC7179 /* TagLib.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 01514FE6133E682700BC7179 /* TagLib.bundle */; };
 		01514FFB133E869B00BC7179 /* MacRuby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01514FFA133E869B00BC7179 /* MacRuby.framework */; };
 		0171209413B7DFE90070E05B /* AppleScripter.rb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209313B7DFE90070E05B /* AppleScripter.rb */; };
-		0171209813B7E0F40070E05B /* feed.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209613B7E0F40070E05B /* feed.erb */; };
-		0171209913B7E0F40070E05B /* index.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209713B7E0F40070E05B /* index.erb */; };
-		0171209D13B7EAEE0070E05B /* all_feeds.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209C13B7EAEE0070E05B /* all_feeds.erb */; };
+		0171209813B7E0F40070E05B /* feed_xml.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209613B7E0F40070E05B /* feed_xml.erb */; };
+		0171209D13B7EAEE0070E05B /* index.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209C13B7EAEE0070E05B /* index.erb */; };
 		01A25BEC13C8EFC00037266B /* icatcher_icon_16.png in Resources */ = {isa = PBXBuildFile; fileRef = 01A25BEB13C8EFC00037266B /* icatcher_icon_16.png */; };
 		01A25C0113C9D2DC0037266B /* bad_url.erb in Resources */ = {isa = PBXBuildFile; fileRef = 01A25C0013C9D2DC0037266B /* bad_url.erb */; };
 		01AD23BF141D7FB300F3802E /* AppDelegate.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01AD23BE141D7FB300F3802E /* AppDelegate.rb */; };
@@ -140,6 +145,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		014E663E142B8D0F00685E91 /* 1140.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = 1140.css; sourceTree = "<group>"; };
+		014E663F142B8D0F00685E91 /* styles.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = styles.css; sourceTree = "<group>"; };
+		014E6640142B8D0F00685E91 /* css3-mediaqueries.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "css3-mediaqueries.js"; sourceTree = "<group>"; };
+		014E6648142BE11900685E91 /* icatcher_icon_64.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icatcher_icon_64.png; path = iCatcherApp/Resources/Images/icatcher_icon_64.png; sourceTree = SOURCE_ROOT; };
+		014E664C142BF1FF00685E91 /* feed_html.erb */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; fileEncoding = 4; path = feed_html.erb; sourceTree = "<group>"; };
 		01514F05133E2C0700BC7179 /* iCatcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iCatcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01514F09133E2C0700BC7179 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		01514F4A133E64BE00BC7179 /* ActiveStatusItem.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = ActiveStatusItem.rb; path = iCatcherApp/Classes/ActiveStatusItem.rb; sourceTree = SOURCE_ROOT; };
@@ -216,10 +226,9 @@
 		01514FF8133E869000BC7179 /* MacRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MacRuby.framework; path = Library/Frameworks/MacRuby.framework; sourceTree = SDKROOT; };
 		01514FFA133E869B00BC7179 /* MacRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MacRuby.framework; path = Library/Frameworks/MacRuby.framework; sourceTree = SDKROOT; };
 		0171209313B7DFE90070E05B /* AppleScripter.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = AppleScripter.rb; path = iCatcherApp/Classes/AppleScripter.rb; sourceTree = SOURCE_ROOT; };
-		0171209613B7E0F40070E05B /* feed.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed.erb; sourceTree = "<group>"; };
-		0171209713B7E0F40070E05B /* index.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = index.erb; sourceTree = "<group>"; };
+		0171209613B7E0F40070E05B /* feed_xml.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed_xml.erb; sourceTree = "<group>"; };
 		0171209A13B7E45B0070E05B /* feed_test.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = feed_test.rb; sourceTree = "<group>"; };
-		0171209C13B7EAEE0070E05B /* all_feeds.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = all_feeds.erb; sourceTree = "<group>"; };
+		0171209C13B7EAEE0070E05B /* index.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.erb; sourceTree = "<group>"; };
 		01A25BEB13C8EFC00037266B /* icatcher_icon_16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icatcher_icon_16.png; path = iCatcherApp/Resources/Images/icatcher_icon_16.png; sourceTree = SOURCE_ROOT; };
 		01A25C0013C9D2DC0037266B /* bad_url.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bad_url.erb; sourceTree = "<group>"; };
 		01AD23BE141D7FB300F3802E /* AppDelegate.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = AppDelegate.rb; path = iCatcherApp/Classes/AppDelegate.rb; sourceTree = SOURCE_ROOT; };
@@ -383,8 +392,9 @@
 			isa = PBXGroup;
 			children = (
 				01514FB4133E657B00BC7179 /* icatcher_512.icns */,
-				01A25BEB13C8EFC00037266B /* icatcher_icon_16.png */,
 				01514FB5133E657B00BC7179 /* icatcher_icon_512.png */,
+				014E6648142BE11900685E91 /* icatcher_icon_64.png */,
+				01A25BEB13C8EFC00037266B /* icatcher_icon_16.png */,
 				01514FB6133E657B00BC7179 /* icatcher_menubar_icon_black.png */,
 				01514FB7133E657B00BC7179 /* icatcher_menubar_icon_white.png */,
 				01514F6A133E654100BC7179 /* Animations */,
@@ -493,11 +503,14 @@
 		0171209513B7E0F40070E05B /* SinatraTemplates */ = {
 			isa = PBXGroup;
 			children = (
-				0171209613B7E0F40070E05B /* feed.erb */,
-				0171209713B7E0F40070E05B /* index.erb */,
-				0171209C13B7EAEE0070E05B /* all_feeds.erb */,
+				0171209C13B7EAEE0070E05B /* index.erb */,
+				0171209613B7E0F40070E05B /* feed_xml.erb */,
+				014E664C142BF1FF00685E91 /* feed_html.erb */,
 				01A25C0013C9D2DC0037266B /* bad_url.erb */,
 				01AD23C0141E292700F3802E /* downloading_adhoc.erb */,
+				014E663E142B8D0F00685E91 /* 1140.css */,
+				014E663F142B8D0F00685E91 /* styles.css */,
+				014E6640142B8D0F00685E91 /* css3-mediaqueries.js */,
 			);
 			name = SinatraTemplates;
 			path = iCatcherApp/SinatraTemplates;
@@ -677,9 +690,8 @@
 				01514FEA133E682700BC7179 /* get_iplayer in Resources */,
 				01514FEB133E682700BC7179 /* TagLib.bundle in Resources */,
 				0171209413B7DFE90070E05B /* AppleScripter.rb in Resources */,
-				0171209813B7E0F40070E05B /* feed.erb in Resources */,
-				0171209913B7E0F40070E05B /* index.erb in Resources */,
-				0171209D13B7EAEE0070E05B /* all_feeds.erb in Resources */,
+				0171209813B7E0F40070E05B /* feed_xml.erb in Resources */,
+				0171209D13B7EAEE0070E05B /* index.erb in Resources */,
 				01A25BEC13C8EFC00037266B /* icatcher_icon_16.png in Resources */,
 				01A25C0113C9D2DC0037266B /* bad_url.erb in Resources */,
 				01FEC9E01416CF5900434B0E /* SubscriptionsEditorController.rb in Resources */,
@@ -725,6 +737,11 @@
 				01CEA1771426669D000A8E83 /* PreferencesController.rb in Resources */,
 				01CEA17914266C1D000A8E83 /* Defaults.plist in Resources */,
 				01F9BED51427594900584515 /* Task.rb in Resources */,
+				014E6641142B8D1000685E91 /* 1140.css in Resources */,
+				014E6642142B8D1000685E91 /* styles.css in Resources */,
+				014E6649142BE11900685E91 /* icatcher_icon_64.png in Resources */,
+				014E664B142BE4C900685E91 /* css3-mediaqueries.js in Resources */,
+				014E664D142BF20000685E91 /* feed_html.erb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -736,6 +753,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				01514F63133E64D900BC7179 /* main.m in Sources */,
+				014E6643142B8D1000685E91 /* css3-mediaqueries.js in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
