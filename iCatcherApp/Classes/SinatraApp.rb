@@ -17,9 +17,9 @@ class SinatraApp < Sinatra::Base
     erb :index
   end
 
-  get('/adhoc_feed.xml') do
+  get('/adhoc_feed.:format') do
     @mc = MediaScanner.createCollectionFromAdHocDirectory()
-    erb :feed
+    erb "feed_#{params[:format]}".to_sym
   end
 
   get('/feeds/:feed_name.:format') do

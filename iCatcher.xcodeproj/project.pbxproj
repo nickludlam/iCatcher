@@ -10,7 +10,6 @@
 		014E6641142B8D1000685E91 /* 1140.css in Resources */ = {isa = PBXBuildFile; fileRef = 014E663E142B8D0F00685E91 /* 1140.css */; };
 		014E6642142B8D1000685E91 /* styles.css in Resources */ = {isa = PBXBuildFile; fileRef = 014E663F142B8D0F00685E91 /* styles.css */; };
 		014E6643142B8D1000685E91 /* css3-mediaqueries.js in Sources */ = {isa = PBXBuildFile; fileRef = 014E6640142B8D0F00685E91 /* css3-mediaqueries.js */; };
-		014E6649142BE11900685E91 /* icatcher_icon_64.png in Resources */ = {isa = PBXBuildFile; fileRef = 014E6648142BE11900685E91 /* icatcher_icon_64.png */; };
 		014E664B142BE4C900685E91 /* css3-mediaqueries.js in Resources */ = {isa = PBXBuildFile; fileRef = 014E6640142B8D0F00685E91 /* css3-mediaqueries.js */; };
 		014E664D142BF20000685E91 /* feed_html.erb in Resources */ = {isa = PBXBuildFile; fileRef = 014E664C142BF1FF00685E91 /* feed_html.erb */; };
 		01514F0A133E2C0700BC7179 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01514F09133E2C0700BC7179 /* Cocoa.framework */; };
@@ -148,7 +147,6 @@
 		014E663E142B8D0F00685E91 /* 1140.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = 1140.css; sourceTree = "<group>"; };
 		014E663F142B8D0F00685E91 /* styles.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = styles.css; sourceTree = "<group>"; };
 		014E6640142B8D0F00685E91 /* css3-mediaqueries.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "css3-mediaqueries.js"; sourceTree = "<group>"; };
-		014E6648142BE11900685E91 /* icatcher_icon_64.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icatcher_icon_64.png; path = iCatcherApp/Resources/Images/icatcher_icon_64.png; sourceTree = SOURCE_ROOT; };
 		014E664C142BF1FF00685E91 /* feed_html.erb */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; fileEncoding = 4; path = feed_html.erb; sourceTree = "<group>"; };
 		01514F05133E2C0700BC7179 /* iCatcher.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iCatcher.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01514F09133E2C0700BC7179 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
@@ -393,7 +391,6 @@
 			children = (
 				01514FB4133E657B00BC7179 /* icatcher_512.icns */,
 				01514FB5133E657B00BC7179 /* icatcher_icon_512.png */,
-				014E6648142BE11900685E91 /* icatcher_icon_64.png */,
 				01A25BEB13C8EFC00037266B /* icatcher_icon_16.png */,
 				01514FB6133E657B00BC7179 /* icatcher_menubar_icon_black.png */,
 				01514FB7133E657B00BC7179 /* icatcher_menubar_icon_white.png */,
@@ -739,7 +736,6 @@
 				01F9BED51427594900584515 /* Task.rb in Resources */,
 				014E6641142B8D1000685E91 /* 1140.css in Resources */,
 				014E6642142B8D1000685E91 /* styles.css in Resources */,
-				014E6649142BE11900685E91 /* icatcher_icon_64.png in Resources */,
 				014E664B142BE4C900685E91 /* css3-mediaqueries.js in Resources */,
 				014E664D142BF20000685E91 /* feed_html.erb in Resources */,
 			);
