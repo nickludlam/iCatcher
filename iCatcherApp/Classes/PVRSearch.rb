@@ -138,7 +138,8 @@ class PVRSearch
     glob.empty? ? nil : glob[0]
   end
   
-  # For the special case around the searches string
+  # For the special case around the searches string in get_iplayer.
+  # TODO: Deprecate this, as we're no longer using PVR functionality
   def searchesString
     return nil if @searches.keys.length == 0
     

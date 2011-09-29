@@ -22,13 +22,14 @@ class SubscriptionsEditorController < NSWindowController
   attr_writer :activeCheckbox
   attr_writer :searchInDescriptionCheckbox
   attr_writer :matchCountLabel
+  attr_writer :previewPanelButton
   
   attr_writer :previewPanel
   attr_writer :previewPanelTextView
   
   attr_accessor :subscription
   
-  MAX_MATCH_COUNT = 20
+  MAX_MATCH_COUNT = 30
   
   def becomeActive
     @shouldUpdateiTunes = false  # Do we need to offer to update iTunes after closing the window
@@ -38,14 +39,12 @@ class SubscriptionsEditorController < NSWindowController
     @subscriptionsTable.reloadData
 
     # Defaults
-    @matchCountLabel.stringValue = "No matching programmes"
-
     @mediaPopup.removeAllItems
     @mediaPopup.addItemWithTitle("Radio")
     @mediaPopup.addItemWithTitle("TV")
 
     @subscriptionsTable.selectRowIndexes(NSIndexSet.indexSetWithIndex(0), byExtendingSelection:false)
-    tableViewSelectionDidChange(nil)
+    tableViewSelectionDidChange(nil) # Pretend the user clicked, to set initial state
   end
   
   def setupPopups(subscription, media_type = 'radio')
@@ -145,8 +144,13 @@ class SubscriptionsEditorController < NSWindowController
       @searchTextField.stringValue = ""
       @activeCheckbox.intValue = 0
       @searchInDescriptionCheckbox.intValue = 0
+      @matchCountLabel.stringValue = "No matching programmes"
+
+      self.disableAllControls
       return
     end
+
+    self.enableAllControls
 
     @subscription = @subscriptions[row]
     
@@ -272,7 +276,7 @@ class SubscriptionsEditorController < NSWindowController
                                      contextInfo:nil)
     end
   end
-
+  
   def removeSubscriptionAlertDidEnd(alert, returnCode:returnCode, contextInfo:contextInfo)
     if returnCode == 1
       row = @subscriptionsTable.selectedRow
@@ -346,7 +350,7 @@ class SubscriptionsEditorController < NSWindowController
     @previewPanelTextView.textStorage.mutableString.setString("")
     
     matchingProgrammes = CacheReader.instance.programmeDetailsForPVRSearch(@subscription)    
-    Logger.debug("Got #{matchingProgrammes.count} matches")
+    #Logger.debug("Got #{matchingProgrammes.count} matches")
     
     # Prevent over matching.
     over_max_matches = false
@@ -377,4 +381,19 @@ class SubscriptionsEditorController < NSWindowController
     end
   end
   
+  def disableAllControls
+    allControls.each do |c|
+      c.setEnabled(false);
+    end
+  end
+  
+  def enableAllControls
+    allControls.each do |c|
+      c.setEnabled(true);
+    end
+  end
+  
+  def allControls
+    [ @nameTextField, @mediaPopup, @stationChannelLabel, @stationPopup, @categoryPopup, @searchTextField, @activeCheckbox, @searchInDescriptionCheckbox, @matchCountLabel, @previewPanelButton ]
+  end
 end

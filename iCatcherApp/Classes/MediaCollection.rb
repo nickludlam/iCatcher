@@ -21,6 +21,7 @@ class MediaItem
     @filepath = fpath
 		tags = TagLib.alloc.initWithFileAtPath(@filepath)
 		
+    # Consolidate album and title into the title, or cope with nil
   	if tags.title
       if tags.title.index(tags.album) != nil
 			  @title = tags.title

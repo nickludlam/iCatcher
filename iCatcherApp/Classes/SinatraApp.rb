@@ -8,7 +8,12 @@ require 'uri'
 
 class SinatraApp < Sinatra::Base
 
-  puts "views path => #{$sinatraViewsPath}"
+  helpers do
+    include Rack::Utils
+    alias_method :h, :escape_html
+  end
+  
+  Logger.debug("views path => #{$sinatraViewsPath}")
   set :views, $sinatraViewsPath
   
   get('/') do

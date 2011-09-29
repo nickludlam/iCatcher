@@ -416,16 +416,7 @@ class ApplicationController
     
     status
   end
-      
-  def stopAllTasks(sender = nil)
-    setTaskMode(:stopping)
-    @taskQueue.clear
-
-    if @tw
-			@tw.terminate()
-    end
-  end
-	
+      	
   def checkQueueForIndex(searchIndex)
     @taskQueue.each do |entry|
       if entry.is_a?(Array) and entry.length == 3
@@ -479,7 +470,17 @@ class ApplicationController
     checkWorkQueue()
   end
 
-  # Background work
+  def stopAllTasks(sender = nil)
+    setTaskMode(:stopping)
+    @taskQueue.clear
+    
+    if @tw
+      @tw.terminate()
+    end
+  end
+
+
+  # Main background work queue processor
   def checkWorkQueue(sender = nil)
     if @tw # Busy already
       Logger.debug("Busy")
@@ -558,22 +559,6 @@ class ApplicationController
     NSApp.delegate.setupiTunes()
   end
 
-  # Sleep / Wake notifications
-
-  def receiveSleepNote(notification)
-    Logger.debug("Zzzzz")
-  end
-
-  def receiveWakeNote(notification)
-    Logger.debug("Whaaa?!")
-    #setupTimer
-  end
-
-  def setupSleepWakeNotifications()
-    NSWorkspace.sharedWorkspace.notificationCenter.addObserver(self, selector:"receiveSleepNote:", name: NSWorkspaceWillSleepNotification, object: nil)
-    NSWorkspace.sharedWorkspace.notificationCenter.addObserver(self, selector:"receiveWakeNote:", name: NSWorkspaceDidWakeNotification, object: nil)
-  end
-
   def openIndexPage(sender = nil)
     NSWorkspace.sharedWorkspace.openURL(NSURL.URLWithString($webserverURL))
   end
@@ -586,7 +571,7 @@ class ApplicationController
       collection = MediaScanner.createCollectionFromPVRSearch(pvr)
       count += collection.media_items.count
     end
-
+    
     count += MediaScanner.createCollectionFromAdHocDirectory().media_items.count
     
     count
@@ -603,7 +588,7 @@ class ApplicationController
   def processUpdatedMediaCount()
     count = calculateAvailableMediaCountDifference()
     Logger.debug("Downloaded media count is #{count}")
-
+    
     if count > 0
       NSApp.delegate.growlDownloadedFileCount(count)
       if $preferences['syncImmediately']
@@ -629,6 +614,22 @@ class ApplicationController
     # Clean up the ad-hoc directory
     MediaScanner.deleteMedia($downloaderAdHocDirectory, "all", delete_older_than_days)
   end
-                               
+
+
+  ######################################################################
+  # Sleep / Wake notifications TODO: Not yet used in timer re-timing
+  def receiveSleepNote(notification)
+    Logger.debug("Zzzzz")
+  end
+
+  def receiveWakeNote(notification)
+    Logger.debug("Whaaa?!")
+    #setupTimer
+  end
+
+  def setupSleepWakeNotifications()
+    NSWorkspace.sharedWorkspace.notificationCenter.addObserver(self, selector:"receiveSleepNote:", name: NSWorkspaceWillSleepNotification, object: nil)
+    NSWorkspace.sharedWorkspace.notificationCenter.addObserver(self, selector:"receiveWakeNote:", name: NSWorkspaceDidWakeNotification, object: nil)
+  end
 
 end

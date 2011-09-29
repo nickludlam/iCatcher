@@ -149,7 +149,7 @@ class CacheReader
     # Add in searching on the 'desc' column if the pvrsearch is so configured
     fields << ",desc" if pvrsearch.descriptionSearch.to_i == 1
     
-    Logger.debug("programmeDetailsForPVRSearch searching in fields: #{fields}")
+    #Logger.debug("programmeDetailsForPVRSearch searching in fields: #{fields}")
     
 		# Turn it into an array
 		fields = fields.split(",").map { |x| x.strip }
@@ -189,37 +189,35 @@ class CacheReader
 				end
 			end
 			
-			if pvrsearch.searches
-			  target_score += pvrsearch.searches.count
-				
-				pvrsearch.searches.each do |s|
-					#Logger.debug("Processing search term #{s[1]}")
-				  fields.each do |field|
-						#Logger.debug("Processing search field #{field}")
-  				  if line_array[@cache_format.index(field)].downcase.include?(s[1].downcase)
-						  #Logger.debug("Term '#{s[1]}' found in field #{field} (#{line_array[@cache_format.index(field)]})")
-							match_criteria_score += 1
-							break
-	  				end
-					end
-				end
-				
-				if match_criteria_score == target_score
-          #Logger.debug("Finished search. Got #{match_criteria_score} / #{target_score} for search on #{pvrsearch.channel} / #{pvrsearch.category} / #{pvrsearch.searchesString}")
-          programme_hash = {}
-          
-          @cache_format.each_with_index do |key, i|
-            programme_hash[key] = line_array[i]
+			if pvrsearch.searchesString
+			  target_score += 1
+        term = pvrsearch.searchesString.downcase
+        fields.each do |field|
+          #Logger.debug("Processing search field #{field}")
+          if line_array[@cache_format.index(field)].downcase.include?(term)
+            #Logger.debug("Term '#{term}' found in field #{field} (#{line_array[@cache_format.index(field)]})")
+            match_criteria_score += 1
+            break
           end
-          
-          matches << programme_hash
         end
+      end
+				
+      if match_criteria_score == target_score
+        #Logger.debug("Finished search. Got #{match_criteria_score} / #{target_score} for search on #{pvrsearch.channel} / #{pvrsearch.category} / #{pvrsearch.searchesString}")
+        programme_hash = {}
+        
+        @cache_format.each_with_index do |key, i|
+          programme_hash[key] = line_array[i]
+        end
+        
+        matches << programme_hash
 			end # end pvrsearch.searches loop
 		end # end keys/cached programmes loop
     
     matches
 	end # end def
   
+  # Grab just the indexes for a given search, for downloading
   def programmeIndexesForPVRSearch(search)
     matches = programmeDetailsForPVRSearch(search)
     matches.collect { |x| x["index"] }

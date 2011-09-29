@@ -32,6 +32,7 @@ class MediaScanner
     end
   end
   
+
   def self.deleteMedia(directory, type, days_older_than = 28)
     age = 60 * 60 * 24 * days_older_than
     threshold = Time.now - age
@@ -76,7 +77,7 @@ class MediaScanner
     collection.author = "iCatcher"
     collection.link = "#{$webserverURL}adhoc_feed.xml"
     collection.pub_date = Time.now.strftime("%a, %d %b %Y %T %z")
-
+    
     files = []
     listMedia($downloaderAdHocDirectory, "all", age) do |file|
     # Skip over obviously bad files
@@ -84,7 +85,7 @@ class MediaScanner
       Logger.warning("Skipping zero-length file #{file}") 
       next
     else
-      #Logger.debug("Adding #{file}")
+      Logger.debug("Adding #{file}")
     end
     
     collection.media_items << MediaItem.new(file)
