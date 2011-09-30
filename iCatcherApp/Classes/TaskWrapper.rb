@@ -30,7 +30,7 @@ class TaskWrapper
     args << "--profile-dir=#{$downloaderConfigDirectory}"
     args << "--packagemanager"
     args << "disable"
-    args << "--verbose" if $verboseOutput
+    args << "--verbose" if $preferences['verboseOutput']
     args
   end
   

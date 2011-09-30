@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01492F731436265700D8AD84 /* MacRuby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01514FF8133E869000BC7179 /* MacRuby.framework */; };
 		014E6641142B8D1000685E91 /* 1140.css in Resources */ = {isa = PBXBuildFile; fileRef = 014E663E142B8D0F00685E91 /* 1140.css */; };
 		014E6642142B8D1000685E91 /* styles.css in Resources */ = {isa = PBXBuildFile; fileRef = 014E663F142B8D0F00685E91 /* styles.css */; };
 		014E6643142B8D1000685E91 /* css3-mediaqueries.js in Sources */ = {isa = PBXBuildFile; fileRef = 014E6640142B8D0F00685E91 /* css3-mediaqueries.js */; };
@@ -78,7 +79,6 @@
 		01514FE9133E682700BC7179 /* flvstreamer in Resources */ = {isa = PBXBuildFile; fileRef = 01514FE4133E682700BC7179 /* flvstreamer */; };
 		01514FEA133E682700BC7179 /* get_iplayer in Resources */ = {isa = PBXBuildFile; fileRef = 01514FE5133E682700BC7179 /* get_iplayer */; };
 		01514FEB133E682700BC7179 /* TagLib.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 01514FE6133E682700BC7179 /* TagLib.bundle */; };
-		01514FFB133E869B00BC7179 /* MacRuby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01514FFA133E869B00BC7179 /* MacRuby.framework */; };
 		0171209413B7DFE90070E05B /* AppleScripter.rb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209313B7DFE90070E05B /* AppleScripter.rb */; };
 		0171209813B7E0F40070E05B /* feed_xml.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209613B7E0F40070E05B /* feed_xml.erb */; };
 		0171209D13B7EAEE0070E05B /* index.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209C13B7EAEE0070E05B /* index.erb */; };
@@ -222,7 +222,6 @@
 		01514FE5133E682700BC7179 /* get_iplayer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = get_iplayer; sourceTree = "<group>"; };
 		01514FE6133E682700BC7179 /* TagLib.bundle */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; path = TagLib.bundle; sourceTree = "<group>"; };
 		01514FF8133E869000BC7179 /* MacRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MacRuby.framework; path = Library/Frameworks/MacRuby.framework; sourceTree = SDKROOT; };
-		01514FFA133E869B00BC7179 /* MacRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MacRuby.framework; path = Library/Frameworks/MacRuby.framework; sourceTree = SDKROOT; };
 		0171209313B7DFE90070E05B /* AppleScripter.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = AppleScripter.rb; path = iCatcherApp/Classes/AppleScripter.rb; sourceTree = SOURCE_ROOT; };
 		0171209613B7E0F40070E05B /* feed_xml.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed_xml.erb; sourceTree = "<group>"; };
 		0171209A13B7E45B0070E05B /* feed_test.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = feed_test.rb; sourceTree = "<group>"; };
@@ -279,10 +278,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01492F731436265700D8AD84 /* MacRuby.framework in Frameworks */,
 				01514F0A133E2C0700BC7179 /* Cocoa.framework in Frameworks */,
 				01514F67133E64EF00BC7179 /* Growl.framework in Frameworks */,
 				01514F68133E64EF00BC7179 /* Sparkle.framework in Frameworks */,
-				01514FFB133E869B00BC7179 /* MacRuby.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -292,7 +291,6 @@
 		01514EFA133E2C0600BC7179 = {
 			isa = PBXGroup;
 			children = (
-				01514FF8133E869000BC7179 /* MacRuby.framework */,
 				01514F0E133E2C0700BC7179 /* iCatcher */,
 				01514FCB133E667F00BC7179 /* Tests */,
 				01514F08133E2C0700BC7179 /* Frameworks */,
@@ -311,7 +309,7 @@
 		01514F08133E2C0700BC7179 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				01514FFA133E869B00BC7179 /* MacRuby.framework */,
+				01514FF8133E869000BC7179 /* MacRuby.framework */,
 				01514F65133E64EF00BC7179 /* Growl.framework */,
 				01514F66133E64EF00BC7179 /* Sparkle.framework */,
 				01514F09133E2C0700BC7179 /* Cocoa.framework */,

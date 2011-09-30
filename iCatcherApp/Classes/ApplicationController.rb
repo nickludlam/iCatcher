@@ -290,7 +290,7 @@ class ApplicationController
     else
       Logger.error("Last run exited uncleanly. Halting the queue")
       appendOutputToTaskInspector("\nTASK FAILED!\n")
-      NSApp.delegate.growlError()
+      NSApp.delegate.growlDownloadError()
       @taskQueue.clear
       setTaskMode(:idle)
     end
@@ -355,7 +355,7 @@ class ApplicationController
   def startServerThreaded
     begin
 			Logger.debug("Starting control tower thread")
-			pool = NSAutoreleasePool.alloc.init
+			#pool = NSAutoreleasePool.alloc.init
 			
       sleep(2)
 			@s_options = { :port => $webserverPort, :host => '127.0.0.1', :concurrent => false }
@@ -372,8 +372,11 @@ class ApplicationController
 			
 		rescue => e
 		  Logger.debug("Got an exception in the webserver thread? #{e.inspect}")
+      NSApp.delegate.growlMessage(:title => "Webserver error",
+                                  :description => "The iCatcher webserver could not start. #{e}",
+                                  :notificationName => "Error")
 		ensure
-			pool.release
+			#pool.release
 		end
   end
 

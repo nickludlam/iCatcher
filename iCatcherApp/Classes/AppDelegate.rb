@@ -57,7 +57,7 @@ class AppDelegate
                  :notificationName => "NewFiles")
   end
   
-  def growlError()
+  def growlDownloadError()
     growlMessage(:title => "Download error",
                  :description => "The last download finished uncleanly. Downloading has been halted",
                  :notificationName => "Error",
