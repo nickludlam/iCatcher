@@ -152,7 +152,7 @@ class PVRSearch
   end
 
   def searchesString=(newSearchesString, split = false)
-    Logger.debug "Setting searches to #{newSearchesString}"
+    #Logger.debug "Setting searches to #{newSearchesString}"
 
     @dirty = true
     

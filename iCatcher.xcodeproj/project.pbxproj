@@ -18,7 +18,6 @@
 		01514F50133E64BE00BC7179 /* ApplicationController.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F4B133E64BE00BC7179 /* ApplicationController.rb */; };
 		01514F51133E64BE00BC7179 /* CacheReader.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F4C133E64BE00BC7179 /* CacheReader.rb */; };
 		01514F52133E64BE00BC7179 /* FadeWindow.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F4D133E64BE00BC7179 /* FadeWindow.rb */; };
-		01514F53133E64BE00BC7179 /* FeedServer.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F4E133E64BE00BC7179 /* FeedServer.rb */; };
 		01514F5A133E64CB00BC7179 /* Logger.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F54133E64CB00BC7179 /* Logger.rb */; };
 		01514F5B133E64CB00BC7179 /* MediaCollection.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F55133E64CB00BC7179 /* MediaCollection.rb */; };
 		01514F5C133E64CB00BC7179 /* MediaScanner.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F56133E64CB00BC7179 /* MediaScanner.rb */; };
@@ -154,7 +153,6 @@
 		01514F4B133E64BE00BC7179 /* ApplicationController.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = ApplicationController.rb; path = iCatcherApp/Classes/ApplicationController.rb; sourceTree = SOURCE_ROOT; };
 		01514F4C133E64BE00BC7179 /* CacheReader.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = CacheReader.rb; path = iCatcherApp/Classes/CacheReader.rb; sourceTree = SOURCE_ROOT; };
 		01514F4D133E64BE00BC7179 /* FadeWindow.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = FadeWindow.rb; path = iCatcherApp/Classes/FadeWindow.rb; sourceTree = SOURCE_ROOT; };
-		01514F4E133E64BE00BC7179 /* FeedServer.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = FeedServer.rb; path = iCatcherApp/Classes/FeedServer.rb; sourceTree = SOURCE_ROOT; };
 		01514F54133E64CB00BC7179 /* Logger.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Logger.rb; path = iCatcherApp/Classes/Logger.rb; sourceTree = SOURCE_ROOT; };
 		01514F55133E64CB00BC7179 /* MediaCollection.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = MediaCollection.rb; path = iCatcherApp/Classes/MediaCollection.rb; sourceTree = SOURCE_ROOT; };
 		01514F56133E64CB00BC7179 /* MediaScanner.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = MediaScanner.rb; path = iCatcherApp/Classes/MediaScanner.rb; sourceTree = SOURCE_ROOT; };
@@ -371,11 +369,10 @@
 				01514F4A133E64BE00BC7179 /* ActiveStatusItem.rb */,
 				01514F4C133E64BE00BC7179 /* CacheReader.rb */,
 				01514F4D133E64BE00BC7179 /* FadeWindow.rb */,
-				01514F4E133E64BE00BC7179 /* FeedServer.rb */,
 				01514F54133E64CB00BC7179 /* Logger.rb */,
-				01514F55133E64CB00BC7179 /* MediaCollection.rb */,
 				01514F56133E64CB00BC7179 /* MediaScanner.rb */,
 				01514F57133E64CB00BC7179 /* PVRSearch.rb */,
+				01514F55133E64CB00BC7179 /* MediaCollection.rb */,
 				01514F58133E64CB00BC7179 /* SinatraApp.rb */,
 				01514F59133E64CB00BC7179 /* TaskWrapper.rb */,
 				0171209313B7DFE90070E05B /* AppleScripter.rb */,
@@ -598,7 +595,7 @@
 		01514EFC133E2C0600BC7179 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = "Berg London Ltd";
 			};
 			buildConfigurationList = 01514EFF133E2C0600BC7179 /* Build configuration list for PBXProject "iCatcher" */;
@@ -628,7 +625,6 @@
 				01514F50133E64BE00BC7179 /* ApplicationController.rb in Resources */,
 				01514F51133E64BE00BC7179 /* CacheReader.rb in Resources */,
 				01514F52133E64BE00BC7179 /* FadeWindow.rb in Resources */,
-				01514F53133E64BE00BC7179 /* FeedServer.rb in Resources */,
 				01514F5A133E64CB00BC7179 /* Logger.rb in Resources */,
 				01514F5B133E64CB00BC7179 /* MediaCollection.rb in Resources */,
 				01514F5C133E64CB00BC7179 /* MediaScanner.rb in Resources */,

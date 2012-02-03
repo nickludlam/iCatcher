@@ -23,8 +23,18 @@ class SinatraApp < Sinatra::Base
   end
 
   get('/adhoc_feed.:format') do
+    Logger.debug("Running ad-hoc media scanner")
     @mc = MediaScanner.createCollectionFromAdHocDirectory()
-    erb "feed_#{params[:format]}".to_sym
+    
+    Logger.debug("Finished making collection for template")
+
+    @mc.media_items.each do |mi|
+      Logger.debug("Media Item: #{mi.filepath}")
+    end
+    
+    output = erb "feed_#{params[:format]}".to_sym
+    Logger.debug("Finished rendering template")
+    output
   end
 
   get('/feeds/:feed_name.:format') do

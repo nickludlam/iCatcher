@@ -28,9 +28,9 @@ class TaskWrapper
     args << "--nopurge" # we do the purging ourselves
     args << "--tag-fulltitle"
     args << "--profile-dir=#{$downloaderConfigDirectory}"
-    args << "--packagemanager"
-    args << "disable"
+    args << "--packagemanager=disable"
     args << "--verbose" if $preferences['verboseOutput']
+    args << "--debug" if $preferences['verboseOutput']
     args
   end
   
@@ -52,6 +52,7 @@ class TaskWrapper
     args = baseArgs()
     args << "--url"
     args << url
+    args << " 2>&1"
     
     environmentDictionary = baseEnvironment({"IPLAYER_OUTDIR" => directory})
     invokeGetIplayerWithArgs(args, andEnvironment:environmentDictionary)
@@ -81,7 +82,7 @@ class TaskWrapper
     
     args << "--get"
     args << index
-		args << "2>&1"
+    args << " 2>&1"
 
     environmentDictionary = baseEnvironment({"IPLAYER_OUTDIR" => directory})
     invokeGetIplayerWithArgs(args, andEnvironment:environmentDictionary)
@@ -99,6 +100,7 @@ class TaskWrapper
     args = baseArgs()    
     args << "--type=#{type}"
     args << "--refresh"
+    args << " 2>&1"
 
     environmentDictionary = baseEnvironment()
 

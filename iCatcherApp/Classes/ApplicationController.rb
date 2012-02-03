@@ -21,8 +21,8 @@ require 'sinatra'
 require 'htmlentities'
 
 # Need to keep this in sync with the UI
-TIMER_INTERVALS = [6, 12, 24]
-DELETE_OLDER_THAN_WEEKS = [1, 2, 3, 4]
+TIMER_INTERVALS = [ 6, 12, 24 ]
+DELETE_OLDER_THAN_WEEKS = [ 1, 2, 3, 4 ]
 
 # Append our bundled gems to the search path
 bundled_gem_path = NSBundle.mainBundle.resourcePath + "/gems/"
@@ -70,7 +70,7 @@ class ApplicationController
       components = url.split("/")
       pid = components[4]
     end
-
+    
     pid
   end
 
@@ -493,7 +493,6 @@ class ApplicationController
       setTaskMode(:idle)
       return
     end
-    
 
     # Get the next item to work with
     @currentTask = @taskQueue.shift
@@ -607,7 +606,7 @@ class ApplicationController
     
     delete_older_than_days = DELETE_OLDER_THAN_WEEKS[$preferences["autoDeleteDropdownIndex"]] * 7
     
-    #Logger.debug("delete_older_than_days is #{delete_older_than_days}")
+    Logger.debug("delete_older_than_days is #{delete_older_than_days}")
     
     # For each PVRSearch, delete the content inside it
     PVRSearch.all.each do |pvr|

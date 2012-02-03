@@ -144,7 +144,7 @@ class CacheReader
 	def programmeDetailsForPVRSearch(pvrsearch, fields="name,episode")
 		populateCachesIfRequired()
 		
-    Logger.debug(pvrsearch.inspect)
+    #Logger.debug(pvrsearch.inspect)
     
     # Add in searching on the 'desc' column if the pvrsearch is so configured
     fields << ",desc" if pvrsearch.descriptionSearch.to_i == 1

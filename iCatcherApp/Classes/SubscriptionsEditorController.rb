@@ -182,12 +182,12 @@ class SubscriptionsEditorController < NSWindowController
   
   def controlTextDidEndEditing(notification)
     NSLog("Field did end editing")
-    updateCurrentSubscription()
+    updateCurrentSubscription(notification: notification)
   end
   
   def controlTextDidChange(notification)
     #NSLog("Text changed!")
-    updateCurrentSubscription()
+    updateCurrentSubscription(notification: notification)
   end
     
   def popupValueChanged(sender)
@@ -195,13 +195,15 @@ class SubscriptionsEditorController < NSWindowController
       setupPopups(@subscription, @mediaPopup.selectedItem.title.downcase)
     end
     
-    updateCurrentSubscription()
+    updateCurrentSubscription(sender: sender)
   end
 
-  def updateCurrentSubscription()
+  def updateCurrentSubscription(options = {})
     return unless @subscription
     
     tableNeedsRefresh = false
+    matchesNeedRefresh = false
+
     if @subscription.displayname != @nameTextField.stringValue
       tableNeedsRefresh = true
     end
@@ -358,7 +360,7 @@ class SubscriptionsEditorController < NSWindowController
     if matchingProgrammes.count > MAX_MATCH_COUNT
       addContentToPreviewPanel("TOO MANY MATCHES, PLEASE MAKE A MORE SPECIFIC SEARCH\n\n", :error)
       matchingProgrammes = matchingProgrammes.first(MAX_MATCH_COUNT)
-      Logger.debug("Count is now #{matchingProgrammes.count}")
+      #Logger.debug("Count is now #{matchingProgrammes.count}")
     end
     
     matchingProgrammes.each do |p|

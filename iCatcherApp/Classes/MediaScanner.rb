@@ -38,9 +38,10 @@ class MediaScanner
     threshold = Time.now - age
     
     listMedia(directory, type, 0) do |file|
-      #Logger.debug("Comparing #{File.mtime(file)} with #{threshold}")
+      file_ctime = File.ctime(file)
+      Logger.debug("Comparing #{file_ctime} with #{threshold} for #{file}")
       # If its older than the set time, purge
-      if File.mtime(file) < threshold
+      if file_ctime < threshold
         Logger.debug("Deleting expired content #{file}")
         File.unlink(file)
       end
@@ -61,7 +62,7 @@ class MediaScanner
 				Logger.warning("Skipping zero-length file #{file}") 
 				next
       else
-        #Logger.debug("Adding #{file}")
+        Logger.debug("Adding #{file}")
 			end
 			
 			collection.media_items << MediaItem.new(file)
@@ -80,16 +81,19 @@ class MediaScanner
     
     files = []
     listMedia($downloaderAdHocDirectory, "all", age) do |file|
-    # Skip over obviously bad files
-    if File.size(file) == 0
-      Logger.warning("Skipping zero-length file #{file}") 
-      next
-    else
-      Logger.debug("Adding #{file}")
-    end
+      Logger.debug("Checking filesize for #{file}")
+      # Skip over obviously bad files
+      if File.size(file) == 0
+        Logger.warning("Skipping zero-length file #{file}") 
+        next
+      else
+        Logger.debug("Adding #{file}")
+      end
     
-    collection.media_items << MediaItem.new(file)
-  end
+      collection.media_items << MediaItem.new(file)
+    end
+
+    Logger.debug("Finished making collection")
 
     collection
   end

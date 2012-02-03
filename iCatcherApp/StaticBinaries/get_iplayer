@@ -9414,10 +9414,10 @@ sub tags_from_metadata {
 	my ($self, $meta) = @_;
 	my $tags;
 	# iTunes media kind
-	$tags->{stik} = 'Normal';
-	if ( $meta->{ext} =~ /(mp4|m4v)/i) {
-		$tags->{stik} = $meta->{categories} =~ /(film|movie)/i ? 'Movie' : 'TV Show';
-	}
+	$tags->{stik} = 'Podcast';
+	#if ( $meta->{ext} =~ /(mp4|m4v)/i) {
+	#	$tags->{stik} = $meta->{categories} =~ /(film|movie)/i ? 'Movie' : 'TV Show';
+	#}
 	$tags->{advisory} = $meta->{guidance} ? 'explicit' : 'remove';
 	# copyright message from download date
 	$tags->{copyright} = substr($meta->{dldate}, 0, 4)." British Broadcasting Corporation, all rights reserved";
