@@ -1,4 +1,4 @@
-# Logger.rb
+# SimpleLogger.rb
 # iCatcher
 #
 # Created by Nick Ludlam on 29/12/2010.
