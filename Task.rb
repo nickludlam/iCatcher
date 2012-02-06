@@ -15,6 +15,7 @@ class Task
   attr_accessor :index
   attr_accessor :directory
   attr_accessor :pvrsearch
+  attr_accessor :force
   
   def self.cacheUpdate(type)
     task = Task.new
@@ -40,15 +41,16 @@ class Task
     task
   end
 
-  def self.downloadFromURL(url)
+  def self.downloadFromURL(url, force)
     task = Task.new
     task.mode = :url
     task.url = url
+    task.force = force
     task
   end
 
   def to_s
-    "Task: mode #{@mode}, type #{@type}, url #{@url}, index #{@index}, directory #{@directory}, pvrsearch #{@pvrsearch}"
+    "TASK Mode: #{@mode}, type: #{@type}, url: #{@url}, index: #{@index}, directory: #{@directory}, pvrsearch: #{@pvrsearch}, force: #{@force}"
   end
   
 end

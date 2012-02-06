@@ -19,9 +19,9 @@ class MediaItem
 
   def initialize(fpath)
     @filepath = fpath
-    Logger.debug("Running taglib on #{@filepath}")
+    #Logger.debug("Running taglib on #{@filepath}")
     tags = TagLib.alloc.initWithFileAtPath(@filepath)
-    Logger.debug("Finished collecting tags")
+    #Logger.debug("Finished collecting tags")
     # Consolidate album and title into the title, or cope with nil
   	if tags.title
       if tags.title.index(tags.album) != nil
@@ -41,7 +41,7 @@ class MediaItem
     collection_name = File.basename(File.dirname(@filepath))
     file_basename = File.basename(@filepath)
     @url = "http://localhost:#{$webserverPort}/files/#{collection_name}/#{file_basename}"
-    Logger.debug("Finished making media item for file")
+    #Logger.debug("Finished making media item for file")
   end
   
   def file_suffix
@@ -55,7 +55,7 @@ class MediaItem
   end
 	
   def size
-    Logger.debug("Finding file size at path #{@filepath}")
+    #Logger.debug("Finding file size at path #{@filepath}")
     File.size(@filepath)
   end
 end

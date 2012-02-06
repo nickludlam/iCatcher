@@ -39,7 +39,7 @@ class MediaScanner
     
     listMedia(directory, type, 0) do |file|
       file_ctime = File.ctime(file)
-      Logger.debug("Comparing #{file_ctime} with #{threshold} for #{file}")
+      #Logger.debug("Comparing #{file_ctime} with #{threshold} for #{file}")
       # If its older than the set time, purge
       if file_ctime < threshold
         Logger.debug("Deleting expired content #{file}")
@@ -62,7 +62,7 @@ class MediaScanner
 				Logger.warning("Skipping zero-length file #{file}") 
 				next
       else
-        Logger.debug("Adding #{file}")
+        #Logger.debug("Adding #{file}")
 			end
 			
 			collection.media_items << MediaItem.new(file)
@@ -87,7 +87,7 @@ class MediaScanner
         Logger.warning("Skipping zero-length file #{file}") 
         next
       else
-        Logger.debug("Adding #{file}")
+        #Logger.debug("Adding #{file}")
       end
     
       collection.media_items << MediaItem.new(file)

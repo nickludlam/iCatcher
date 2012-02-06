@@ -49,22 +49,56 @@ class SinatraApp < Sinatra::Base
     end
   end
 
-#get('/feeds/:feed_name/:file_name') do 
-#    path = File.join($downloadDirectory, params[:feed_name], params[:file_name])
-#    send_file(path)
-#  end
-
   get('/instant-download') do
     Logger.debug("INSTANT DOWNLOAD -> #{params.inspect}")
-    uri = URI.parse(params[:url])
-    if (uri.host == "www.bbc.co.uk" && uri.path =~ /^\/iplayer\/episode/)
-      appController = NSApp.delegate.appController
-      @status = NSApp.delegate.appController.downloadFromURL(params[:url])
-      #NSApp.delegate.appController.performSelectorOnMainThread('downloadFromURL:', withObject:params[:url], waitUntilDone:false)
-      erb :downloading_adhoc
-    else
-      erb :bad_url
+    
+    unless params[:url]
+      return erb :bad_url
     end
+    
+    uri = URI.parse(params[:url])
+    
+    unless (uri.host == "www.bbc.co.uk" && uri.path =~ /^\/iplayer\/episode/)
+      return erb :bad_url
+    end
+    
+    appController = NSApp.delegate.appController
+    currentTask = appController.currentTask
+    taskQueue = appController.taskQueue
+    @cr = CacheReader.instance
+
+    #@status = appController.downloadFromURL(params[:url])
+    
+    pid = ApplicationController.pidFromURL(params[:url])
+    
+    # Are we already downloading this?
+    # TODO Move this functionality into either appController or some sort of TaskQueue manager
+    if currentTask && currentTask.url == params[:url]
+      @status = "Programme is downloading"
+      return erb :downloading_adhoc
+    elsif taskQueue.length > 0 && taskQueue.find { |x| x.url == params[:url] }
+      @status = "Programme download is queued"
+      return erb :downloading_adhoc
+    end
+    
+    # Ok so if we're not downloading it, have we got it previously?
+
+    if @cr.pidInDownloadHistory?(pid) && params[:force] == nil
+      @status = "Already downloaded. <a href=\"/instant-download?force=true&url=#{params[:url]}\">Force re-download</a>?"
+      return erb :downloading_adhoc
+    end
+    
+    # Ok so set it downloading
+    task = appController.downloadFromURL(params[:url], params.has_key?("force"))
+    
+    # Redirect so we don't endlessly force downloading if the user hits refresh
+    if @cr.pidInDownloadHistory?(pid) && params[:force]
+      return redirect "/instant-download?url=#{params[:url]}"
+    else
+      @status = "Scheduling download"
+    end
+    
+    erb :downloading_adhoc
   end
 
   get('/resources/:resource_name') do

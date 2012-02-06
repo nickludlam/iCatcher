@@ -29,11 +29,17 @@ class CacheReader
     @tv_channels = {}
 
     @cache_format = %w/index type name pid available episode seriesnum episodenum versions duration desc channel categories thumbnail timeadded guidance web/
+    
+    @history_format = %w/pid name episode type timeadded mode filename versions duration desc channel categories thumbnail guidance web episodenum seriesnum/
   end
   
   def cachePathForType(type)
 		File.join($downloaderConfigDirectory, "#{type}.cache")
 	end
+  
+  def historyPath
+    File.join($downloaderConfigDirectory, "download_history")
+  end
 
   def cacheEmpty?(type = "radio")
     if type == "radio"
@@ -59,6 +65,28 @@ class CacheReader
     if cacheEmpty?("tv") || @parsed_tv_cache_mtime < File.mtime(cachePathForType("tv"))
       parseCache("tv")
     end
+  end
+  
+  def parseHistory()
+    Logger.debug("Parsing history")
+    history_path = historyPath()
+    
+    pid_index_number = @history_format.index("pid")		
+
+    history_hash = {}
+
+    File.open(history_path) do |f|
+      lines = f.readlines()
+      lines.each do |line|
+        elements = line.split("|")
+        pid = elements[pid_index_number]
+        Logger.debug("Found a history item with PID #{pid}")
+        history_hash[pid] = elements
+      end
+    end
+
+    @download_history_by_pid = history_hash
+    @parsed_download_history = File.mtime(history_path)
   end
 
   def parseCache(type = "radio")
@@ -132,6 +160,7 @@ class CacheReader
 	
   def programmeIndexAndTypeForPID(pid)
 	  populateCachesIfRequired
+    
 		if @radio_cache_by_pid[pid]
 		  return [@radio_cache_by_pid[pid][0], "radio"]
 		elsif @tv_cache_by_pid[pid]
@@ -249,6 +278,13 @@ class CacheReader
     end
   end
   
+  # Have we downloaded it before?
+  def pidInDownloadHistory?(pid)
+    Logger.debug("Looking for PID #{pid} in download history")
+    Logger.debug("Download history is #{@download_history} and match is #{@download_history_by_pid[pid]}")
+    raise "No download history" unless @download_history_by_pid.is_a?(Hash)
+    @download_history_by_pid[pid] != nil
+  end
 	
 end # end class
 

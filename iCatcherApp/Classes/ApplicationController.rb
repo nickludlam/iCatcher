@@ -60,6 +60,9 @@ class ApplicationController
   attr_writer :subscriptionsEditorWindow
   attr_writer :subscriptionsEditorController
   
+  attr_accessor :taskQueue
+  attr_accessor :currentTask
+  
   # Return a PID from a URL if it matches what we require
   def self.pidFromURL(url)
     pid = nil
@@ -94,15 +97,13 @@ class ApplicationController
     @preferencesWindowController = PreferencesController.alloc.initWithWindowNibName("Preferences")    
     @preferencesWindowController.setupPreferences()
     @preferencesWindowController.readPreferences()
-
-    setupStateAccordingToPreferences()
     
     @cr = CacheReader.instance
 
     # Throw this result away, as it will be the total media count
     calculateAvailableMediaCountDifference
     
-    @taskMode = :idle
+    setTaskMode(:idle)
     updateCacheIfRequired()
   end
 
@@ -255,9 +256,10 @@ class ApplicationController
     if newmode == :idle
       @startDownloaderMenuItem.setTitle("Run now")
       @status_item.view.endAnimation()
-      setupTimer()
+      setupStateAccordingToPreferences()
       processUpdatedMediaCount()
       deleteOldMedia()
+      @cr.parseHistory() # Update our history cache as soon as we've finished downloading
     elsif newmode == :cacheUpdate
       @status_item.view.startAnimation()
       @startDownloaderMenuItem.setTitle("Stop cache update")
@@ -266,6 +268,7 @@ class ApplicationController
       @status_item.view.startAnimation()
       @startDownloaderMenuItem.setTitle("Stop downloads")
     elsif newmode == :stopping
+      # Nothing to do until we've stopped...
     end
 	end
 	
@@ -283,13 +286,16 @@ class ApplicationController
     end
     
 		@tw = nil
+    @currentTask = nil
     
     if exitCode == 0
-      appendOutputToTaskInspector("\nTASK FINISHED!\n")
+      appendOutputToTaskInspector("\n\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+      appendOutputToTaskInspector("\niCatcher has finished downloading\n")
       self.performSelectorOnMainThread('checkWorkQueue', withObject:nil, waitUntilDone:false)
     else
       Logger.error("Last run exited uncleanly. Halting the queue")
-      appendOutputToTaskInspector("\nTASK FAILED!\n")
+      appendOutputToTaskInspector("\n\n-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+      appendOutputToTaskInspector("\nTASK FAILED!")
       NSApp.delegate.growlDownloadError()
       @taskQueue.clear
       setTaskMode(:idle)
@@ -398,26 +404,11 @@ class ApplicationController
     Dir.mkdir($downloaderAdHocDirectory) unless File.directory?($downloaderAdHocDirectory)
   end
   
-  def downloadFromURL(url)
-    if @currentTask
-      if @currentTask.url == url
-        Logger.debug("That's the current download!")
-        return "Download is already in progress"
-      end
-    end
-
-    Logger.debug("Enqueueing URL")
-
-    if @taskQueue.length > 0
-      status = "Queued up for download"
-    else
-      status = "Starting the download now"
-    end
-
-    @taskQueue << Task.downloadFromURL(url)
+  def downloadFromURL(url, force=false)
+    task = Task.downloadFromURL(url, force)
+    @taskQueue << task
     self.performSelectorOnMainThread("checkWorkQueue", withObject:nil, waitUntilDone:false)
-    
-    status
+    task
   end
       	
   def checkQueueForIndex(searchIndex)
@@ -427,6 +418,7 @@ class ApplicationController
         return true if searchIndex == index
       end
     end
+    
     false
   end
 
@@ -476,10 +468,10 @@ class ApplicationController
   def stopAllTasks(sender = nil)
     setTaskMode(:stopping)
     @taskQueue.clear
-    
+
     if @tw
       @tw.terminate()
-    end
+    end    
   end
 
 
@@ -532,6 +524,7 @@ class ApplicationController
     end
   end
 
+  # TODO: Repurpose/refactor some of the logic to be contained within TaskWrapper
   def issueWorkForURLTask(task)
     pid = ApplicationController.pidFromURL(task.url)
     
@@ -541,16 +534,16 @@ class ApplicationController
       if index
         Logger.debug("Found a current programme index for pid #{pid}")
         setTaskMode(:downloading)
-        @tw.downloadFromIndex(index, type, $downloaderAdHocDirectory)
+        @tw.downloadFromIndex(index, type, $downloaderAdHocDirectory, task.force)
         else
         Logger.debug("Could not find a programme index for pid #{pid}. Passing to get_iplayer")
         setTaskMode(:downloading)
-        @tw.downloadFromURL(task.url)
+        @tw.downloadFromURL(task.url, task.force)
       end
     else
       Logger.debug("Could not find a pid for the given URL. Passing to get_iplayer")
       setTaskMode(:downloading)
-      @tw.downloadFromURL(task.url)
+      @tw.downloadFromURL(task.url, task.force)
     end
   end
 
@@ -629,6 +622,7 @@ class ApplicationController
     #setupTimer
   end
 
+  # TODO: Make this work
   def setupSleepWakeNotifications()
     NSWorkspace.sharedWorkspace.notificationCenter.addObserver(self, selector:"receiveSleepNote:", name: NSWorkspaceWillSleepNotification, object: nil)
     NSWorkspace.sharedWorkspace.notificationCenter.addObserver(self, selector:"receiveWakeNote:", name: NSWorkspaceDidWakeNotification, object: nil)

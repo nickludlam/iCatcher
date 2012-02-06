@@ -42,14 +42,17 @@ class TaskWrapper
     environmentDictionary
   end
   
-  def downloadFromURL(url, directory = $downloaderAdHocDirectory)
-    Logger.debug("Starting downloader with URL #{url}")
+  def downloadFromURL(url, directory = $downloaderAdHocDirectory, force = false)
+    Logger.debug("Starting downloader with URL #{url}, force #{force}")
     
 		@task = NSTask.alloc.init
 		downloaderPath = NSBundle.mainBundle.pathForResource('get_iplayer', ofType:nil)
     @task.setLaunchPath(downloaderPath)
     
     args = baseArgs()
+    
+    args << "--force" if force
+    
     args << "--url"
     args << url
     args << " 2>&1"
@@ -58,9 +61,9 @@ class TaskWrapper
     invokeGetIplayerWithArgs(args, andEnvironment:environmentDictionary)
   end
   	
-	def downloadFromIndex(index, type = "radio", directory = $downloadDirectory)
+	def downloadFromIndex(index, type = "radio", directory = $downloadDirectory, force = false)
     Logger.debug("Too busy to update the cache") && return if busy?
-    Logger.debug("Starting download of index #{index}")
+    Logger.debug("Starting download of index #{index}, type #{type}, force #{force}")
     
 		@task = NSTask.alloc.init
 		downloaderPath = NSBundle.mainBundle.pathForResource('get_iplayer', ofType:nil)
@@ -79,6 +82,8 @@ class TaskWrapper
       args << "--modes"
       args << "flashvhigh,flashhigh"
     end
+    
+    args << "--force" if force
     
     args << "--get"
     args << index

@@ -18,7 +18,6 @@
 		01514F50133E64BE00BC7179 /* ApplicationController.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F4B133E64BE00BC7179 /* ApplicationController.rb */; };
 		01514F51133E64BE00BC7179 /* CacheReader.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F4C133E64BE00BC7179 /* CacheReader.rb */; };
 		01514F52133E64BE00BC7179 /* FadeWindow.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F4D133E64BE00BC7179 /* FadeWindow.rb */; };
-		01514F5A133E64CB00BC7179 /* Logger.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F54133E64CB00BC7179 /* Logger.rb */; };
 		01514F5B133E64CB00BC7179 /* MediaCollection.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F55133E64CB00BC7179 /* MediaCollection.rb */; };
 		01514F5C133E64CB00BC7179 /* MediaScanner.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F56133E64CB00BC7179 /* MediaScanner.rb */; };
 		01514F5D133E64CB00BC7179 /* PVRSearch.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01514F57133E64CB00BC7179 /* PVRSearch.rb */; };
@@ -81,6 +80,7 @@
 		0171209413B7DFE90070E05B /* AppleScripter.rb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209313B7DFE90070E05B /* AppleScripter.rb */; };
 		0171209813B7E0F40070E05B /* feed_xml.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209613B7E0F40070E05B /* feed_xml.erb */; };
 		0171209D13B7EAEE0070E05B /* index.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209C13B7EAEE0070E05B /* index.erb */; };
+		0197C9ED14DC9E270065EE44 /* SimpleLogger.rb in Resources */ = {isa = PBXBuildFile; fileRef = 0197C9EC14DC9E270065EE44 /* SimpleLogger.rb */; };
 		01A25BEC13C8EFC00037266B /* icatcher_icon_16.png in Resources */ = {isa = PBXBuildFile; fileRef = 01A25BEB13C8EFC00037266B /* icatcher_icon_16.png */; };
 		01A25C0113C9D2DC0037266B /* bad_url.erb in Resources */ = {isa = PBXBuildFile; fileRef = 01A25C0013C9D2DC0037266B /* bad_url.erb */; };
 		01AD23BF141D7FB300F3802E /* AppDelegate.rb in Resources */ = {isa = PBXBuildFile; fileRef = 01AD23BE141D7FB300F3802E /* AppDelegate.rb */; };
@@ -153,7 +153,6 @@
 		01514F4B133E64BE00BC7179 /* ApplicationController.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = ApplicationController.rb; path = iCatcherApp/Classes/ApplicationController.rb; sourceTree = SOURCE_ROOT; };
 		01514F4C133E64BE00BC7179 /* CacheReader.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = CacheReader.rb; path = iCatcherApp/Classes/CacheReader.rb; sourceTree = SOURCE_ROOT; };
 		01514F4D133E64BE00BC7179 /* FadeWindow.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = FadeWindow.rb; path = iCatcherApp/Classes/FadeWindow.rb; sourceTree = SOURCE_ROOT; };
-		01514F54133E64CB00BC7179 /* Logger.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = Logger.rb; path = iCatcherApp/Classes/Logger.rb; sourceTree = SOURCE_ROOT; };
 		01514F55133E64CB00BC7179 /* MediaCollection.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = MediaCollection.rb; path = iCatcherApp/Classes/MediaCollection.rb; sourceTree = SOURCE_ROOT; };
 		01514F56133E64CB00BC7179 /* MediaScanner.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = MediaScanner.rb; path = iCatcherApp/Classes/MediaScanner.rb; sourceTree = SOURCE_ROOT; };
 		01514F57133E64CB00BC7179 /* PVRSearch.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = PVRSearch.rb; path = iCatcherApp/Classes/PVRSearch.rb; sourceTree = SOURCE_ROOT; };
@@ -224,6 +223,7 @@
 		0171209613B7E0F40070E05B /* feed_xml.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed_xml.erb; sourceTree = "<group>"; };
 		0171209A13B7E45B0070E05B /* feed_test.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = feed_test.rb; sourceTree = "<group>"; };
 		0171209C13B7EAEE0070E05B /* index.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = index.erb; sourceTree = "<group>"; };
+		0197C9EC14DC9E270065EE44 /* SimpleLogger.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = SimpleLogger.rb; path = iCatcherApp/Classes/SimpleLogger.rb; sourceTree = SOURCE_ROOT; };
 		01A25BEB13C8EFC00037266B /* icatcher_icon_16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icatcher_icon_16.png; path = iCatcherApp/Resources/Images/icatcher_icon_16.png; sourceTree = SOURCE_ROOT; };
 		01A25C0013C9D2DC0037266B /* bad_url.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bad_url.erb; sourceTree = "<group>"; };
 		01AD23BE141D7FB300F3802E /* AppDelegate.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = AppDelegate.rb; path = iCatcherApp/Classes/AppDelegate.rb; sourceTree = SOURCE_ROOT; };
@@ -362,6 +362,7 @@
 		01514F2A133E2C3500BC7179 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				0197C9EC14DC9E270065EE44 /* SimpleLogger.rb */,
 				01AD23BE141D7FB300F3802E /* AppDelegate.rb */,
 				01514F4B133E64BE00BC7179 /* ApplicationController.rb */,
 				01FEC9DF1416CF5900434B0E /* SubscriptionsEditorController.rb */,
@@ -369,7 +370,6 @@
 				01514F4A133E64BE00BC7179 /* ActiveStatusItem.rb */,
 				01514F4C133E64BE00BC7179 /* CacheReader.rb */,
 				01514F4D133E64BE00BC7179 /* FadeWindow.rb */,
-				01514F54133E64CB00BC7179 /* Logger.rb */,
 				01514F56133E64CB00BC7179 /* MediaScanner.rb */,
 				01514F57133E64CB00BC7179 /* PVRSearch.rb */,
 				01514F55133E64CB00BC7179 /* MediaCollection.rb */,
@@ -625,7 +625,6 @@
 				01514F50133E64BE00BC7179 /* ApplicationController.rb in Resources */,
 				01514F51133E64BE00BC7179 /* CacheReader.rb in Resources */,
 				01514F52133E64BE00BC7179 /* FadeWindow.rb in Resources */,
-				01514F5A133E64CB00BC7179 /* Logger.rb in Resources */,
 				01514F5B133E64CB00BC7179 /* MediaCollection.rb in Resources */,
 				01514F5C133E64CB00BC7179 /* MediaScanner.rb in Resources */,
 				01514F5D133E64CB00BC7179 /* PVRSearch.rb in Resources */,
@@ -732,6 +731,7 @@
 				014E6642142B8D1000685E91 /* styles.css in Resources */,
 				014E664B142BE4C900685E91 /* css3-mediaqueries.js in Resources */,
 				014E664D142BF20000685E91 /* feed_html.erb in Resources */,
+				0197C9ED14DC9E270065EE44 /* SimpleLogger.rb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
