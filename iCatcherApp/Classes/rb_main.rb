@@ -9,6 +9,7 @@
 # Loading the Cocoa framework. If you need to load more frameworks, you can
 # do that here too.
 framework 'Cocoa'
+framework 'CoreGraphics' # Need this in 10.8 for CGRectMake etc..
 
 # Add in our custom TagLib bundle
 require "TagLib.bundle"
