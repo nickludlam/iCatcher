@@ -7,10 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		01492F731436265700D8AD84 /* MacRuby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01514FF8133E869000BC7179 /* MacRuby.framework */; };
 		014E6641142B8D1000685E91 /* 1140.css in Resources */ = {isa = PBXBuildFile; fileRef = 014E663E142B8D0F00685E91 /* 1140.css */; };
 		014E6642142B8D1000685E91 /* styles.css in Resources */ = {isa = PBXBuildFile; fileRef = 014E663F142B8D0F00685E91 /* styles.css */; };
-		014E6643142B8D1000685E91 /* css3-mediaqueries.js in Sources */ = {isa = PBXBuildFile; fileRef = 014E6640142B8D0F00685E91 /* css3-mediaqueries.js */; };
 		014E664B142BE4C900685E91 /* css3-mediaqueries.js in Resources */ = {isa = PBXBuildFile; fileRef = 014E6640142B8D0F00685E91 /* css3-mediaqueries.js */; };
 		014E664D142BF20000685E91 /* feed_html.erb in Resources */ = {isa = PBXBuildFile; fileRef = 014E664C142BF1FF00685E91 /* feed_html.erb */; };
 		01514F0A133E2C0700BC7179 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01514F09133E2C0700BC7179 /* Cocoa.framework */; };
@@ -70,13 +68,14 @@
 		01514FBD133E658600BC7179 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01514FBC133E658600BC7179 /* MainMenu.xib */; };
 		01514FD9133E668C00BC7179 /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = 01514FD6133E668C00BC7179 /* dsa_pub.pem */; };
 		01514FDD133E669700BC7179 /* Growl Registration Ticket.growlRegDict in Resources */ = {isa = PBXBuildFile; fileRef = 01514FDC133E669700BC7179 /* Growl Registration Ticket.growlRegDict */; };
-		01514FDF133E67B000BC7179 /* Growl.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 01514F65133E64EF00BC7179 /* Growl.framework */; };
-		01514FE0133E67B000BC7179 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 01514F66133E64EF00BC7179 /* Sparkle.framework */; };
+		01514FDF133E67B000BC7179 /* Growl.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = 01514F65133E64EF00BC7179 /* Growl.framework */; };
+		01514FE0133E67B000BC7179 /* Sparkle.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = 01514F66133E64EF00BC7179 /* Sparkle.framework */; };
 		01514FE7133E682700BC7179 /* AtomicParsley in Resources */ = {isa = PBXBuildFile; fileRef = 01514FE2133E682700BC7179 /* AtomicParsley */; };
 		01514FE8133E682700BC7179 /* ffmpeg in Resources */ = {isa = PBXBuildFile; fileRef = 01514FE3133E682700BC7179 /* ffmpeg */; };
 		01514FE9133E682700BC7179 /* flvstreamer in Resources */ = {isa = PBXBuildFile; fileRef = 01514FE4133E682700BC7179 /* flvstreamer */; };
 		01514FEA133E682700BC7179 /* get_iplayer in Resources */ = {isa = PBXBuildFile; fileRef = 01514FE5133E682700BC7179 /* get_iplayer */; };
 		01514FEB133E682700BC7179 /* TagLib.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 01514FE6133E682700BC7179 /* TagLib.bundle */; };
+		0167EB1F168D105C007E7E64 /* MacRuby.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0167EB1E168D105C007E7E64 /* MacRuby.framework */; };
 		0171209413B7DFE90070E05B /* AppleScripter.rb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209313B7DFE90070E05B /* AppleScripter.rb */; };
 		0171209813B7E0F40070E05B /* feed_xml.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209613B7E0F40070E05B /* feed_xml.erb */; };
 		0171209D13B7EAEE0070E05B /* index.erb in Resources */ = {isa = PBXBuildFile; fileRef = 0171209C13B7EAEE0070E05B /* index.erb */; };
@@ -129,15 +128,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		01514FDE133E679800BC7179 /* CopyFiles */ = {
+		01514FDE133E679800BC7179 /* Copy Files */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				01514FDF133E67B000BC7179 /* Growl.framework in CopyFiles */,
-				01514FE0133E67B000BC7179 /* Sparkle.framework in CopyFiles */,
+				01514FDF133E67B000BC7179 /* Growl.framework in Copy Files */,
+				01514FE0133E67B000BC7179 /* Sparkle.framework in Copy Files */,
 			);
+			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -218,7 +218,7 @@
 		01514FE4133E682700BC7179 /* flvstreamer */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = flvstreamer; sourceTree = "<group>"; };
 		01514FE5133E682700BC7179 /* get_iplayer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = get_iplayer; sourceTree = "<group>"; };
 		01514FE6133E682700BC7179 /* TagLib.bundle */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.bundle"; path = TagLib.bundle; sourceTree = "<group>"; };
-		01514FF8133E869000BC7179 /* MacRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MacRuby.framework; path = Library/Frameworks/MacRuby.framework; sourceTree = SDKROOT; };
+		0167EB1E168D105C007E7E64 /* MacRuby.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MacRuby.framework; path = /Library/Frameworks/MacRuby.framework; sourceTree = "<absolute>"; };
 		0171209313B7DFE90070E05B /* AppleScripter.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; name = AppleScripter.rb; path = iCatcherApp/Classes/AppleScripter.rb; sourceTree = SOURCE_ROOT; };
 		0171209613B7E0F40070E05B /* feed_xml.erb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed_xml.erb; sourceTree = "<group>"; };
 		0171209A13B7E45B0070E05B /* feed_test.rb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.ruby; path = feed_test.rb; sourceTree = "<group>"; };
@@ -276,7 +276,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				01492F731436265700D8AD84 /* MacRuby.framework in Frameworks */,
+				0167EB1F168D105C007E7E64 /* MacRuby.framework in Frameworks */,
 				01514F0A133E2C0700BC7179 /* Cocoa.framework in Frameworks */,
 				01514F67133E64EF00BC7179 /* Growl.framework in Frameworks */,
 				01514F68133E64EF00BC7179 /* Sparkle.framework in Frameworks */,
@@ -307,7 +307,7 @@
 		01514F08133E2C0700BC7179 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				01514FF8133E869000BC7179 /* MacRuby.framework */,
+				0167EB1E168D105C007E7E64 /* MacRuby.framework */,
 				01514F65133E64EF00BC7179 /* Growl.framework */,
 				01514F66133E64EF00BC7179 /* Sparkle.framework */,
 				01514F09133E2C0700BC7179 /* Cocoa.framework */,
@@ -362,9 +362,9 @@
 		01514F2A133E2C3500BC7179 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				01514F4B133E64BE00BC7179 /* ApplicationController.rb */,
 				0197C9EC14DC9E270065EE44 /* SimpleLogger.rb */,
 				01AD23BE141D7FB300F3802E /* AppDelegate.rb */,
-				01514F4B133E64BE00BC7179 /* ApplicationController.rb */,
 				01FEC9DF1416CF5900434B0E /* SubscriptionsEditorController.rb */,
 				01CEA1761426669D000A8E83 /* PreferencesController.rb */,
 				01514F4A133E64BE00BC7179 /* ActiveStatusItem.rb */,
@@ -578,7 +578,7 @@
 				01514F01133E2C0700BC7179 /* Sources */,
 				01514F02133E2C0700BC7179 /* Frameworks */,
 				01514F03133E2C0700BC7179 /* Resources */,
-				01514FDE133E679800BC7179 /* CopyFiles */,
+				01514FDE133E679800BC7179 /* Copy Files */,
 			);
 			buildRules = (
 			);
@@ -595,7 +595,7 @@
 		01514EFC133E2C0600BC7179 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0450;
 				ORGANIZATIONNAME = "Berg London Ltd";
 			};
 			buildConfigurationList = 01514EFF133E2C0600BC7179 /* Build configuration list for PBXProject "iCatcher" */;
@@ -743,7 +743,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				01514F63133E64D900BC7179 /* main.m in Sources */,
-				014E6643142B8D1000685E91 /* css3-mediaqueries.js in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -754,6 +753,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
@@ -772,6 +772,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				FRAMEWORK_SEARCH_PATHS = /Library/Frameworks;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -787,6 +788,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -809,6 +811,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -830,6 +833,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
 			};
 			name = Debug;
 		};
@@ -837,6 +841,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COMBINE_HIDPI_IMAGES = YES;
 			};
 			name = Release;
 		};

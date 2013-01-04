@@ -20,6 +20,7 @@ require 'control_tower'
 require 'sinatra'
 require 'htmlentities'
 
+
 # Need to keep this in sync with the UI
 TIMER_INTERVALS = [ 6, 12, 24 ]
 DELETE_OLDER_THAN_WEEKS = [ 1, 2, 3, 4 ]
@@ -56,7 +57,7 @@ class ApplicationController
                               :stopping => "Stopping" }
   
   attr_writer :taskInspectorWindow
-	attr_writer :taskInspectorTextView
+  attr_writer :taskInspectorTextView
   attr_writer :subscriptionsEditorWindow
   attr_writer :subscriptionsEditorController
   
@@ -360,30 +361,30 @@ class ApplicationController
     
   def startServerThreaded
     begin
-			Logger.debug("Starting control tower thread")
-			#pool = NSAutoreleasePool.alloc.init
+      Logger.debug("Starting control tower thread")
+      #pool = NSAutoreleasePool.alloc.init
 			
       sleep(2)
-			@s_options = { :port => $webserverPort, :host => '127.0.0.1', :concurrent => false }
-			
-			app = Rack::Builder.new do
-				map "/" do run SinatraApp.new end
-				map "/files" do run Rack::File.new($downloadDirectory) end
-				map "/resources" do run Rack::File.new(NSBundle.mainBundle.resourcePath) end
-			end.to_app
+        @s_options = { :port => $webserverPort, :concurrent => false }
+            
+        app = Rack::Builder.new do
+            map "/" do run SinatraApp.new end
+            map "/files" do run Rack::File.new($downloadDirectory) end
+            map "/resources" do run Rack::File.new(NSBundle.mainBundle.resourcePath) end
+        end.to_app
 
-			Rack::Handler::ControlTower.run(app, @s_options) do |s|
-				Logger.error("Couldn't build CT server") unless s
-			end
+        Rack::Handler::ControlTower.run(app, @s_options) do |s|
+            Logger.error("Couldn't build CT server") unless s
+        end
 			
-		rescue => e
-		  Logger.debug("Got an exception in the webserver thread? #{e.inspect}")
-      NSApp.delegate.growlMessage(:title => "Webserver error",
-                                  :description => "The iCatcher webserver could not start. #{e}",
-                                  :notificationName => "Error")
-		ensure
-			#pool.release
-		end
+    rescue => e
+        Logger.debug("Got an exception in the webserver thread? #{e.inspect}")
+        NSApp.delegate.growlMessage(:title => "Webserver error",
+                              :description => "The iCatcher webserver could not start. #{e}",
+                              :notificationName => "Error")
+    ensure
+        #pool.release
+    end
   end
 
   # Window delegate methods
@@ -598,7 +599,7 @@ class ApplicationController
     return unless $preferences['autoDelete']
     
     delete_older_than_days = DELETE_OLDER_THAN_WEEKS[$preferences["autoDeleteDropdownIndex"]] * 7
-    
+      
     Logger.debug("delete_older_than_days is #{delete_older_than_days}")
     
     # For each PVRSearch, delete the content inside it
