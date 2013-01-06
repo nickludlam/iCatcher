@@ -44,8 +44,9 @@ $downloaderAdHocDirectory = "#{$downloadDirectory}/AdHoc/"
 $sinatraViewsPath = NSBundle.mainBundle.resourcePath
 
 # Web config
+$webserverHostname = NSHost.currentHost.name
 $webserverPort = 8019
-$webserverURL = "http://localhost:#{$webserverPort}/"
+$webserverURL = "http://#{$webserverHostname}:#{$webserverPort}/"
 
 
 class ApplicationController

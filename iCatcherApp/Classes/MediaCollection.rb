@@ -40,7 +40,7 @@ class MediaItem
 		
     collection_name = File.basename(File.dirname(@filepath))
     file_basename = File.basename(@filepath)
-    @url = "http://localhost:#{$webserverPort}/files/#{collection_name}/#{file_basename}"
+    @url = "http://#{$webserverHostname}:#{$webserverPort}/files/#{collection_name}/#{file_basename}"
     #Logger.debug("Finished making media item for file")
   end
   
