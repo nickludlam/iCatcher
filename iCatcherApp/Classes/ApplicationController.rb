@@ -80,6 +80,9 @@ class ApplicationController
   end
 
   def awakeFromNib
+    # First set up our logging level
+    Logger.setLevel('debug')
+
     appDelegate = NSApp.delegate
     appDelegate.appController = self
     

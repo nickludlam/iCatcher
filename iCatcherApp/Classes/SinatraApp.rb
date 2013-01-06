@@ -13,7 +13,7 @@ class SinatraApp < Sinatra::Base
     alias_method :h, :escape_html
   end
   
-  Logger.debug("views path => #{$sinatraViewsPath}")
+  #Logger.debug("views path => #{$sinatraViewsPath}")
   set :views, $sinatraViewsPath
   
   get('/') do
